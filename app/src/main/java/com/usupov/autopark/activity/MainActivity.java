@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private void initCarsList() {
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list_car);
-        recyclerView.setNestedScrollingEnabled(false);
+        //recyclerView.setNestedScrollingEnabled(false);
 
         List<CarsListModel> carList = new ArrayList<CarsListModel>();
         carList.add(new CarsListModel(

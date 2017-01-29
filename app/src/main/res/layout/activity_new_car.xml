@@ -13,13 +13,28 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:background="@color/windowBackground"
+        >
 
        <include
             android:id="@+id/toolbar_new_car"
             layout="@layout/toolbar_new_car"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:ems="10"
+            android:id="@+id/editText"
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:elevation="8dp"
+            android:hint="VIN номер"
+            android:background="@color/colorWhite"
+            />
 
     </LinearLayout>
 
