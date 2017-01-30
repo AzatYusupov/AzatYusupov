@@ -21,7 +21,7 @@
 
         <activity
             android:name=".activity.CarNewActivity"
-            android:label="@string/app_new_car">
+            android:label="@string/app_car_new">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

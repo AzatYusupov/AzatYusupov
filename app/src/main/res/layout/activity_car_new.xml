@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     android:background="@color/windowBackground"
     android:fitsSystemWindows="true"
-
     tools:context=".activity.CarNewActivity">
 
     <LinearLayout
@@ -18,7 +17,7 @@
         >
 
        <include
-            android:id="@+id/toolbar_new_car"
+            android:id="@+id/toolbar_car_new"
             layout="@layout/toolbar_car_new"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -30,15 +29,115 @@
             android:ems="@android:integer/config_longAnimTime"
             android:id="@+id/edittext_vin_number"
             android:padding="10dp"
-            android:layout_marginTop="30dp"
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp"
             android:elevation="8dp"
             android:hint="VIN номер"
             android:background="@color/colorWhite"
             android:drawableRight="@drawable/ic_keyboard_voice_black"
             />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorWhite"
+            android:layout_margin="10dp"
+            android:elevation="8dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="?android:attr/listPreferredItemHeight"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                >
+
+                <TextView
+                    android:layout_width="78dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/title_brand"
+                    android:gravity="left|center"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="15dp"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="AUDI"
+                    android:gravity="right|center"
+                    android:layout_marginRight="10dp"
+                    android:textStyle="normal|bold"
+                    android:textSize="16dp"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="?android:attr/listPreferredItemHeight"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                >
+
+                <TextView
+                    android:layout_width="78dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/title_model"
+                    android:gravity="left|center"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="15dp"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Q7"
+                    android:gravity="right|center"
+                    android:layout_marginRight="10dp"
+                    android:textStyle="normal|bold"
+                    android:textSize="16dp"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="?android:attr/listPreferredItemHeight"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                >
+
+                <TextView
+                    android:layout_width="78dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/title_year"
+                    android:gravity="left|center"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="15dp"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="2016"
+                    android:gravity="right|center"
+                    android:layout_marginRight="10dp"
+                    android:textStyle="normal|bold"
+                    android:textSize="16dp"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 

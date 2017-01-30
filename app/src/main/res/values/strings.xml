@@ -2,11 +2,18 @@
 
     <!--Название приложение-->
     <string name="app_name">Автопарк</string>
-    <string name="app_new_car">Добавить автомобиль</string>
+    <string name="app_car_new">Добавить автомобиль</string>
 
     <string name="main_action_search">Поиск</string>
     <string name="main_drawer_open">Открыт</string>
     <string name="main_drawer_close">Закрыт</string>
+
+    <string name="title_brand">Марка</string>
+    <string name="title_brand_choose">Выберите марку</string>
+    <string name="title_model">Модель</string>
+    <string name="title_model_choose">Выберите модель</string>
+    <string name="title_year">Год</string>
+    <string name="title_year_choose">Выберите год</string>
 
     <string name="nav_item_home">Home</string>
     <string name="nav_item_friends">Friends</string>

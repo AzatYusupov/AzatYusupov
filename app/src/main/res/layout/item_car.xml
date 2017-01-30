@@ -10,7 +10,8 @@
     android:layout_marginBottom="4dp"
     android:elevation="@dimen/cardview_default_elevation"
     app:pressedTranslationZ="12dp"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -26,7 +27,8 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_width="20dp"
-            android:layout_height="30dp" />
+            android:layout_height="30dp"
+            />
 
         <ImageView
         android:id="@+id/item_car_thumbnail"
@@ -65,16 +67,6 @@
                 />
 
         </LinearLayout>
-
-        <!--<ImageView-->
-            <!--android:id="@+id/overflow"-->
-            <!--android:layout_width="@dimen/ic_album_overflow_width"-->
-            <!--android:layout_height="@dimen/ic_album_overflow_height"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_below="@id/thumbnail"-->
-            <!--android:layout_marginTop="@dimen/ic_album_overflow_margin_top"-->
-            <!--android:scaleType="centerCrop"-->
-            <!--android:src="@drawable/ic_dots" />-->
 
     </RelativeLayout>
 
