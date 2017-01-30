@@ -17,7 +17,7 @@ import android.view.View;
 
 import com.usupov.autopark.R;
 import com.usupov.autopark.adapter.CarsListAdapter;
-import com.usupov.autopark.model.CarsListModel;
+import com.usupov.autopark.model.CarModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,45 +54,44 @@ public class MainActivity extends AppCompatActivity {
     private void initCarsList() {
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list_car);
-        //recyclerView.setNestedScrollingEnabled(false);
 
-        List<CarsListModel> carList = new ArrayList<CarsListModel>();
-        carList.add(new CarsListModel(
+        List<CarModel> carList = new ArrayList<>();
+        carList.add(new CarModel(
                 "http://img.autobytel.com/car-reviews/autobytel/11694-good-looking-sports-cars/2016-Ford-Mustang-GT-burnout-red-tire-smoke.jpg",
                 "Ford Focus III, 2012",
                 "1.6 AMT (125 л.с) бензин, передний привод, хэтчбек 5 дв."
         ));
-        carList.add(new CarsListModel(
+        carList.add(new CarModel(
                 "http://img.autobytel.com/car-reviews/autobytel/11694-good-looking-sports-cars/2016-Ford-Mustang-GT-burnout-red-tire-smoke.jpg",
                 "Hyundai Coupe II (GK)",
                 "2.0 AT (150 л.с) бензин, задний привод, хэтчбек 5 дв."
         ));
-        carList.add(new CarsListModel(
+        carList.add(new CarModel(
                 "http://img.autobytel.com/car-reviews/autobytel/11694-good-looking-sports-cars/2016-Ford-Mustang-GT-burnout-red-tire-smoke.jpg",
                 "ИЖ 2717",
                 "1.6 МТ (73 л.с.) бензин, задний привод, фургон"
         ));
-        carList.add(new CarsListModel(
+        carList.add(new CarModel(
                 "http://img.autobytel.com/car-reviews/autobytel/11694-good-looking-sports-cars/2016-Ford-Mustang-GT-burnout-red-tire-smoke.jpg",
                 "Mitsubishi Outlander III",
                 "2.0 AT (146 л.с) бензин, передний привод, внедорожник 5 дв."
         ));
-        carList.add(new CarsListModel(
+        carList.add(new CarModel(
                 "http://img.autobytel.com/car-reviews/autobytel/11694-good-looking-sports-cars/2016-Ford-Mustang-GT-burnout-red-tire-smoke.jpg",
                 "Ford Focus III, 2012",
                 "1.6 AMT (125 л.с) бензин, передний привод, хэтчбек 5 дв."
         ));
-        carList.add(new CarsListModel(
+        carList.add(new CarModel(
                 "http://img.autobytel.com/car-reviews/autobytel/11694-good-looking-sports-cars/2016-Ford-Mustang-GT-burnout-red-tire-smoke.jpg",
                 "Hyundai Coupe II (GK)",
                 "2.0 AT (150 л.с) бензин, задний привод, хэтчбек 5 дв."
         ));
-        carList.add(new CarsListModel(
+        carList.add(new CarModel(
                 "http://img.autobytel.com/car-reviews/autobytel/11694-good-looking-sports-cars/2016-Ford-Mustang-GT-burnout-red-tire-smoke.jpg",
                 "ИЖ 2717",
                 "1.6 МТ (73 л.с.) бензин, задний привод, фургон"
         ));
-        carList.add(new CarsListModel(
+        carList.add(new CarModel(
                 "http://img.autobytel.com/car-reviews/autobytel/11694-good-looking-sports-cars/2016-Ford-Mustang-GT-burnout-red-tire-smoke.jpg",
                 "Mitsubishi Outlander III",
                 "2.0 AT (146 л.с) бензин, передний привод, внедорожник 5 дв."
@@ -102,60 +101,10 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(mLayoutManager);
-        //recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
 
-//        ListView carsListView = (ListView) findViewById(R.id.main_cars_list);
-//
-//        /*List<String> list = new ArrayList<String>();
-//        list.add("Car 1");
-//        list.add("Car 2");*/
-//
-//        List<CarsListModel> list = new ArrayList<CarsListModel>();
-//        list.add(new CarsListModel(
-//                "http://img.autobytel.com/car-reviews/autobytel/11694-good-looking-sports-cars/2016-Ford-Mustang-GT-burnout-red-tire-smoke.jpg",
-//                "Ford Focus III, 2012",
-//                "1.6 AMT (125 л.с) бензин, передний привод, хэтчбек 5 дв."
-//        ));
-//        list.add(new CarsListModel(
-//                "http://img.autobytel.com/car-reviews/autobytel/11694-good-looking-sports-cars/2016-Ford-Mustang-GT-burnout-red-tire-smoke.jpg",
-//                "Hyundai Coupe II (GK)",
-//                "2.0 AT (150 л.с) бензин, задний привод, хэтчбек 5 дв."
-//        ));
-//        list.add(new CarsListModel(
-//                "http://img.autobytel.com/car-reviews/autobytel/11694-good-looking-sports-cars/2016-Ford-Mustang-GT-burnout-red-tire-smoke.jpg",
-//                "ИЖ 2717",
-//                "1.6 МТ (73 л.с.) бензин, задний привод, фургон"
-//        ));
-//        list.add(new CarsListModel(
-//                "http://img.autobytel.com/car-reviews/autobytel/11694-good-looking-sports-cars/2016-Ford-Mustang-GT-burnout-red-tire-smoke.jpg",
-//                "Mitsubishi Outlander III",
-//                "2.0 AT (146 л.с) бензин, передний привод, внедорожник 5 дв."
-//        ));
-//        list.add(new CarsListModel(
-//                "http://img.autobytel.com/car-reviews/autobytel/11694-good-looking-sports-cars/2016-Ford-Mustang-GT-burnout-red-tire-smoke.jpg",
-//                "Ford Focus III, 2012",
-//                "1.6 AMT (125 л.с) бензин, передний привод, хэтчбек 5 дв."
-//        ));
-//        list.add(new CarsListModel(
-//                "http://img.autobytel.com/car-reviews/autobytel/11694-good-looking-sports-cars/2016-Ford-Mustang-GT-burnout-red-tire-smoke.jpg",
-//                "Hyundai Coupe II (GK)",
-//                "2.0 AT (150 л.с) бензин, задний привод, хэтчбек 5 дв."
-//        ));
-//        list.add(new CarsListModel(
-//                "http://img.autobytel.com/car-reviews/autobytel/11694-good-looking-sports-cars/2016-Ford-Mustang-GT-burnout-red-tire-smoke.jpg",
-//                "ИЖ 2717",
-//                "1.6 МТ (73 л.с.) бензин, задний привод, фургон"
-//        ));
-//        list.add(new CarsListModel(
-//                "http://img.autobytel.com/car-reviews/autobytel/11694-good-looking-sports-cars/2016-Ford-Mustang-GT-burnout-red-tire-smoke.jpg",
-//                "Mitsubishi Outlander III",
-//                "2.0 AT (146 л.с) бензин, передний привод, внедорожник 5 дв."
-//        ));
-//
-//        CarsListAdapter carsListAdapter = new CarsListAdapter(this, list);
-//        carsListView.setAdapter(carsListAdapter);
+        recyclerView.setNestedScrollingEnabled(false);
 
     }
 
@@ -165,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         fabNewCar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(v.getContext(), NewCarActivity.class));
+                startActivity(new Intent(v.getContext(), CarNewActivity.class));
             }
         });
 

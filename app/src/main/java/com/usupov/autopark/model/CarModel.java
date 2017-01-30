@@ -1,10 +1,10 @@
 package com.usupov.autopark.model;
 
-public class CarsListModel {
+public class CarModel {
 
     private String fullName, imageUrl, description;
 
-    public CarsListModel(String imageUrl, String fullName, String description) {
+    public CarModel(String imageUrl, String fullName, String description) {
         this.imageUrl = imageUrl;
         this.fullName = fullName;
         this.description = description;

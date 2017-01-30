@@ -8,20 +8,18 @@
     android:background="@color/windowBackground"
     android:fitsSystemWindows="true"
 
-    tools:context=".activity.NewCarActivity">
+    tools:context=".activity.CarNewActivity">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/windowBackground"
-        android:layout_margin="10dp"
-        android:layout_marginTop="20dp"
         >
 
        <include
             android:id="@+id/toolbar_new_car"
-            layout="@layout/toolbar_new_car"
+            layout="@layout/toolbar_car_new"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -29,9 +27,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:ems="10"
+            android:ems="@android:integer/config_longAnimTime"
             android:id="@+id/edittext_vin_number"
             android:padding="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
             android:elevation="8dp"
             android:hint="VIN номер"
             android:background="@color/colorWhite"

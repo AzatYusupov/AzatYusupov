@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -16,7 +15,7 @@ import com.usupov.autopark.R;
 
 import java.util.ArrayList;
 
-public class NewCarActivity  extends AppCompatActivity {
+public class CarNewActivity extends AppCompatActivity {
 
     protected static final int RESULT_SPEECH = 1;
 
@@ -24,12 +23,30 @@ public class NewCarActivity  extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_car);
+        setContentView(R.layout.activity_car_new);
 
         initToolbar();
 
+        initVoiceBtn();
+
+
+    }
+
+    /**
+     * Initial toolbar
+     */
+    private void initToolbar() {
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_car_new);
+        setSupportActionBar(toolbar);
+
+    }
+
+    private void initVoiceBtn() {
+
         final EditText edt = (EditText) findViewById(R.id.edittext_vin_number);
         edt.setOnTouchListener(new View.OnTouchListener() {
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
@@ -39,6 +56,7 @@ public class NewCarActivity  extends AppCompatActivity {
                 final int DRAWABLE_BOTTOM = 3;
 
                 if(event.getAction() == MotionEvent.ACTION_UP) {
+
                     if(event.getRawX() >= (edt.getRight() - edt.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
 
                         Intent intent = new Intent(
@@ -57,20 +75,14 @@ public class NewCarActivity  extends AppCompatActivity {
                         }
 
                         return true;
+
                     }
+
                 }
+
                 return false;
             }
         });
-
-    }
-    /**
-     * Initial toolbar
-     */
-    private void initToolbar() {
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_new_car);
-        setSupportActionBar(toolbar);
 
     }
 
