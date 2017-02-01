@@ -1,68 +1,175 @@
 package com.usupov.autopark.activity;
 
+import android.app.ActionBar;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.usupov.autopark.R;
+import com.usupov.autopark.model.CarFoundModel;
+
+import java.io.File;
+import java.util.Date;
 
 /**
  * Created by Azat on 31.01.2017.
  */
 
 public class CarFoundActivity extends AppCompatActivity{
-    static class Car {
-        String carName;
-        String vinNumber;
-        String engine;
-        String issue_year;
-        String carcase;
-        String drive_unit;
-        String kpp;
-        public Car(String carName, String vinNumber, String engine, String issue_year, String  carcase, String drive_unit, String kpp) {
-            this.carName = carName;
-            this.vinNumber = vinNumber;
-            this.engine = engine;
-            this.issue_year = issue_year;
-            this.carcase = carcase;
-            this.drive_unit = drive_unit;
-            this.kpp = kpp;
-        }
-    }
 
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_found);
 
-        setCarInforms(new Car("Audi A5 Рестайлинг 2.0 МТ, 211 л.с 4WD", "1234567891011121", "2015", "2.0/211 л.с./ Бензин", "Купе", "Полный", "Механическая"));
+        setCarInforms(new CarFoundModel("Audi A5 Рестайлинг 2.0 МТ, 211 л.с 4WD", "1234567891011121", "2.0/211 л.с./ Бензин", 2015, "Купе", "Полный", "Механическая"));
 
         initToolbar();
 
     }
 
-    private void setCarInforms(Car car) {
+    public void onClickClose(View v) {
+        Toast toast = Toast.makeText(getApplicationContext(),
+                "Clicked!", Toast.LENGTH_SHORT);
+        toast.show();
+
+        ImageView closeCarPhoto = (ImageView) findViewById(R.id.closeCarPhoto);
+        closeCarPhoto.setVisibility(View.INVISIBLE);
+
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.photoCarField);
+        layout.getLayoutParams().height = 0;
+        layout.setVisibility(View.INVISIBLE);
+        ivPhotoCar = (ImageView) findViewById(R.id.ivPhotoCar);
+        ivPhotoCar.getLayoutParams().height = 0;
+        ivPhotoCar.setVisibility(View.INVISIBLE);
+    }
+  //  File directory;
+    final int TYPE_PHOTO = 1;
+    final int TYPE_VIDEO = 2;
+
+    final int REQUEST_CODE_PHOTO = 1;
+    final int REQUEST_CODE_VIDEO = 2;
+    final String TAG = "myLogs";
+
+    ImageView ivPhotoCar;
+
+    public void onClickPhoto(View view) {
+      //  createDirectory();
+        ivPhotoCar = (ImageView) findViewById(R.id.ivPhotoCar);
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+       // intent.putExtra(MediaStore.EXTRA_OUTPUT, generateFileUri(TYPE_PHOTO));
+        startActivityForResult(intent, REQUEST_CODE_PHOTO);
+
+    }
+
+    public void onClickVideo(View view) {
+        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+      //  intent.putExtra(MediaStore.EXTRA_OUTPUT, generateFileUri(TYPE_VIDEO));
+        startActivityForResult(intent, REQUEST_CODE_VIDEO);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent intent) {
+        if (requestCode == REQUEST_CODE_PHOTO) {
+            if (resultCode == RESULT_OK) {
+                if (intent == null) {
+                    Log.d(TAG, "Intent is null");
+                } else {
+                    Log.d(TAG, "Photo uri: " + intent.getData());
+                    Bundle bndl = intent.getExtras();
+                    if (bndl != null) {
+                        Object obj = intent.getExtras().get("data");
+                        if (obj instanceof Bitmap) {
+                            Bitmap bitmap = (Bitmap) obj;
+                            Log.d(TAG, "bitmap " + bitmap.getWidth() + " x "
+                                    + bitmap.getHeight());
+                            ivPhotoCar.setImageBitmap(bitmap);
+                            ImageView closeCarPhoto = (ImageView) findViewById(R.id.closeCarPhoto);
+                            closeCarPhoto.setVisibility(View.VISIBLE);
+
+                            RelativeLayout layout = (RelativeLayout) findViewById(R.id.photoCarField);
+                            layout.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+                        }
+                    }
+                }
+            } else if (resultCode == RESULT_CANCELED) {
+                Log.d(TAG, "Canceled");
+            }
+        }
+
+        if (requestCode == REQUEST_CODE_VIDEO) {
+            if (resultCode == RESULT_OK) {
+                if (intent == null) {
+                    Log.d(TAG, "Intent is null");
+                } else {
+                    Log.d(TAG, "Video uri: " + intent.getData());
+                }
+            } else if (resultCode == RESULT_CANCELED) {
+                Log.d(TAG, "Canceled");
+            }
+        }
+    }
+/*
+    private Uri generateFileUri(int type) {
+        File file = null;
+        switch (type) {
+            case TYPE_PHOTO:
+                file = new File(directory.getPath() + "/" + "photo_"
+                        + (new Date().getTime()) + ".jpg");
+                break;
+            case TYPE_VIDEO:
+                file = new File(directory.getPath() + "/" + "video_"
+                        + (new Date().getTime()) + ".mp4");
+                break;
+        }
+        Log.d(TAG, "fileName = " + file);
+        return Uri.fromFile(file);
+    }
+/*
+    private void createDirectory() {
+        directory = new File(
+                Environment
+                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                "MyFolder");
+        if (!directory.exists())
+            directory.mkdirs();
+    }
+*/
+    private void setCarInforms(CarFoundModel car) {
         TextView carName = (TextView) findViewById(R.id.car_name);
-        carName.setText(car.carName);
+        carName.setText(car.getCarName());
 
         TextView vinNumber = (TextView) findViewById(R.id.vin_number);
-        vinNumber.setText(car.vinNumber);
+        vinNumber.setText(car.getVinNumber());
 
         TextView engine = (TextView) findViewById(R.id.engine);
-        engine.setText(car.engine);
+        engine.setText(car.getEngine());
 
         TextView issueYear = (TextView) findViewById(R.id.issue_year);
-        issueYear.setText(car.issue_year);
+        issueYear.setText(car.getIssue_year()+"");
 
         TextView carcase = (TextView) findViewById(R.id.carcase);
-        carcase.setText(car.carcase);
+        carcase.setText(car.getCarcase());
 
         TextView driveUnit = (TextView) findViewById(R.id.drive_unit);
-        driveUnit.setText(car.drive_unit);
+        driveUnit.setText(car.getDrive_unit());
 
         TextView KPP = (TextView) findViewById(R.id.kpp);
-        KPP.setText(car.kpp);
+        KPP.setText(car.getKpp());
 
     }
 
