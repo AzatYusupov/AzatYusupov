@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 "ИЖ 2717",
                 "1.6 МТ (73 л.с.) бензин, задний привод, фургон"
         ));
+
         carList.add(new CarModel(
                 "http://img.autobytel.com/car-reviews/autobytel/11694-good-looking-sports-cars/2016-Ford-Mustang-GT-burnout-red-tire-smoke.jpg",
                 "Mitsubishi Outlander III",
@@ -97,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 "2.0 AT (146 л.с) бензин, передний привод, внедорожник 5 дв."
         ));
 
+
         CarsListAdapter adapter = new CarsListAdapter(this, carList);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
@@ -104,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
 
-        recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.setNestedScrollingEnabled(true);
 
     }
 
