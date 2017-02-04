@@ -21,15 +21,14 @@
             android:layout_height="wrap_content" />
 
         <android.support.v4.widget.NestedScrollView
+            android:fitsSystemWindows="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/darker_gray"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
+            android:background="@android:color/darker_gray">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:descendantFocusability="blocksDescendants"
                 android:orientation="vertical"
                 >
 
@@ -50,14 +49,13 @@
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/list_car"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:overScrollMode="never"
                     />
 
             </LinearLayout>
-
-        </android.support.v4.widget.NestedScrollView>
+         </android.support.v4.widget.NestedScrollView>
 
     </LinearLayout>
 
