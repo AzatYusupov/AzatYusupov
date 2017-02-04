@@ -44,7 +44,7 @@ public class CarFoundActivity extends AppCompatActivity{
     public void onClickClose(View v) {
 
         Toast toast = Toast.makeText(getApplicationContext(),
-                "Clicked!", Toast.LENGTH_SHORT);
+                "Удалено!", Toast.LENGTH_SHORT);
         toast.show();
 
         ImageView closeCarPhoto = (ImageView) findViewById(R.id.closeCarPhoto);
