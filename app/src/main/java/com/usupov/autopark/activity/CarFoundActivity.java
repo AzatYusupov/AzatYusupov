@@ -3,11 +3,14 @@ package com.usupov.autopark.activity;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.media.Image;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -51,10 +54,10 @@ public class CarFoundActivity extends AppCompatActivity{
         closeCarPhoto.setVisibility(View.INVISIBLE);
 
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.photoCarField);
-        layout.getLayoutParams().height = 0;
+       // layout.getLayoutParams().height = 0;
         layout.setVisibility(View.INVISIBLE);
         ivPhotoCar = (ImageView) findViewById(R.id.ivPhotoCar);
-        ivPhotoCar.getLayoutParams().height = 0;
+        //ivPhotoCar.getLayoutParams().height = 0;
         ivPhotoCar.setVisibility(View.INVISIBLE);
 
     }
@@ -83,6 +86,24 @@ public class CarFoundActivity extends AppCompatActivity{
         startActivityForResult(intent, REQUEST_CODE_VIDEO);
     }
 
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 
@@ -104,12 +125,17 @@ public class CarFoundActivity extends AppCompatActivity{
                             Bitmap bitmap = (Bitmap) obj;
                             Log.d(TAG, "bitmap " + bitmap.getWidth() + " x "
                                     + bitmap.getHeight());
+                            //bitmap = getResizedBitmap(bitmap, 300, 200);
+
                             ivPhotoCar.setImageBitmap(bitmap);
                             ImageView closeCarPhoto = (ImageView) findViewById(R.id.closeCarPhoto);
                             closeCarPhoto.setVisibility(View.VISIBLE);
 
                             RelativeLayout layout = (RelativeLayout) findViewById(R.id.photoCarField);
                             layout.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+
+                            layout.setVisibility(View.VISIBLE);
+                            ivPhotoCar.setVisibility(View.VISIBLE);
                         }
                     }
                 }
