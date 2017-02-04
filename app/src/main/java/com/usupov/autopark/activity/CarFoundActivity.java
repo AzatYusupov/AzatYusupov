@@ -42,6 +42,7 @@ public class CarFoundActivity extends AppCompatActivity{
     }
 
     public void onClickClose(View v) {
+
         Toast toast = Toast.makeText(getApplicationContext(),
                 "Удалено!", Toast.LENGTH_SHORT);
         toast.show();
@@ -55,6 +56,7 @@ public class CarFoundActivity extends AppCompatActivity{
         ivPhotoCar = (ImageView) findViewById(R.id.ivPhotoCar);
         ivPhotoCar.getLayoutParams().height = 0;
         ivPhotoCar.setVisibility(View.INVISIBLE);
+
     }
   //  File directory;
     final int TYPE_PHOTO = 1;
@@ -82,13 +84,18 @@ public class CarFoundActivity extends AppCompatActivity{
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode,
-                                    Intent intent) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+
         if (requestCode == REQUEST_CODE_PHOTO) {
+
             if (resultCode == RESULT_OK) {
+
                 if (intent == null) {
+
                     Log.d(TAG, "Intent is null");
+
                 } else {
+
                     Log.d(TAG, "Photo uri: " + intent.getData());
                     Bundle bndl = intent.getExtras();
                     if (bndl != null) {
@@ -107,12 +114,17 @@ public class CarFoundActivity extends AppCompatActivity{
                     }
                 }
             } else if (resultCode == RESULT_CANCELED) {
+
                 Log.d(TAG, "Canceled");
+
             }
+
         }
 
         if (requestCode == REQUEST_CODE_VIDEO) {
+
             if (resultCode == RESULT_OK) {
+
                 if (intent == null) {
                     Log.d(TAG, "Intent is null");
                 } else {
@@ -150,6 +162,7 @@ public class CarFoundActivity extends AppCompatActivity{
     }
 */
     private void setCarInforms(CarFoundModel car) {
+
         TextView carName = (TextView) findViewById(R.id.car_name);
         carName.setText(car.getCarName());
 
@@ -175,7 +188,9 @@ public class CarFoundActivity extends AppCompatActivity{
 
 
     private void initToolbar() {
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_car_found);
         setSupportActionBar(toolbar);
+
     }
 }
