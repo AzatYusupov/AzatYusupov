@@ -1,21 +1,25 @@
 package com.usupov.autopark.activity;
 
-import android.app.ActionBar;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.media.Image;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -24,25 +28,22 @@ import android.widget.Toast;
 import com.usupov.autopark.R;
 import com.usupov.autopark.model.CarFoundModel;
 
-import java.io.File;
-import java.util.Date;
 
-/**
- * Created by Azat on 31.01.2017.
- */
+public class CarFoundActivity extends AppCompatActivity {
 
-public class CarFoundActivity extends AppCompatActivity{
+    public static final int TAKE_PICTURE_REQUEST_B = 100;
 
-    protected void onCreate(Bundle savedInstanceState) {
+    private ImageView mCameraImageView;
+    private Bitmap mCameraBitmap;
+    private Button mSaveImageButton;
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_car_found);
 
-        setCarInforms(new CarFoundModel("Audi A5 Рестайлинг 2.0 МТ, 211 л.с 4WD", "1234567891011121", "2.0/211 л.с./ Бензин", 2015, "Купе", "Полный", "Механическая"));
-
-        initToolbar();
-
-    }
+    private OnClickListener mCaptureImageButtonClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            startImageCapture();
+        }
+    };
 
     public void onClickClose(View v) {
 
@@ -54,38 +55,123 @@ public class CarFoundActivity extends AppCompatActivity{
         closeCarPhoto.setVisibility(View.INVISIBLE);
 
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.photoCarField);
-       // layout.getLayoutParams().height = 0;
+        // layout.getLayoutParams().height = 0;
         layout.setVisibility(View.INVISIBLE);
-        ivPhotoCar = (ImageView) findViewById(R.id.ivPhotoCar);
+
         //ivPhotoCar.getLayoutParams().height = 0;
-        ivPhotoCar.setVisibility(View.INVISIBLE);
+        mCameraImageView.setVisibility(View.INVISIBLE);
 
     }
-  //  File directory;
-    final int TYPE_PHOTO = 1;
-    final int TYPE_VIDEO = 2;
+    private OnClickListener mSaveImageButtonClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            File saveFile = openFileForImage();
+            if (saveFile != null) {
+                saveImageToFile(saveFile);
+            } else {
+                Toast.makeText(CarFoundActivity.this, "Unable to open file for saving image.",
+                        Toast.LENGTH_LONG).show();
+            }
+        }
+    };
 
-    final int REQUEST_CODE_PHOTO = 1;
-    final int REQUEST_CODE_VIDEO = 2;
-    final String TAG = "myLogs";
 
-    ImageView ivPhotoCar;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_car_found);
 
-    public void onClickPhoto(View view) {
-      //  createDirectory();
-        ivPhotoCar = (ImageView) findViewById(R.id.ivPhotoCar);
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-       // intent.putExtra(MediaStore.EXTRA_OUTPUT, generateFileUri(TYPE_PHOTO));
-        startActivityForResult(intent, REQUEST_CODE_PHOTO);
+        setCarInforms(new CarFoundModel("Audi A5 Рестайлинг 2.0 МТ, 211 л.с 4WD", "1234567891011121", "2.0/211 л.с./ Бензин", 2015, "Купе", "Полный", "Механическая"));
 
+        initToolbar();
+        mCameraImageView = (ImageView) findViewById(R.id.ivPhotoCar);
+
+
+//        Intent intent = getIntent();
+//        if (intent.getByteArrayExtra(CameraActivity.EXTRA_CAMERA_DATA) != null) {
+//            Toast.makeText(CarFoundActivity.this, "Ok", Toast.LENGTH_LONG)
+//                    .show();
+//            byte[] mCameraData = intent.getByteArrayExtra(CameraActivity.EXTRA_CAMERA_DATA);
+//            Bitmap bitmap = BitmapFactory.decodeByteArray(mCameraData, 0, mCameraData.length);
+////            mCameraImageView.setImageBitmap(bitmap);
+//        }
+
+
+
+        findViewById(R.id.btnPhotoCar).setOnClickListener(mCaptureImageButtonClickListener);
+
+//        mSaveImageButton = (Button) findViewById(R.id.save_image_button);
+//
+//        mSaveImageButton.setOnClickListener(mSaveImageButtonClickListener);
+//        mSaveImageButton.setEnabled(false);
     }
 
-    public void onClickVideo(View view) {
-        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-      //  intent.putExtra(MediaStore.EXTRA_OUTPUT, generateFileUri(TYPE_VIDEO));
-        startActivityForResult(intent, REQUEST_CODE_VIDEO);
-    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Toast.makeText(CarFoundActivity.this, "Камера", Toast.LENGTH_LONG)
+                    .show();
 
+        if (requestCode == TAKE_PICTURE_REQUEST_B) {
+            if (resultCode == RESULT_OK) {
+
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+                // Recycle the previous bitmap.
+                if (mCameraBitmap != null) {
+                    mCameraBitmap.recycle();
+                    mCameraBitmap = null;
+                }
+                Bundle extras = data.getExtras();
+
+                String imagePath = extras.getString(CameraActivity.EXTRA_CAMERA_DATA);
+                if (imagePath != null && !imagePath.equals("")) {
+                    int targetW = mCameraImageView.getWidth();
+                    int targetH = mCameraImageView.getHeight();
+
+                    // Get the dimensions of the bitmap
+                    BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                    bmOptions.inJustDecodeBounds = true;
+                    BitmapFactory.decodeFile(imagePath, bmOptions);
+                    int photoW = bmOptions.outWidth;
+                    int photoH = bmOptions.outHeight;
+
+                    // Determine how much to scale down the image
+                    int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+
+                    // Decode the image file into a Bitmap sized to fill the View
+                    bmOptions.inJustDecodeBounds = false;
+                    bmOptions.inSampleSize = scaleFactor;
+                    bmOptions.inPurgeable = true;
+
+                    Bitmap bitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
+                    mCameraImageView.setImageBitmap(bitmap);
+
+//                    Matrix matrix = new Matrix();
+//                    matrix.postRotate(90);
+//
+//                    Bitmap scaledBitmap = Bitmap.createScaledBitmap(mCameraBitmap, mCameraBitmap.getWidth(), mCameraBitmap.getHeight(),true);
+//                    mCameraBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap .getWidth(), scaledBitmap .getHeight(), matrix, true);
+//                    mCameraBitmap = getResizedBitmap(mCameraBitmap, mCameraBitmap.getWidth()/2, mCameraBitmap.getHeight()/2);
+//                    mCameraImageView.setImageBitmap(mCameraBitmap);
+////                    mSaveImageButton.setEnabled(true);
+//                    mCameraImageView.setImageBitmap(mCameraBitmap);
+                    ImageView closeCarPhoto = (ImageView) findViewById(R.id.closeCarPhoto);
+                    closeCarPhoto.setVisibility(View.VISIBLE);
+
+                    RelativeLayout layout = (RelativeLayout) findViewById(R.id.photoCarField);
+                    layout.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+
+                    layout.setVisibility(View.VISIBLE);
+                    mCameraImageView.setVisibility(View.VISIBLE);
+                }
+            } else {
+                mCameraBitmap = null;
+                mSaveImageButton.setEnabled(false);
+            }
+        }
+
+    }
     public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
         int width = bm.getWidth();
         int height = bm.getHeight();
@@ -103,90 +189,50 @@ public class CarFoundActivity extends AppCompatActivity{
         return resizedBitmap;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    private void startImageCapture() {
+        startActivityForResult(new Intent(CarFoundActivity.this, CameraActivity.class), TAKE_PICTURE_REQUEST_B);
+    }
 
-        if (requestCode == REQUEST_CODE_PHOTO) {
+    private File openFileForImage() {
+        File imageDirectory = null;
+        String storageState = Environment.getExternalStorageState();
+        if (storageState.equals(Environment.MEDIA_MOUNTED)) {
+            imageDirectory = new File(
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                    "com.o0reillyschool.android2.camera");
+            if (!imageDirectory.exists() && !imageDirectory.mkdirs()) {
+                imageDirectory = null;
+            } else {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_mm_dd_hh_mm",
+                        Locale.getDefault());
 
-            if (resultCode == RESULT_OK) {
-
-                if (intent == null) {
-
-                    Log.d(TAG, "Intent is null");
-
-                } else {
-
-                    Log.d(TAG, "Photo uri: " + intent.getData());
-                    Bundle bndl = intent.getExtras();
-                    if (bndl != null) {
-                        Object obj = intent.getExtras().get("data");
-                        if (obj instanceof Bitmap) {
-                            Bitmap bitmap = (Bitmap) obj;
-                            Log.d(TAG, "bitmap " + bitmap.getWidth() + " x "
-                                    + bitmap.getHeight());
-                            //bitmap = getResizedBitmap(bitmap, 300, 200);
-
-                            ivPhotoCar.setImageBitmap(bitmap);
-                            ImageView closeCarPhoto = (ImageView) findViewById(R.id.closeCarPhoto);
-                            closeCarPhoto.setVisibility(View.VISIBLE);
-
-                            RelativeLayout layout = (RelativeLayout) findViewById(R.id.photoCarField);
-                            layout.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
-
-                            layout.setVisibility(View.VISIBLE);
-                            ivPhotoCar.setVisibility(View.VISIBLE);
-                        }
-                    }
-                }
-            } else if (resultCode == RESULT_CANCELED) {
-
-                Log.d(TAG, "Canceled");
-
+                return new File(imageDirectory.getPath() +
+                        File.separator + "image_" +
+                        dateFormat.format(new Date()) + ".png");
             }
-
         }
+        return null;
+    }
 
-        if (requestCode == REQUEST_CODE_VIDEO) {
-
-            if (resultCode == RESULT_OK) {
-
-                if (intent == null) {
-                    Log.d(TAG, "Intent is null");
+    private void saveImageToFile(File file) {
+        if (mCameraBitmap != null) {
+            FileOutputStream outStream = null;
+            try {
+                outStream = new FileOutputStream(file);
+                if (!mCameraBitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream)) {
+                    Toast.makeText(CarFoundActivity.this, "Unable to save image to file.",
+                            Toast.LENGTH_LONG).show();
                 } else {
-                    Log.d(TAG, "Video uri: " + intent.getData());
+                    Toast.makeText(CarFoundActivity.this, "Saved image to: " + file.getPath(),
+                            Toast.LENGTH_LONG).show();
                 }
-            } else if (resultCode == RESULT_CANCELED) {
-                Log.d(TAG, "Canceled");
+                outStream.close();
+            } catch (Exception e) {
+                Toast.makeText(CarFoundActivity.this, "Unable to save image to file.",
+                        Toast.LENGTH_LONG).show();
             }
         }
     }
-/*
-    private Uri generateFileUri(int type) {
-        File file = null;
-        switch (type) {
-            case TYPE_PHOTO:
-                file = new File(directory.getPath() + "/" + "photo_"
-                        + (new Date().getTime()) + ".jpg");
-                break;
-            case TYPE_VIDEO:
-                file = new File(directory.getPath() + "/" + "video_"
-                        + (new Date().getTime()) + ".mp4");
-                break;
-        }
-        Log.d(TAG, "fileName = " + file);
-        return Uri.fromFile(file);
-    }
-/*
-    private void createDirectory() {
-        directory = new File(
-                Environment
-                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                "MyFolder");
-        if (!directory.exists())
-            directory.mkdirs();
-    }
-*/
     private void setCarInforms(CarFoundModel car) {
 
         TextView carName = (TextView) findViewById(R.id.car_name);
@@ -211,12 +257,8 @@ public class CarFoundActivity extends AppCompatActivity{
         KPP.setText(car.getKpp());
 
     }
-
-
     private void initToolbar() {
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_car_found);
         setSupportActionBar(toolbar);
-
     }
 }

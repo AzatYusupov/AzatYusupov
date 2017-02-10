@@ -30,4 +30,12 @@
     <string name="title_friends">Friends</string>
     <string name="title_home">Home</string>
 
+    <!-- Camera-->
+    <string name="start_image_capture">Новое фото</string>
+    <string name="capture_image">Фотографировать</string>
+    <string name="save_image">Сохранить рисунку</string>
+    <string name="recapture_image">Фотографировать сначала</string>
+    <string name="capturing_image">Фотографировать новую картинку</string>
+    <string name="done">Done</string>
+
 </resources>
