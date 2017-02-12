@@ -15,8 +15,12 @@
         />
 
     <FrameLayout
+        android:id="@+id/cameraFrame"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+
+        android:layout_height="wrap_content"
+
+        android:focusableInTouchMode="true"
         android:layout_weight="15">
 
         <ImageView
@@ -26,6 +30,7 @@
         <SurfaceView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:focusableInTouchMode="true"
             android:id="@+id/preview_view"/>
     </FrameLayout>
 
@@ -46,6 +51,7 @@
             android:layout_centerVertical="true"
             android:src="@drawable/ic_action_do_photo"/>
         <ImageView
+            android:id="@+id/cancel_image_button"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:clickable="true"

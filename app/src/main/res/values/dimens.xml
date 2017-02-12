@@ -2,4 +2,6 @@
 <resources>
     <dimen name="btn_fab_size">56dp</dimen>
     <dimen name="btn_fab_margins">16dp</dimen>
+
+    <dimen name="fab_size_mini">60dp</dimen>
 </resources>

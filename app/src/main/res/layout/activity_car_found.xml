@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".activity.CarFoundActivity">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,6 +18,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,28 +32,19 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="10sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="7"
                     android:id="@+id/car_name"
                     android:textSize="20sp"
                     android:textColor="@color/colorPrimary"
                     android:text="" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="" />
 
-                <android.support.design.widget.FloatingActionButton
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/btnPhotoCar"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:layout_gravity="top|right"
-                    android:layout_marginTop="-20dp"
-                    android:layout_marginRight="16dp"
-                    android:onClick="onClickPhoto"
-                    android:src="@drawable/ic_action_camera"
-                    android:backgroundTint="#C7CCF0"
-                    app:borderWidth="0dp"
-
-                    />
             </LinearLayout>
 
             <RelativeLayout
@@ -185,8 +181,9 @@
             </LinearLayout>
 
         </LinearLayout>
-
+        </ScrollView>
     </LinearLayout>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -200,4 +197,19 @@
             android:textColor="@color/colorWhite"
             />
     </FrameLayout>
+    <android.support.design.widget.FloatingActionButton
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/btnPhotoCar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="16dp"
+        android:onClick="onClickPhoto"
+        android:src="@drawable/ic_action_camera"
+        android:backgroundTint="#C7CCF0"
+        app:fabSize="normal"
+        android:scaleType="center"
+        app:borderWidth="0dp" />
+
 </RelativeLayout>
