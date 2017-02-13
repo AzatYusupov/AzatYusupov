@@ -8,12 +8,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.Policy;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +41,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -58,7 +62,7 @@ public class CameraActivity extends AppCompatActivity implements PictureCallback
 
     private Camera mCamera;
     private ImageView mCameraImage;
-    private SurfaceView mCameraPreview;
+    public SurfaceView mCameraPreview;
     private ImageView mCaptureImageButton;
     private byte[] mCameraData;
     private boolean mIsCapturing;
@@ -110,6 +114,7 @@ public class CameraActivity extends AppCompatActivity implements PictureCallback
 
     int angle;
     ImageView saveButton, cancelButton;
+    private static int heightCameraPreview, widthCameraPreview;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,14 +153,13 @@ public class CameraActivity extends AppCompatActivity implements PictureCallback
             }};
 
         if (myOrientationEventListener.canDetectOrientation()){
-//            Toast.makeText(this, "Can DetectOrientation", Toast.LENGTH_LONG).show();
             myOrientationEventListener.enable();
         }
         else{
             Toast.makeText(this, "Can't DetectOrientation", Toast.LENGTH_LONG).show();
-//            finish();
         }
     }
+
     private Camera.Size getOptilamPreviewSize(List<Camera.Size> sizes, int w, int h) {
         final double ASPECT_TOLERANCE = 0.05;
         double targetRatio = w * 1.0 / h;
@@ -164,8 +168,11 @@ public class CameraActivity extends AppCompatActivity implements PictureCallback
         Camera.Size optimalSize = null;
         double minDiff = Double.MAX_VALUE;
         int targetH = h;
+        System.out.println("++++ "+targetRatio);
         for (Camera.Size size : sizes) {
+
             double ratio = size.width * 1.0 / size.height;
+            System.out.println(size.width+" "+size.height+" "+ratio);
             if (Math.abs(ratio-targetRatio) > ASPECT_TOLERANCE)
                 continue;
             if (Math.abs(size.height-targetH) < minDiff) {
@@ -174,6 +181,7 @@ public class CameraActivity extends AppCompatActivity implements PictureCallback
             }
         }
         if (optimalSize==null) {
+            Toast.makeText(CameraActivity.this, "NULL", Toast.LENGTH_LONG).show();
             minDiff = Double.MAX_VALUE;
             for (Camera.Size size : sizes) {
                 if (Math.abs(size.height-targetH) < minDiff) {
@@ -203,7 +211,7 @@ public class CameraActivity extends AppCompatActivity implements PictureCallback
     private String SaveImage(Bitmap finalBitmap) {
 
         String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/saved_images");
+        File myDir = new File(root + "/autopark_images");
         if (!myDir.exists())
             myDir.mkdir();
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -278,22 +286,35 @@ public class CameraActivity extends AppCompatActivity implements PictureCallback
         if (mCamera == null) {
             try {
                 mCamera = Camera.open(0);
-                Camera.Parameters params = mCamera.getParameters();
-                params.setPreviewSize(mCameraPreview.getWidth(), mCameraPreview.getHeight());
-                params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-                params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-
-                List<Camera.Size> sizes = params.getSupportedPreviewSizes();
-                Toast.makeText(CameraActivity.this, mCameraPreview.getLayoutParams().width+" "+mCameraPreview.getLayoutParams().height+" "+sizes.size(), Toast.LENGTH_LONG).show();
-                Camera.Size optimalSize = getOptilamPreviewSize(sizes, cameraFrame.getLayoutParams().width, cameraFrame.getLayoutParams().height);
-                params.setPreviewSize(getWindowManager().getDefaultDisplay().getWidth(), getWindowManager().getDefaultDisplay().getHeight()*8/10);
-
-                mCamera.setParameters(params);
+                mCamera.setDisplayOrientation(90);
+                Camera.Parameters params= mCamera.getParameters();
+                mCameraPreview.getLayoutParams().width = params.getPreviewSize().height;
+                mCameraPreview.getLayoutParams().height = params.getPreviewSize().width;
                 mCamera.setPreviewDisplay(mCameraPreview.getHolder());
+
+                params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
+                params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+
+                List<Camera.Size> sizes = params.getSupportedPictureSizes();
+                Camera.Size pictureSize = null;
+                int cnt = 0;
+                for (int i = sizes.size()-1; i >= 0; i--) {
+                    cnt++;
+                    pictureSize = sizes.get(i);
+                    if (cnt==4)
+                        break;
+                }
+                params.setPictureSize(pictureSize.width, pictureSize.height);
+                mCamera.setParameters(params);
+
+                for (Camera.Size size : sizes) {
+                    System.out.println(size.width+" "+size.height);
+                }
                 // setCameraDisplayOrientation(0);
                 if (mIsCapturing) {
                     mCamera.startPreview();
                 }
+
             } catch (Exception e) {
                 Toast.makeText(CameraActivity.this, e.getMessage()+"", Toast.LENGTH_LONG)
                         .show();
@@ -314,6 +335,7 @@ public class CameraActivity extends AppCompatActivity implements PictureCallback
     @Override
     public void onPictureTaken(byte[] data, Camera camera) {
         mCameraData = data;
+
 
         int diff0 = Math.min(360-angle, angle);
         int diff90 = Math.abs(angle-90);
@@ -373,32 +395,16 @@ public class CameraActivity extends AppCompatActivity implements PictureCallback
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder surfaceHolder, int format,
-                               int width, int height) {
-        try {
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 
-            Camera.Parameters parameters = mCamera.getParameters();
-            if (this.getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
-                parameters.set("orientation", "portrait");
-                mCamera.setDisplayOrientation(90);
-                parameters.setRotation(90);
-                mCamera.setPreviewDisplay(surfaceHolder);
-                mCamera.startPreview();
-            }
-            else {
-                parameters.set("orientation", "landscape");
-                mCamera.setDisplayOrientation(0);
-                parameters.setRotation(0);
-            }
-            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-            mCamera.setParameters(parameters);
-            mCamera.setPreviewDisplay(surfaceHolder);
-            mCamera.startPreview();
-        } catch (IOException e) {
-            // left blank for now
+        Display display = ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        if(display.getRotation() == Surface.ROTATION_0) {
+            mCamera.setDisplayOrientation(90);
+        } else if(display.getRotation() == Surface.ROTATION_270) {
+            mCamera.setDisplayOrientation(180);
         }
+
+        mCamera.startPreview();
     }
 
     private void captureImage() {
@@ -408,13 +414,11 @@ public class CameraActivity extends AppCompatActivity implements PictureCallback
     private void setupImageCapture() {
         mCameraImage.setVisibility(View.INVISIBLE);
         mCameraPreview.setVisibility(View.VISIBLE);
-        Toast.makeText(CameraActivity.this, "OOO", Toast.LENGTH_SHORT);
         mCamera.startPreview();
         mCaptureImageButton.setOnClickListener(mCaptureImageButtonClickListener);
     }
 
     private void setupImageDisplay() {
-
         Bitmap bitmap = BitmapFactory.decodeByteArray(mCameraData, 0, mCameraData.length);
         mCameraImage.setVisibility(View.VISIBLE);
 

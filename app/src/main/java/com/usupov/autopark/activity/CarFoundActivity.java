@@ -38,8 +38,6 @@ public class CarFoundActivity extends AppCompatActivity {
 
     private ImageView mCameraImageView;
     private Bitmap mCameraBitmap;
-    private Button mSaveImageButton;
-
 
     private OnClickListener mCaptureImageButtonClickListener = new OnClickListener() {
         @Override
@@ -91,24 +89,8 @@ public class CarFoundActivity extends AppCompatActivity {
         initToolbar();
         mCameraImageView = (ImageView) findViewById(R.id.ivPhotoCar);
 
-
-//        Intent intent = getIntent();
-//        if (intent.getByteArrayExtra(CameraActivity.EXTRA_CAMERA_DATA) != null) {
-//            Toast.makeText(CarFoundActivity.this, "Ok", Toast.LENGTH_LONG)
-//                    .show();
-//            byte[] mCameraData = intent.getByteArrayExtra(CameraActivity.EXTRA_CAMERA_DATA);
-//            Bitmap bitmap = BitmapFactory.decodeByteArray(mCameraData, 0, mCameraData.length);
-////            mCameraImageView.setImageBitmap(bitmap);
-//        }
-
-
-
         findViewById(R.id.btnPhotoCar).setOnClickListener(mCaptureImageButtonClickListener);
 
-//        mSaveImageButton = (Button) findViewById(R.id.save_image_button);
-//
-//        mSaveImageButton.setOnClickListener(mSaveImageButtonClickListener);
-//        mSaveImageButton.setEnabled(false);
     }
 
     @Override
@@ -168,7 +150,6 @@ public class CarFoundActivity extends AppCompatActivity {
                 }
             } else {
                 mCameraBitmap = null;
-                mSaveImageButton.setEnabled(false);
             }
         }
 

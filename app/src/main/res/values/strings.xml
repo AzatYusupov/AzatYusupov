@@ -37,5 +37,6 @@
     <string name="recapture_image">Фотографировать сначала</string>
     <string name="capturing_image">Фотографировать новую картинку</string>
     <string name="done">Done</string>
+    <string name="title_activity_part">PartActivity</string>
 
 </resources>
