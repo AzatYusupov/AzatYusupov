@@ -27,6 +27,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".activity.PartActivity"
+            android:label="@string/title_activity_part"
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".activity.CarFoundActivity"
             android:label="@string/app_car_new">
             <intent-filter>
@@ -75,10 +86,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity
-            android:name=".activity.PartActivity"
-            android:label="@string/title_activity_part"
-            android:theme="@style/AppTheme"></activity>
+
     </application>
 
 </manifest>

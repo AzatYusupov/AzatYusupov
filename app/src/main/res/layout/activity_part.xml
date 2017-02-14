@@ -10,7 +10,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
         android:orientation="vertical">
         <include
             android:id="@+id/toolbar_new_car"
@@ -18,7 +17,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
-
+        <TextView
+            android:id="@+id/part_car_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="@dimen/title_names"
+            android:textColor="@android:color/black"
+            />
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -26,71 +32,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_margin="10dp"
-                android:layout_marginBottom="100dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="10sp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="7"
-                        android:id="@+id/part_name"
-                        android:textSize="20sp"
-                        android:textColor="@color/colorPrimary"
-                        android:text="Рычаг подвески, передний левый" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:text="" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:id="@+id/photoPartField"
-                    android:orientation="horizontal"
-                    android:layout_height="0dp">
-                </LinearLayout>
-
-                <Text
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Производительность"
-                    />
-
+                android:layout_margin="5dp"
+                android:id="@+id/layout_parts">
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <Button
-            android:layout_width="match_parent"
-            android:layout_margin="50dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/save_button_bg"
-            android:layout_gravity="bottom|center"
-            android:text="Сохранить"
-            android:textColor="@color/colorWhite"
-            />
-    </FrameLayout>
-    <android.support.design.widget.FloatingActionButton
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/btnPhotoCar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="40dp"
-        android:layout_marginRight="16dp"
-        android:onClick="onClickPhoto"
-        android:src="@drawable/ic_action_camera"
-        android:backgroundTint="#C7CCF0"
-        app:fabSize="normal"
-        android:scaleType="center"
-        app:borderWidth="0dp" />
-
 </RelativeLayout>
