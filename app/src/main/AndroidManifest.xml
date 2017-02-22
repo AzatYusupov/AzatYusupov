@@ -27,7 +27,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.PartActivity"
+            android:name=".activity.PartsInActivity"
             android:label="@string/title_activity_part"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -36,6 +36,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.CarFoundActivity"
             android:label="@string/app_car_new">
@@ -45,6 +46,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.CameraActivity"
             android:configChanges="orientation"
@@ -85,6 +87,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <activity android:name=".activity.PartActivity"></activity>
     </application>
 
 </manifest>

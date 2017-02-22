@@ -39,4 +39,8 @@
     <string name="done">Done</string>
     <string name="title_activity_part">PartActivity</string>
 
+    <!-- Microfon -->
+    <string name="speech_prompt">Говорите</string>
+    <string name="speech_not_supported">Извините! Ваш голос не поддерживается вводом голоса</string>
+    <string name="tap_on_mic">Tap on mic to speak</string>
 </resources>

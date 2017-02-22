@@ -97,7 +97,7 @@ public class CameraActivity extends AppCompatActivity implements PictureCallback
             try {
                 if (mCameraData != null) {
                     String path = SaveImage(bitmapImage);
-                    Intent intent = new Intent(CameraActivity.this, CarFoundActivity.class);
+                    Intent intent = new Intent();
                     intent.putExtra(EXTRA_CAMERA_DATA, path);
                     setResult(RESULT_OK, intent);
                 } else {
@@ -160,38 +160,6 @@ public class CameraActivity extends AppCompatActivity implements PictureCallback
         }
     }
 
-    private Camera.Size getOptilamPreviewSize(List<Camera.Size> sizes, int w, int h) {
-        final double ASPECT_TOLERANCE = 0.05;
-        double targetRatio = w * 1.0 / h;
-        if (sizes==null)
-            return null;
-        Camera.Size optimalSize = null;
-        double minDiff = Double.MAX_VALUE;
-        int targetH = h;
-        System.out.println("++++ "+targetRatio);
-        for (Camera.Size size : sizes) {
-
-            double ratio = size.width * 1.0 / size.height;
-            System.out.println(size.width+" "+size.height+" "+ratio);
-            if (Math.abs(ratio-targetRatio) > ASPECT_TOLERANCE)
-                continue;
-            if (Math.abs(size.height-targetH) < minDiff) {
-                optimalSize = size;
-                targetH = Math.abs(size.height-targetH);
-            }
-        }
-        if (optimalSize==null) {
-            Toast.makeText(CameraActivity.this, "NULL", Toast.LENGTH_LONG).show();
-            minDiff = Double.MAX_VALUE;
-            for (Camera.Size size : sizes) {
-                if (Math.abs(size.height-targetH) < minDiff) {
-                    minDiff = Math.abs(size.height-targetH);
-                    optimalSize = size;
-                }
-            }
-        }
-        return optimalSize;
-    }
     @Override
     protected void onStart() {
         super.onStart();

@@ -22,8 +22,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
             android:textSize="@dimen/title_names"
             android:textColor="@android:color/black"
+            />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:ems="@android:integer/config_longAnimTime"
+            android:id="@+id/edittext_part_number"
+            android:padding="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:elevation="8dp"
+            android:hint="Номер запчаста"
+            android:background="@color/colorWhite"
+            android:drawableRight="@drawable/ic_keyboard_voice_black"
             />
         <ScrollView
             android:layout_width="match_parent"

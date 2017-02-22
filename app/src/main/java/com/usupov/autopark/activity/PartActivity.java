@@ -1,21 +1,32 @@
 package com.usupov.autopark.activity;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.usupov.autopark.R;
 import com.usupov.autopark.model.CarCategory;
 
+import java.util.ArrayList;
+import java.util.Locale;
+
 public class PartActivity extends Activity{
 
+    static final int REQ_CODE_SPEECH_INPUT = 100;
+    private static EditText numberPart;
 
     private static int leftmargin = 20;
     @Override
@@ -63,49 +74,86 @@ public class PartActivity extends Activity{
         one0.getChildren().add(one9);
         one0.getChildren().add(one10);
 
-//        ArrayList<CarCategory> firstList = new ArrayList<>();
-//        firstList.add(one1);
-//        firstList.add(one2);
-//        firstList.add(one3);
-//        firstList.add(one4);
-//        firstList.add(one5);
-//        firstList.add(one6);
-//        firstList.add(one7);
-//        firstList.add(one8);
-//        firstList.add(one9);
-//        firstList.add(one10);
-
-//        for (CarCategory item : firstList) {
-//            dfs(item);
-//        }
         LinearLayout lvMain = (LinearLayout) findViewById(R.id.lvMain);
         dfs(lvMain, one0, true);
 
-//        ExpandableListAdapter adapter = ExpandableListAdapter(this, android.R.layout.simple_expandable_list_item_1);
-//        lvParts.setAdapter(adapter);
-//        lvParts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Toast.makeText(PartActivity.this, position+"", Toast.LENGTH_LONG).show();
-//            }
-//        });
-//        for (int i = 0; i < firstList.size(); i++) {
-//            View item = lytinflater.inflate(R.layout.item_part_car, linLayout, false);
-//            TextView partnName = (TextView) item.findViewById(R.id.part_name);
-//            partnName.setText(firstList.get(i).getCategoryName());
-//            partnName.setId(i);
-//
-//
-//            ImageView partImage = (ImageView) item.findViewById(R.id.part_image);
-//            partImage.setImageResource(R.drawable.ic_action_do_photo);
-//
-//            ImageView arrowImage = (ImageView) item.findViewById(R.id.arrow);
-//            arrowImage.setImageResource(R.drawable.ic_action_arrow_not_opened);
-//
-//            linLayout.addView(item);
-//
-//        }
+
+        iniSpeak();
     }
+
+    private void iniSpeak() {
+
+        numberPart = (EditText) findViewById(R.id.edittext_part_number);
+
+        numberPart.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                final int DRAWABLE_LEFT = 0;
+                final int DRAWABLE_TOP = 1;
+                final int DRAWABLE_RIGHT = 2;
+                final int DRAWABLE_BOTTOM = 3;
+
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+
+                    if(event.getRawX() >= (numberPart.getRight() - numberPart.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+
+                        Intent intent = new Intent(
+                                RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, "en-US");
+                        try {
+                            promptSpeechInput();
+                        } catch (ActivityNotFoundException a) {
+                            Toast t = Toast.makeText(getApplicationContext(),
+                                    "Opps! Your device doesn't support Speech to Text",
+                                    Toast.LENGTH_SHORT);
+                            t.show();
+                        }
+
+                        return true;
+
+                    }
+
+                }
+
+                return false;
+            }
+        });
+    }
+    private void promptSpeechInput() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
+                getString(R.string.speech_prompt));
+        try {
+            startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
+        } catch (ActivityNotFoundException a) {
+            Toast.makeText(getApplicationContext(),
+                    getString(R.string.speech_not_supported),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case REQ_CODE_SPEECH_INPUT: {
+                if (resultCode == RESULT_OK && null != data) {
+
+                    ArrayList<String> result = data
+                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    numberPart = (EditText)findViewById(R.id.edittext_part_number);
+                    numberPart.setText(result.get(0));
+                }
+                break;
+            }
+
+        }
+    }
+
     private void dfs(LinearLayout linLayout, CarCategory item, boolean first) {
         if (!item.hasChildren()) {
 

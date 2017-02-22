@@ -29,7 +29,6 @@ public class CarNewActivity extends AppCompatActivity {
 
         initVoiceBtn();
 
-
     }
 
     /**
@@ -62,7 +61,6 @@ public class CarNewActivity extends AppCompatActivity {
                         Intent intent = new Intent(
                                 RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, "en-US");
-
                         try {
                             startActivityForResult(intent, RESULT_SPEECH);
                             EditText edt = (EditText) findViewById(R.id.edittext_vin_number);

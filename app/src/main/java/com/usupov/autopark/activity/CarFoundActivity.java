@@ -63,19 +63,6 @@ public class CarFoundActivity extends AppCompatActivity {
         mCameraImageView.setVisibility(View.INVISIBLE);
 
     }
-    private OnClickListener mSaveImageButtonClickListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            File saveFile = openFileForImage();
-            if (saveFile != null) {
-                saveImageToFile(saveFile);
-            } else {
-                Toast.makeText(CarFoundActivity.this, "Unable to open file for saving image.",
-                        Toast.LENGTH_LONG).show();
-            }
-        }
-    };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,67 +141,12 @@ public class CarFoundActivity extends AppCompatActivity {
         }
 
     }
-    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-        // CREATE A MATRIX FOR THE MANIPULATION
-        Matrix matrix = new Matrix();
-        // RESIZE THE BIT MAP
-        matrix.postScale(scaleWidth, scaleHeight);
 
-        // "RECREATE" THE NEW BITMAP
-        Bitmap resizedBitmap = Bitmap.createBitmap(
-                bm, 0, 0, width, height, matrix, false);
-        bm.recycle();
-        return resizedBitmap;
-    }
 
     private void startImageCapture() {
         startActivityForResult(new Intent(CarFoundActivity.this, CameraActivity.class), TAKE_PICTURE_REQUEST_B);
     }
 
-    private File openFileForImage() {
-        File imageDirectory = null;
-        String storageState = Environment.getExternalStorageState();
-        if (storageState.equals(Environment.MEDIA_MOUNTED)) {
-            imageDirectory = new File(
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                    "com.o0reillyschool.android2.camera");
-            if (!imageDirectory.exists() && !imageDirectory.mkdirs()) {
-                imageDirectory = null;
-            } else {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_mm_dd_hh_mm",
-                        Locale.getDefault());
-
-                return new File(imageDirectory.getPath() +
-                        File.separator + "image_" +
-                        dateFormat.format(new Date()) + ".png");
-            }
-        }
-        return null;
-    }
-
-    private void saveImageToFile(File file) {
-        if (mCameraBitmap != null) {
-            FileOutputStream outStream = null;
-            try {
-                outStream = new FileOutputStream(file);
-                if (!mCameraBitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream)) {
-                    Toast.makeText(CarFoundActivity.this, "Unable to save image to file.",
-                            Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(CarFoundActivity.this, "Saved image to: " + file.getPath(),
-                            Toast.LENGTH_LONG).show();
-                }
-                outStream.close();
-            } catch (Exception e) {
-                Toast.makeText(CarFoundActivity.this, "Unable to save image to file.",
-                        Toast.LENGTH_LONG).show();
-            }
-        }
-    }
     private void setCarInforms(CarFoundModel car) {
 
         TextView carName = (TextView) findViewById(R.id.car_name);
