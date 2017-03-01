@@ -4,19 +4,15 @@ package com.usupov.autopark.activity;
  * Created by Azat on 03.02.2017.
  */
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.security.Policy;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -27,13 +23,10 @@ import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.SensorManager;
-import android.media.ExifInterface;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Display;
 import android.view.OrientationEventListener;
 import android.view.Surface;
@@ -41,15 +34,10 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
-
 
 import com.usupov.autopark.R;
 
@@ -382,6 +370,8 @@ public class CameraActivity extends AppCompatActivity implements PictureCallback
     private void setupImageCapture() {
         mCameraImage.setVisibility(View.INVISIBLE);
         mCameraPreview.setVisibility(View.VISIBLE);
+        if (mCamera==null)
+            mCamera = Camera.open(0);
         mCamera.startPreview();
         mCaptureImageButton.setOnClickListener(mCaptureImageButtonClickListener);
     }

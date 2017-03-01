@@ -6,12 +6,19 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.usupov.autopark.R;
+import com.usupov.autopark.http.Config;
+import com.usupov.autopark.http.HttpHandler;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -27,13 +34,60 @@ public class CarNewActivity extends AppCompatActivity {
 
         initToolbar();
 
-        initVoiceBtn();
 
+       // initVoiceBtn();
+        initVinEdittext();
     }
 
     /**
      * Initial toolbar
      */
+    public void initVinEdittext() {
+        final EditText vinEditText = (EditText)findViewById(R.id.edittext_vin_number);
+        final HttpHandler handler = new HttpHandler();
+        final String urlVin = Config.getUrlVin();
+        vinEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (vinEditText.getText().length()==17) {
+                    String url = urlVin+vinEditText.getText();
+                    String vin = vinEditText.getText()+"";
+                    String jSonString = handler.ReadHttpResponse(url);
+                    if (jSonString==null) {
+                        Toast.makeText(CarNewActivity.this, getString(R.string.error_vin), Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        JSONObject jObject = null;
+                        try {
+                            jObject = new JSONObject(jSonString);
+                            String name = jObject.getString("name");
+                            String description = jObject.getString("description");
+                            Intent intent = new Intent(CarNewActivity.this, CarFoundActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("name", name);
+                            bundle.putString("description", description);
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                            finish();
+                        }
+                        catch (Exception e) {
+                            Toast.makeText(CarNewActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+            }
+        });
+    }
     private void initToolbar() {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_car_new);

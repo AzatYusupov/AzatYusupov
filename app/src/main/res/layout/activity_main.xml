@@ -27,8 +27,9 @@
             android:background="@color/windowBackground"
             >
             <LinearLayout
+                android:id="@+id/layout_car_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:descendantFocusability="blocksDescendants"
                 android:orientation="vertical"
                 >
@@ -40,14 +41,13 @@
                     android:id="@+id/textView"
                     android:textStyle="normal|bold"
                     android:textSize="20sp"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="0dp"
                     android:layout_marginBottom="12dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:textColor="@android:color/black"
                     android:overScrollMode="never"
                     />
-
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/list_car"
                     android:layout_width="match_parent"

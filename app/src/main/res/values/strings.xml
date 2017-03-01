@@ -43,4 +43,13 @@
     <string name="speech_prompt">Говорите</string>
     <string name="speech_not_supported">Извините! Ваш голос не поддерживается вводом голоса</string>
     <string name="tap_on_mic">Tap on mic to speak</string>
+
+    <!--Car-->
+    <string name="car_success_deleted">успешно удалено!</string>
+    <string name="car_not_deleted">не удалено.</string>
+    <string name="car_list_empty">У вас пока нет автомобилей</string>
+    <string name="no_internet_connection">Отсутствует интернет соединение</string>
+    <string name="no_internet_connection_main">Отсутствует интернет соединение. Проверьте...</string>
+    <string name="again_try">Повторить попытку</string>
+    <string name="error_vin">Не правильный vin номер, проверьте еще раз</string>
 </resources>

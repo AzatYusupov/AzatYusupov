@@ -1,11 +1,7 @@
 package com.usupov.autopark.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
+import android.support.v7.widget.DecorContentParent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -19,13 +15,13 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.usupov.autopark.R;
 import com.usupov.autopark.activity.MainActivity;
+import com.usupov.autopark.activity.PartsInActivity;
+import com.usupov.autopark.http.Config;
+import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.model.CarModel;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.List;
+import java.util.logging.Handler;
 
 public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyViewHolder> {
 
@@ -50,14 +46,11 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
             overflow = (ImageView) view.findViewById(R.id.overflow);
         }
     }
-    View.OnClickListener viewClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            showPopupMenu(v);
-        }
-    };
 
-    private void showPopupMenu(View v) {
+    private void showPopupMenu(View v, final int position) {
+        final HttpHandler handler = new HttpHandler();
+        final String urlCarDelete = Config.getUrlCarDelete();
+
         PopupMenu popupMenu = new PopupMenu(context, v);
         popupMenu.inflate(R.menu.menu_car_main);
 
@@ -70,7 +63,22 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
                         switch (item.getItemId()) {
 
                             case R.id.btnCareDelete:
-                                //
+                                System.out.println("Deleted car id = "+carList.get(position).getId());
+                                boolean result = handler.deleteQuery(urlCarDelete+carList.get(position).getId());
+                                String message = carList.get(position).getFullName()+" ";
+                                if (result) {
+                                    carList.remove(position);
+                                    notifyItemRemoved(position);
+                                    notifyDataSetChanged();
+                                    message += context.getString(R.string.car_success_deleted);
+                                    System.out.println("Removed id : "+position);
+                                    if (carList.isEmpty()) {
+                                       MainActivity.emptyListCars();
+                                    }
+                                }
+                                else
+                                    message += context.getString(R.string.car_not_deleted);
+                                Toast.makeText(context, message, Toast.LENGTH_LONG).show();
                                 return true;
                             case R.id.btnCarEdit:
                                 //
@@ -99,11 +107,10 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
                 .inflate(R.layout.item_car, parent, false);
 
         return new MyViewHolder(itemView);
-
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
         CarModel carListItem = carList.get(position);
         holder.fullName.setText(carListItem.getFullName());
@@ -112,7 +119,12 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
         // loading album cover using Glide library
         Glide.with(context).load(carListItem.getImageUrl()).into(holder.thumbnail);
 
-        holder.overflow.setOnClickListener(viewClickListener);
+        holder.overflow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopupMenu(v, position);
+            }
+        });
         /*holder.overflow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

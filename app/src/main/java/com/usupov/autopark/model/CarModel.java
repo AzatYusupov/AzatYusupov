@@ -3,8 +3,10 @@ package com.usupov.autopark.model;
 public class CarModel {
 
     private String fullName, imageUrl, description;
+    private int id;
 
-    public CarModel(String imageUrl, String fullName, String description) {
+    public CarModel(int id, String imageUrl, String fullName, String description) {
+        this.id = id;
         this.imageUrl = imageUrl;
         this.fullName = fullName;
         this.description = description;
@@ -22,6 +24,9 @@ public class CarModel {
         this.description = description;
     }
 
+    public int getId() {
+        return id;
+    }
     public String getFullName() {
         return fullName;
     }
@@ -33,5 +38,6 @@ public class CarModel {
     public String getDescription() {
         return description;
     }
+
 
 }
