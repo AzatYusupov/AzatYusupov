@@ -60,9 +60,10 @@ public class CarNewActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 if (vinEditText.getText().length()==17) {
-                    String url = urlVin+vinEditText.getText();
                     String vin = vinEditText.getText()+"";
+                    String url = urlVin+vinEditText.getText();
                     String jSonString = handler.ReadHttpResponse(url);
+//                    String jSonString = "{name : \"Mersedes\", description : \"Benz\"}";
                     if (jSonString==null) {
                         Toast.makeText(CarNewActivity.this, getString(R.string.error_vin), Toast.LENGTH_LONG).show();
                     }
@@ -76,6 +77,7 @@ public class CarNewActivity extends AppCompatActivity {
                             Bundle bundle = new Bundle();
                             bundle.putString("name", name);
                             bundle.putString("description", description);
+                            bundle.putString("vin", vin);
                             intent.putExtras(bundle);
                             startActivity(intent);
                             finish();

@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
         parentLayout = (LinearLayout) findViewById(R.id.layout_car_list);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         if (!isNetworkAvailable()) {
+            findViewById(R.id.fab_new_car).setVisibility(View.GONE);
             if (firstTime) {
                 LayoutInflater.from(this).inflate(R.layout.no_internet_conn, (LinearLayout) findViewById(R.id.layout_car_list), true);
                 findViewById(R.id.textView).setVisibility(View.GONE);
@@ -107,11 +108,15 @@ public class MainActivity extends AppCompatActivity {
             }
             return;
         }
-        else if (!firstTime) {
-            findViewById(R.id.btn_try_again).setVisibility(View.GONE);
-            findViewById(R.id.text_again).setVisibility(View.GONE);
-            params.gravity = Gravity.TOP;
-            parentLayout.setLayoutParams(params);
+        else{
+            findViewById(R.id.fab_new_car).setVisibility(View.VISIBLE);
+            if (!firstTime) {
+
+                findViewById(R.id.btn_try_again).setVisibility(View.GONE);
+                findViewById(R.id.text_again).setVisibility(View.GONE);
+                params.gravity = Gravity.TOP;
+                parentLayout.setLayoutParams(params);
+            }
         }
 
         List<CarModel> carList = new ArrayList<>();
@@ -127,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
         String url = Config.getMetaData(this, Config.apiUrlCars);
 
         String jsonStr = handler.ReadHttpResponse(url);
+//        String jsonStr = "[{id : \"10\", imageUri : \"https://i.otto.de/i/otto/5431264/rc-auto-jamara-lamborghini-murcielago-lp-670-4-orange.jpg?$formatz$\", name : \"Name\", description : \"Desc\"}]";
         if (jsonStr == null) {
             Toast.makeText(MainActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
             return;
@@ -171,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(v.getContext(), CarNewActivity.class));
+                finish();
             }
         });
 
@@ -196,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+//        int id = item.getItemId();
 
         return super.onOptionsItemSelected(item);
 

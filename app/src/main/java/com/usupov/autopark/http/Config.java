@@ -16,9 +16,10 @@ import android.os.Bundle;
 public class Config {
 
     public final static String apiUrlCars = "api_url_cars";
-    public final static String urlCarDelete = "car/delete/";
-    public final static String urlVin = "vin/";
+    private final static String urlCarDelete = "car/delete/";
+    private final static String urlVin = "vin/";
     public final static String urlServer = "http://192.168.1.4:8080/api/";
+    private final static String apiCarCreat = "car/create";
     public static String getMetaData(Context contex, String name) {
         try {
             ApplicationInfo ai = contex.getPackageManager().getApplicationInfo(contex.getPackageName(), PackageManager.GET_META_DATA);
@@ -35,5 +36,8 @@ public class Config {
     }
     public static String getUrlVin() {
         return urlServer +urlVin;
+    }
+    public static String getUrlCarCreat() {
+        return urlServer + apiCarCreat;
     }
 }

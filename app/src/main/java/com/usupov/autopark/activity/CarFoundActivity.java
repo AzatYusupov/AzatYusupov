@@ -3,8 +3,12 @@ package com.usupov.autopark.activity;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -29,7 +33,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.usupov.autopark.R;
+import com.usupov.autopark.http.Config;
+import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.model.CarFoundModel;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 
 public class CarFoundActivity extends AppCompatActivity {
@@ -38,6 +47,7 @@ public class CarFoundActivity extends AppCompatActivity {
 
     private ImageView mCameraImageView;
     private Bitmap mCameraBitmap;
+    private static String imagePath;
 
     private OnClickListener mCaptureImageButtonClickListener = new OnClickListener() {
         @Override
@@ -53,31 +63,28 @@ public class CarFoundActivity extends AppCompatActivity {
         toast.show();
 
         ImageView closeCarPhoto = (ImageView) findViewById(R.id.closeCarPhoto);
-        closeCarPhoto.setVisibility(View.INVISIBLE);
+        closeCarPhoto.setVisibility(View.GONE);
 
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.photoCarField);
         // layout.getLayoutParams().height = 0;
-        layout.setVisibility(View.INVISIBLE);
+        layout.setVisibility(View.GONE);
 
         //ivPhotoCar.getLayoutParams().height = 0;
-        mCameraImageView.setVisibility(View.INVISIBLE);
-
+        mCameraImageView.setVisibility(View.GONE);
+        imagePath = null;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_found);
-
-        setCarInforms(new CarFoundModel("Audi A5 Рестайлинг 2.0 МТ, 211 л.с 4WD", "1234567891011121", "2.0/211 л.с./ Бензин", 2015, "Купе", "Полный", "Механическая"));
-
-
-
+        setCarInforms(new CarFoundModel(getIntent().getExtras().getString("name"), getIntent().getExtras().getString("vin"), "2.0/211 л.с./ Бензин", 2015, "Купе", "Полный", "Механическая"));
         initToolbar();
-        mCameraImageView = (ImageView) findViewById(R.id.ivPhotoCar);
 
+        mCameraImageView = (ImageView) findViewById(R.id.ivPhotoCar);
         findViewById(R.id.btnPhotoCar).setOnClickListener(mCaptureImageButtonClickListener);
 
+        initbtnSave();
     }
 
     @Override
@@ -96,7 +103,7 @@ public class CarFoundActivity extends AppCompatActivity {
                 }
                 Bundle extras = data.getExtras();
 
-                String imagePath = extras.getString(CameraActivity.EXTRA_CAMERA_DATA);
+                imagePath = extras.getString(CameraActivity.EXTRA_CAMERA_DATA);
                 if (imagePath != null && !imagePath.equals("")) {
                     RelativeLayout layout = (RelativeLayout) findViewById(R.id.photoCarField);
                     layout.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
@@ -132,7 +139,6 @@ public class CarFoundActivity extends AppCompatActivity {
                     ImageView closeCarPhoto = (ImageView) findViewById(R.id.closeCarPhoto);
                     closeCarPhoto.setVisibility(View.VISIBLE);
 
-
                     mCameraImageView.setVisibility(View.VISIBLE);
                 }
             } else {
@@ -143,18 +149,20 @@ public class CarFoundActivity extends AppCompatActivity {
     }
 
 
+
     private void startImageCapture() {
         startActivityForResult(new Intent(CarFoundActivity.this, CameraActivity.class), TAKE_PICTURE_REQUEST_B);
     }
+    private static TextView carNameView, vinNumberView ;
 
     private void setCarInforms(CarFoundModel car) {
 
-        TextView carName = (TextView) findViewById(R.id.car_name);
-        carName.setText(car.getCarName());
+        carNameView = (TextView) findViewById(R.id.car_name);
+        carNameView.setText(car.getCarName());
 
-        TextView vinNumber = (TextView) findViewById(R.id.vin_number);
-        vinNumber.setText(car.getVinNumber());
-
+        vinNumberView = (TextView) findViewById(R.id.vin_number);
+        vinNumberView.setText(car.getVinNumber());
+/*
         TextView engine = (TextView) findViewById(R.id.engine);
         engine.setText(car.getEngine());
 
@@ -169,10 +177,41 @@ public class CarFoundActivity extends AppCompatActivity {
 
         TextView KPP = (TextView) findViewById(R.id.kpp);
         KPP.setText(car.getKpp());
-
+*/
     }
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_car_found);
         setSupportActionBar(toolbar);
+    }
+    private void initbtnSave() {
+        Button btnSave = (Button) findViewById(R.id.btn_save_car);
+        btnSave.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String vinNumber = vinNumberView.getText()+"";
+                String carName = carNameView.getText()+"";
+                String url = Config.getUrlCarCreat();
+//                String url = "https://httpbin.org/post";
+                HttpHandler handler = new HttpHandler();
+                HashMap<String, String> pairs = new HashMap<String, String>();
+
+                pairs.put("vin", vinNumber);
+//                pairs.add(new BasicNameValuePair("vin", vinNumber));
+                try {
+                    boolean result = handler.postQuery(url, pairs, imagePath);
+                    imagePath = null;
+                    if (result) {
+                        Toast.makeText(CarFoundActivity.this, getString(R.string.car_success_added), Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(CarFoundActivity.this, MainActivity.class));
+                        finish();
+                    }
+                    else
+                        Toast.makeText(CarFoundActivity.this, getString(R.string.car_not_added), Toast.LENGTH_LONG).show();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }
