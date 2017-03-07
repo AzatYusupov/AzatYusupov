@@ -106,8 +106,11 @@ public class PartsInActivity extends AppCompatActivity {
                     result = handler.postQuery(url, map, photoList.get(0));
                 else
                     result = handler.postQuery(url, map, null);
-                if (result)
+                if (result) {
                     Toast.makeText(PartsInActivity.this, "OK", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(PartsInActivity.this, MainActivity.class));
+                    finish();
+                }
                 else
                     Toast.makeText(PartsInActivity.this, "NOT", Toast.LENGTH_SHORT).show();
 

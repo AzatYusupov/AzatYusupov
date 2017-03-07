@@ -20,8 +20,8 @@ public class Config {
     private final static String pathCar = "car/";
     private final static String urlVin = "vin/";
     private final static String urlCars = "cars/";
-//    public final static String urlServer = "http://88.99.174.4:8080/api/";
-    public final static String urlServer = "http://192.168.1.4:8080/api/";
+    public final static String urlServer = "http://88.99.174.4:8080/api/";
+//    public final static String urlServer = "http://192.168.1.4:8080/api/";
     private final static String apiCarCreat = "car/create";
     private final static String pathCategory = "category";
 //    public static String getMetaData(Context contex, String name) {

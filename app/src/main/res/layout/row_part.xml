@@ -10,12 +10,22 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
         android:padding="5dp" >
-        <ImageView
+        <TextView
             android:id="@+id/partItemImage"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_alignParentLeft="true"
-            android:layout_gravity="center_vertical"/>
+            android:background="@drawable/round"
+            android:text="100%"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:layout_gravity="left"
+            />
+        <!--<ImageView-->
+            <!--android:id="@+id/partItemImage"-->
+            <!--android:layout_width="40dp"-->
+            <!--android:layout_height="40dp"-->
+            <!--android:layout_alignParentLeft="true"-->
+            <!--android:layout_gravity="center_vertical"/>-->
         <TextView
             android:id="@+id/partItemName"
             android:layout_width="wrap_content"

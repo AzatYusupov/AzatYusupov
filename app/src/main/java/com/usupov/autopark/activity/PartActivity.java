@@ -87,23 +87,32 @@ public class PartActivity extends AppCompatActivity {
 //        one0.getChildren().add(one10);
 
 
+        long s1 = System.currentTimeMillis();
         String jSonStringCategory = getJSONStringCategory(carId);
+        long s2 = System.currentTimeMillis();
+        System.out.println("get Data time: "+(s2-s1)+" ms");
         if (jSonStringCategory==null) {
             Toast.makeText(PartActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
             return;
         }
 
-        CarCategory one0 = new CarCategory("", 0);
+        CarCategory one0 = new CarCategory("", 0, 0);
+        long t1 = System.currentTimeMillis();
         go(one0, jSonStringCategory);
+        long t2 = System.currentTimeMillis();
 
         LinearLayout lvMain = (LinearLayout) findViewById(R.id.lvMain);
         dfs(lvMain, one0, true);
+        long t3 = System.currentTimeMillis();
+        System.out.println("go time : "+(t2-t1)+" ms");
+        System.out.println("dfs time : "+(t3-t2)+" ms");
 
 //        iniSpeak();
     }
 
     private String getJSONStringCategory (int carId) {
         String url = Config.getUrlCar()+carId+"/"+Config.getpathCategory();
+        System.out.println("URLLL="+url);
         Toast.makeText(PartActivity.this, url, Toast.LENGTH_LONG).show();
         HttpHandler handler = new HttpHandler();
         String result = handler.ReadHttpResponse(url);
@@ -112,6 +121,8 @@ public class PartActivity extends AppCompatActivity {
 
     private void go(CarCategory parentCat, String result) {
         try {
+            if (result.equals("null"))
+                return;
             JSONArray array = new JSONArray(result);
             if (array==null || array.length()==0)
                 return;
@@ -119,7 +130,8 @@ public class PartActivity extends AppCompatActivity {
                 int id = array.getJSONObject(i).getInt("id");
                 String name = array.getJSONObject(i).getString("name");
                 String children = array.getJSONObject(i).getString("child");
-                CarCategory curCategory = new CarCategory(name, id);
+                int percent = array.getJSONObject(i).getInt("percent");
+                CarCategory curCategory = new CarCategory(name, id, percent);
                 go(curCategory, children);
                 parentCat.getChildren().add(curCategory);
             }
@@ -227,10 +239,17 @@ public class PartActivity extends AppCompatActivity {
             for (final CarCategory child : item.getChildren()) {
 
                 View childView = inflater.inflate(R.layout.row_part, linLayout, false);
+                TextView image = (TextView) childView.findViewById(R.id.partItemImage);
                 if (first) {
-                    ImageView image = (ImageView)childView.findViewById(R.id.partItemImage);
-                    image.setImageResource(R.drawable.ic_action_do_photo);
+//                    ImageView image = (ImageView)childView.findViewById(R.id.partItemImage);
+//                    image.setImageResource(R.drawable.ic_action_do_photo);
+                    if (child.getPercent() > 0)
+                        image.setText(child.getPercent()+"%");
+                    else
+                        image.setText("");
                 }
+                else
+                    image.setVisibility(View.INVISIBLE);
 
                 final TextView text = (TextView)childView.findViewById(R.id.partItemName);
                 text.setText(child.getCategoryName());

@@ -9,11 +9,13 @@ import java.util.ArrayList;
 public class CarCategory {
     private String categoryName;
     int categoryId;
+    int percent;
     private ArrayList<CarCategory>chilren;
     private boolean isFirstClick;
-    public CarCategory(String categoryName, int categoryId) {
+    public CarCategory(String categoryName, int categoryId, int percent) {
         this.categoryName = categoryName;
         this.categoryId = categoryId;
+        this.percent = percent;
         this.chilren = new ArrayList<>();
     }
     public String getCategoryName() {
@@ -31,6 +33,9 @@ public class CarCategory {
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
         this.isFirstClick = false;
+    }
+    public int getPercent() {
+        return this.percent;
     }
     public boolean hasChildren() {
         return chilren.size() > 0;
