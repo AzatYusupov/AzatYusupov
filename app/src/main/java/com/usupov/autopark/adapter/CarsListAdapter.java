@@ -1,6 +1,10 @@
 package com.usupov.autopark.adapter;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.DecorContentParent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +19,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.usupov.autopark.R;
 import com.usupov.autopark.activity.MainActivity;
+import com.usupov.autopark.activity.PartActivity;
 import com.usupov.autopark.activity.PartsInActivity;
 import com.usupov.autopark.http.Config;
 import com.usupov.autopark.http.HttpHandler;
@@ -37,6 +42,7 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
 
         public TextView fullName, description;
         public ImageView thumbnail, overflow;
+        public View homeView;
 
         public MyViewHolder(View view) {
             super(view);
@@ -44,9 +50,12 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
             description = (TextView) view.findViewById(R.id.item_car_description);
             thumbnail = (ImageView) view.findViewById(R.id.item_car_thumbnail);
             overflow = (ImageView) view.findViewById(R.id.overflow);
+            homeView = view.findViewById(R.id.home_view);
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     private void showPopupMenu(View v, final int position) {
         final HttpHandler handler = new HttpHandler();
         final String urlCarDelete = Config.getUrlCarDelete();
@@ -120,9 +129,23 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
         Glide.with(context).load(carListItem.getImageUrl()).into(holder.thumbnail);
 
         holder.overflow.setOnClickListener(new View.OnClickListener() {
+            @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+            @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
             @Override
             public void onClick(View v) {
                 showPopupMenu(v, position);
+            }
+        });
+        holder.homeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int carId = carList.get(position).getId();
+                String carName = carList.get(position).getFullName();
+                Intent intent = new Intent(context, PartActivity.class);
+                intent.putExtra("carId", carId);
+                intent.putExtra("carName", carName);
+                context.startActivity(intent);
+                
             }
         });
         /*holder.overflow.setOnClickListener(new View.OnClickListener() {

@@ -6,14 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".activity.PartActivity">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
         <include
-            android:id="@+id/toolbar_new_car"
-            layout="@layout/toolbar_car_found"
+            android:id="@+id/toolbar_part"
+            layout="@layout/toolbar_part"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
@@ -28,6 +27,7 @@
             android:textSize="@dimen/title_names"
             android:textColor="@android:color/black"
             />
+        <!--
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -44,6 +44,7 @@
             android:background="@color/colorWhite"
             android:drawableRight="@drawable/ic_keyboard_voice_black"
             />
+            -->
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"

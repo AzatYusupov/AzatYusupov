@@ -23,7 +23,9 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
@@ -31,6 +33,7 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.protocol.HTTP;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -47,6 +50,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -230,6 +234,137 @@ public class HttpHandler {
         }
         return false;
     }
+    public boolean postQueryWithFiles(String urlTo, HashMap<String, String> parmas, ArrayList<String>filepaths) {
+
+        System.out.println("URLLLLLLLLLLLLLLLLLLLLLL="+urlTo);
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpPost httpPostRequest = new HttpPost(urlTo);
+
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+
+        ContentType contentType = ContentType.create(
+                HTTP.PLAIN_TEXT_TYPE, HTTP.UTF_8);
+
+//        FileBody[]fileBodies = new FileBody[filepaths.size()];
+//        for (int i = 0; i < fileBodies.length; i++) {
+//            fileBodies[i] = new FileBody(new File(filepaths.get(i)), "image/jpeg");
+//        }
+
+        for (String key : parmas.keySet()) {
+            builder.addTextBody(key, parmas.get(key), contentType);
+        }
+
+//        for (int i = 0; i < fileBodies.length; i++) {
+//            builder.addPart("file["+i+"]", fileBodies[i]);
+//        }
+        httpPostRequest.setEntity(builder.build());
+        try {
+            HttpResponse response = httpClient.execute(httpPostRequest);
+            InputStream instreanm = response.getEntity().getContent();
+            String result = "NOT WORKING";
+            if (instreanm != null)
+                result = convertInputStreamToString(instreanm);
+            System.out.println(result+"             ----------------------------");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    private static String convertInputStreamToString(InputStream inputStream)
+            throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(
+                new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while ((line = bufferedReader.readLine()) != null)
+            result += line;
+
+        inputStream.close();
+        return result;
+
+    }
+//    public boolean postQuery2(String urlTo, HashMap<String, String> parmas, ArrayList<String>filepaths) {
+//        HttpURLConnection connection = null;
+//        DataOutputStream outputStream = null;
+//
+//        String twoHyphens = "--";
+//        String boundary = "*****" + Long.toString(System.currentTimeMillis()) + "*****";
+//        String lineEnd = "\r\n";
+//
+//        int bytesRead, bytesAvailable, bufferSize;
+//        byte[] buffer;
+//        int maxBufferSize = 10 * 1024 * 1024;
+//
+//        try {
+//
+//            URL url = new URL(urlTo);
+//            connection = (HttpURLConnection) url.openConnection();
+//
+//            connection.setDoInput(true);
+//            connection.setDoOutput(true);
+//            connection.setUseCaches(false);
+//
+////            connection.setRequestMethod("POST");
+//            connection.setRequestProperty("Connection", "Keep-Alive");
+//            connection.setRequestProperty("User-Agent", "Android Multipart HTTP Client 1.0");
+//            connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+//
+//            outputStream = new DataOutputStream(connection.getOutputStream());
+//            outputStream.writeBytes(twoHyphens + boundary + lineEnd);
+//
+//            int i = 0;
+//            for (String filepath : filepaths) {
+//                if (filepath != null && !filepath.equals("")) {
+//                    outputStream.writeBytes("Content-Disposition: form-data; name=\"" + "file["+i+"]" + "\"; filename=\"" + filepath + "\"" + lineEnd);
+////                  outputStream.writeBytes("Content-Type: " + fileMimeType + lineEnd);
+//                    outputStream.writeBytes("Content-Transfer-Encoding: binary" + lineEnd);
+//                    outputStream.writeBytes(lineEnd);
+//                    i++;
+//                }
+//
+//                if (filepath != null && !filepath.equals("")) {
+//                    System.out.println(filepath + "  *******");
+//                    File file = new File(filepath);
+//                    FileInputStream fileInputStream = new FileInputStream(file);
+//
+//                    bytesAvailable = fileInputStream.available();
+//                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
+//                    buffer = new byte[bufferSize];
+//
+//                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+//                    while (bytesRead > 0) {
+//                        outputStream.write(buffer, 0, bufferSize);
+//                        bytesAvailable = fileInputStream.available();
+//                        bufferSize = Math.min(bytesAvailable, maxBufferSize);
+//                        bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+//                    }
+//                    outputStream.writeBytes(lineEnd);
+//                }
+//            }
+//            // Upload POST Data
+//            Iterator<String> keys = parmas.keySet().iterator();
+//            while (keys.hasNext()) {
+//                String key = keys.next();
+//                String value = parmas.get(key);
+//                outputStream.writeBytes(twoHyphens + boundary + lineEnd);
+//                outputStream.writeBytes("Content-Disposition: form-data; name=\"" + key + "\"" + lineEnd);
+//                outputStream.writeBytes("Content-Type: text/plain" + lineEnd);
+//                outputStream.writeBytes(lineEnd);
+//                outputStream.writeBytes(value);
+//                outputStream.writeBytes(lineEnd);
+//            }
+//            outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+//            System.out.println(connection.getResponseCode()+"  ++++++++++++++++++++++");
+//            if (200 != connection.getResponseCode()) {
+//                return false;
+//            }
+//            return true;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return false;
+//    }
 //    public boolean postQuery(String urlTo, Map<String, String> parmas, String filepath) throws IOException {
 //
 //        String charset = "UTF-8";
@@ -247,6 +382,7 @@ public class HttpHandler {
 //        return false;
 //    }
 //}
+
 //    public boolean postQuery(String requestURL, HashMap<String, String> postDataParams, String filepath) throws IOException {
 //
 //        HttpClient httpclient = new DefaultHttpClient();

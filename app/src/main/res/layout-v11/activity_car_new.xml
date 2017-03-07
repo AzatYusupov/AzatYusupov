@@ -54,7 +54,7 @@
                 android:layout_height="?android:attr/listPreferredItemHeight"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
-                tools:targetApi="honeycomb">
+                >
 
                 <TextView
                     android:layout_width="78dp"
@@ -84,7 +84,7 @@
                 android:layout_height="?android:attr/listPreferredItemHeight"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
-                tools:targetApi="honeycomb">
+                >
 
                 <TextView
                     android:layout_width="78dp"
@@ -114,7 +114,7 @@
                 android:layout_height="?android:attr/listPreferredItemHeight"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
-                tools:targetApi="honeycomb">
+                >
 
                 <TextView
                     android:layout_width="78dp"

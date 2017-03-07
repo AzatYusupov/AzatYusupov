@@ -31,7 +31,7 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
 
-        <meta-data android:name="api_url_cars" android:value="http://192.168.1.4:8080/api/cars"></meta-data>
+        <!--<meta-data android:name="api_url_cars" android:value="http://88.99.174.4:8080/api/cars"></meta-data>-->
 
         <activity
             android:name=".activity.MainActivity"
@@ -53,14 +53,12 @@
         <activity
             android:name=".activity.CarFoundActivity"
             android:label="@string/app_car_new">
-
         </activity>
 
         <activity
             android:name=".activity.CameraActivity"
             android:configChanges="orientation"
             android:label="@string/capture_image">
-
             <!-- android:screenOrientation="landscape" -->
         </activity>
 
@@ -80,7 +78,9 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".activity.PartActivity"></activity>
+        <activity android:name=".activity.PartActivity"
+            android:label="@string/app_part">
+        </activity>
     </application>
 
 </manifest>

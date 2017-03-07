@@ -151,12 +151,12 @@ public class CameraActivity extends AppCompatActivity implements PictureCallback
     @Override
     protected void onStart() {
         super.onStart();
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int hasCameraPermission = checkSelfPermission(Manifest.permission.CAMERA);
             List<String> permissions = new ArrayList<>();
             if (hasCameraPermission != PackageManager.PERMISSION_GRANTED) {
                 permissions.add(Manifest.permission.CAMERA);
+
                 permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
             }
             if (!permissions.isEmpty()) {

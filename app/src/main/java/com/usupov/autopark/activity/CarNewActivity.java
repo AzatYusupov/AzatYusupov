@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.usupov.autopark.R;
 import com.usupov.autopark.http.Config;
 import com.usupov.autopark.http.HttpHandler;
+import com.usupov.autopark.service.SpeachRecogn;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,7 +36,7 @@ public class CarNewActivity extends AppCompatActivity {
         initToolbar();
 
 
-       // initVoiceBtn();
+        initVoiceBtn();
         initVinEdittext();
     }
 
@@ -93,7 +94,16 @@ public class CarNewActivity extends AppCompatActivity {
     private void initToolbar() {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_car_new);
+        toolbar.setNavigationIcon(R.drawable.ic_back_arrow);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(CarNewActivity.this, MainActivity.class));
+                finish();
+            }
+        });
+
 
     }
 
@@ -119,7 +129,6 @@ public class CarNewActivity extends AppCompatActivity {
                         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, "en-US");
                         try {
                             startActivityForResult(intent, RESULT_SPEECH);
-                            EditText edt = (EditText) findViewById(R.id.edittext_vin_number);
                             edt.setText("");
                         } catch (ActivityNotFoundException a) {
                             Toast t = Toast.makeText(getApplicationContext(),
@@ -139,7 +148,7 @@ public class CarNewActivity extends AppCompatActivity {
         });
 
     }
-
+//45RT78WEDST12
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -152,7 +161,14 @@ public class CarNewActivity extends AppCompatActivity {
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 
                     EditText edt = (EditText) findViewById(R.id.edittext_vin_number);
-                    edt.setText(text.toString());
+//                    edt.setText(text.get(0));
+
+                    String edt_text = "";
+                    if (edt.getText() != null)
+                        edt_text = edt.getText()+"";
+                    edt_text = SpeachRecogn.vinSpeach(text);
+                    Toast.makeText(CarNewActivity.this, edt_text, Toast.LENGTH_LONG).show();
+                    edt.setText(edt_text);
                 }
                 break;
             }

@@ -11,11 +11,15 @@
     android:elevation="@dimen/cardview_default_elevation"
     app:pressedTranslationZ="12dp"
     android:layout_gravity="center"
+
     >
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clickable="true"
+        android:background="?attr/selectableItemBackground"
+        android:id="@+id/home_view"
         >
 
         <ImageView
@@ -39,7 +43,7 @@
             android:elevation="2dp"
             android:layout_margin="8dp"
             android:layout_marginRight="20dp"
-        />
+            />
 
         <LinearLayout
             android:orientation="vertical"

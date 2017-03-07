@@ -8,14 +8,19 @@ import java.util.ArrayList;
 
 public class CarCategory {
     private String categoryName;
+    int categoryId;
     private ArrayList<CarCategory>chilren;
     private boolean isFirstClick;
-    public CarCategory(String categoryName) {
+    public CarCategory(String categoryName, int categoryId) {
         this.categoryName = categoryName;
+        this.categoryId = categoryId;
         this.chilren = new ArrayList<>();
     }
     public String getCategoryName() {
         return categoryName;
+    }
+    public int getCategoryId() {
+        return categoryId;
     }
     public boolean isFirstClick() {
         return  this.isFirstClick;

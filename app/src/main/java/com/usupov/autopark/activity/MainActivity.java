@@ -85,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
      * Initial toolbar
      */
     private void initToolbar() {
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
     }
@@ -129,8 +128,8 @@ public class MainActivity extends AppCompatActivity {
         textView.setVisibility(View.VISIBLE);
 
         HttpHandler handler = new HttpHandler();
-        String url = Config.getMetaData(this, Config.apiUrlCars);
-
+//        String url = Config.getMetaData(this, Config.apiUrlCars);
+        String url = Config.getUrlCars();
         String jsonStr = handler.ReadHttpResponse(url);
 //        String jsonStr = "[{id : \"10\", imageUri : \"https://i.otto.de/i/otto/5431264/rc-auto-jamara-lamborghini-murcielago-lp-670-4-orange.jpg?$formatz$\", name : \"Name\", description : \"Desc\"}]";
         if (jsonStr == null) {

@@ -3,6 +3,7 @@
     <!--Название приложение-->
     <string name="app_name">Автопарк</string>
     <string name="app_car_new">Добавить автомобиль</string>
+    <string name="app_part">Узлы автомобиля</string>
 
     <string name="main_action_search">Поиск</string>
     <string name="main_drawer_open">Открыт</string>
@@ -55,4 +56,5 @@
 
     <string name="car_success_added">Автомобиль успешно добавлено!</string>
     <string name="car_not_added">Автомобиль не добавлен!</string>
+
 </resources>
