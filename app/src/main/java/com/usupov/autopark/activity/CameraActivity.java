@@ -133,7 +133,6 @@ public class CameraActivity extends AppCompatActivity implements PictureCallback
 
         myOrientationEventListener
                 = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL){
-
             @Override
             public void onOrientationChanged(int arg0) {
                 // TODO Auto-generated method stub

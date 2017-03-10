@@ -152,6 +152,29 @@ public class HttpHandler {
 //        }
 //        return false;
 //    }
+    public boolean postQuery3(String urlTo, HashMap<String, String> parmas, String filepath) {
+        HttpPost post = new HttpPost(urlTo);
+        HttpClient hc = new DefaultHttpClient();
+
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        Iterator<String> keys = parmas.keySet().iterator();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            String value = parmas.get(key);
+            nameValuePairs.add(new BasicNameValuePair(key, value));
+        }
+
+        try {
+            post.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+            post.getParams().setBooleanParameter("http.protocol.expect-continue", false);
+            HttpResponse rp = hc.execute(post);
+            return true;
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return false;
+    }
 
     public boolean postQuery(String urlTo, HashMap<String, String> parmas, String filepath) {
         HttpURLConnection connection = null;
@@ -171,7 +194,6 @@ public class HttpHandler {
 
             URL url = new URL(urlTo);
             connection = (HttpURLConnection) url.openConnection();
-
             connection.setDoInput(true);
             connection.setDoOutput(true);
             connection.setUseCaches(false);
@@ -180,6 +202,7 @@ public class HttpHandler {
             connection.setRequestProperty("Connection", "Keep-Alive");
             connection.setRequestProperty("User-Agent", "Android Multipart HTTP Client 1.0");
             connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+            connection.setRequestProperty( "charset", "utf-8");
 
             outputStream = new DataOutputStream(connection.getOutputStream());
             outputStream.writeBytes(twoHyphens + boundary + lineEnd);
@@ -219,7 +242,7 @@ public class HttpHandler {
                 outputStream.writeBytes("Content-Disposition: form-data; name=\"" + key + "\"" + lineEnd);
                 outputStream.writeBytes("Content-Type: text/plain" + lineEnd);
                 outputStream.writeBytes(lineEnd);
-                outputStream.writeBytes(value);
+                outputStream.writeUTF(value);
                 outputStream.writeBytes(lineEnd);
             }
             System.out.println(filepath+"   9999999999999999999999");
