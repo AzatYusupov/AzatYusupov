@@ -145,6 +145,7 @@ public class SpeachRecogn {
 
         map.add(new Sort(" ", ""));
         map.add(new Sort("-", ""));
+        map.add(new Sort("\\.", ""));
 
 
         map.add(new Sort("вида блин", "vw"));
@@ -154,6 +155,7 @@ public class SpeachRecogn {
 
         Collections.sort(map);
         String res = "";
+
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++");
         for (int i = 0; i < text.size(); i++) {
             String variant = text.get(i).trim();
@@ -180,7 +182,7 @@ public class SpeachRecogn {
             //78954621358741001
 
             System.out.println(variant+"    ++++++++");
-            if (variant.length() <= 17 && variant.length() > res.length())
+            if (res.length()==0)
                 res = variant;
         }
         return res;

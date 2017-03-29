@@ -125,21 +125,8 @@ public class CarNewActivity extends AppCompatActivity {
 
                     if(event.getRawX() >= (edt.getRight() - edt.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
 
-                        Intent intent = new Intent(
-                                RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-//                        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-//                        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-//                                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, "RU");
-                        try {
-                            startActivityForResult(intent, RESULT_SPEECH);
-                            edt.setText("");
-                        } catch (ActivityNotFoundException a) {
-                            Toast t = Toast.makeText(getApplicationContext(),
-                                    "Opps! Your device doesn't support Speech to Text",
-                                    Toast.LENGTH_SHORT);
-                            t.show();
-                        }
+                        Intent intent = new Intent(CarNewActivity.this, RecognizerSampleActivity.class);
+                        startActivityForResult(intent, RESULT_SPEECH);
 
                         return true;
                     }
@@ -159,16 +146,18 @@ public class CarNewActivity extends AppCompatActivity {
             case RESULT_SPEECH: {
                 if (resultCode == RESULT_OK && null != data) {
                     ArrayList<String> text = data
-                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-
+                            .getStringArrayListExtra("all_results");
                     EditText edt = (EditText) findViewById(R.id.edittext_vin_number);
 //                    edt.setText(text.get(0));
 
-                    String edt_text = "";
-                    if (edt.getText() != null)
-                        edt_text = edt.getText()+"";
-                    edt_text = SpeachRecogn.vinSpeach(text);
+//                    String edt_text = "";
+//                    if (edt.getText() != null)
+//                        edt_text = edt.getText()+"";
+                    String edt_text = SpeachRecogn.vinSpeach(text);
+//                    String edt_text = data.getExtras().getString("recognated_string");
                     Toast.makeText(CarNewActivity.this, edt_text, Toast.LENGTH_LONG).show();
+                    if (edt_text.length() > 17)
+                        edt_text = edt_text.substring(0, 17);
                     edt.setText(edt_text);
                 }
                 break;
