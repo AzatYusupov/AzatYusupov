@@ -24,6 +24,7 @@ import ru.yandex.speechkit.SpeechKit;
 import android.support.v4.content.FileProvider;
 
 import com.usupov.autopark.R;
+import com.usupov.autopark.service.SpeachRecogn;
 
 import java.util.ArrayList;
 
@@ -47,6 +48,7 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 public class RecognizerSampleFragment extends Fragment implements RecognizerListener {
     private static final String API_KEY_FOR_TESTS_ONLY = "8a2fdc7a-fc0d-476f-bebe-5f048ac278ac";
 
@@ -60,6 +62,8 @@ public class RecognizerSampleFragment extends Fragment implements RecognizerList
     private static ArrayList<String> all_results;
 
     private Recognizer recognizer;
+    private static String resultText;
+    private Button cancelBtn;
 
     public RecognizerSampleFragment() {
     }
@@ -67,6 +71,7 @@ public class RecognizerSampleFragment extends Fragment implements RecognizerList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        resultText = "";
         SpeechKit.getInstance().configure(getContext(), API_KEY_FOR_TESTS_ONLY);
     }
 
@@ -79,39 +84,22 @@ public class RecognizerSampleFragment extends Fragment implements RecognizerList
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Button startBtn = (Button) view.findViewById(R.id.start_btn);
-        startBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createAndStartRecognizer();
-            }
-        });
 
-        Button cancelBtn = (Button) view.findViewById(R.id.cancel_btn);
+        createAndStartRecognizer();
+        progressBar = (ProgressBar) view.findViewById(R.id.voice_power_bar);
+//        currentStatus = (TextView) view.findViewById(R.id.current_state);
+//        recognitionResult = (TextView) view.findViewById(R.id.result);
+//        textAll = (TextView) view.findViewById(R.id.texts_all);
+        all_results = new ArrayList<>();
+        cancelBtn = (Button) view.findViewById(R.id.btn_cancel);
+
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetRecognizer();
-            }
-        });
-
-        Button finishBtn = (Button) view.findViewById(R.id.finish_btn);
-        finishBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.putExtra("recognated_string", recognitionResult.getText());
-                intent.putStringArrayListExtra("all_results", all_results);
-                getActivity().setResult(Activity.RESULT_OK, intent);
+                getActivity().setResult(Activity.RESULT_CANCELED, null);
                 getActivity().finish();
             }
         });
-
-        progressBar = (ProgressBar) view.findViewById(R.id.voice_power_bar);
-        currentStatus = (TextView) view.findViewById(R.id.current_state);
-        recognitionResult = (TextView) view.findViewById(R.id.result);
-        textAll = (TextView) view.findViewById(R.id.texts_all);
-        all_results = new ArrayList<>();
     }
 
     @Override
@@ -145,22 +133,22 @@ public class RecognizerSampleFragment extends Fragment implements RecognizerList
 
     @Override
     public void onRecordingBegin(Recognizer recognizer) {
-        updateStatus("Recording begin");
+        updateStatus("Запись началось");
     }
 
     @Override
     public void onSpeechDetected(Recognizer recognizer) {
-        updateStatus("Speech detected");
+        updateStatus("Голос определено");
     }
 
     @Override
     public void onSpeechEnds(Recognizer recognizer) {
-        updateStatus("Speech ends");
+        updateStatus("Голос закончилось");
     }
 
     @Override
     public void onRecordingDone(Recognizer recognizer) {
-        updateStatus("Recording done");
+        updateStatus("Запись закончилось");
     }
 
     @Override
@@ -175,22 +163,28 @@ public class RecognizerSampleFragment extends Fragment implements RecognizerList
     @Override
     public void onPartialResults(Recognizer recognizer, Recognition recognition, boolean b) {
         RecognitionHypothesis[]h = recognition.getHypotheses();
-        String result = "";
-        for (int i = 0; i < h.length; i++) {
-            result += h[i].toString() + "\n";
-        }
-        textAll.setText(result);
-        updateStatus("Partial results " + recognition.getBestResultText());
+//        String result = "";
+//        for (int i = 0; i < h.length; i++) {
+//            result += h[i].toString() + "\n";
+//        }
+//        textAll.setText(result);
+//        updateStatus("Partial results " + recognition.getBestResultText());
     }
 
     @Override
     public void onRecognitionDone(Recognizer recognizer, Recognition recognition) {
-        updateResult(recognition.getBestResultText());
+        String curResult = recognition.getBestResultText();
+//        updateResult(curResult);
         all_results.clear();
         for (RecognitionHypothesis r : recognition.getHypotheses()) {
             all_results.add(r.getNormalized());
         }
         updateProgress(0);
+        Intent intent = new Intent();
+        intent.putExtra("recognated_string", curResult);
+        intent.putStringArrayListExtra("all_results", all_results);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
     }
 
     @Override
@@ -224,11 +218,12 @@ public class RecognizerSampleFragment extends Fragment implements RecognizerList
     }
 
     private void updateResult(String text) {
-        recognitionResult.setText(text);
+        resultText += text;
+//        recognitionResult.setText(resultText);
     }
 
     private void updateStatus(final String text) {
-        currentStatus.setText(text);
+//        currentStatus.setText(text);
     }
 
     private void updateProgress(int progress) {

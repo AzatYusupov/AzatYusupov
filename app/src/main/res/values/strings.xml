@@ -61,6 +61,7 @@
     <!--Yandex Speach-->
     <string name="current_state_hint">Текушие состояние</string>
     <string name="start_btn">Начать</string>
+    <string name="continue_btn">Продолжить</string>
     <string name="stop_btn">Stop</string>
     <string name="cancel_btn">Отменить</string>
 

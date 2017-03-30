@@ -136,6 +136,7 @@ public class CarNewActivity extends AppCompatActivity {
         });
 
     }
+//3VWBB61C4WM050210
 //45RT78WEDST12
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -154,8 +155,9 @@ public class CarNewActivity extends AppCompatActivity {
 //                    if (edt.getText() != null)
 //                        edt_text = edt.getText()+"";
                     String edt_text = SpeachRecogn.vinSpeach(text);
+//                    Toast.makeText(CarNewActivity.this, text.size()+"", Toast.LENGTH_LONG).show();
 //                    String edt_text = data.getExtras().getString("recognated_string");
-                    Toast.makeText(CarNewActivity.this, edt_text, Toast.LENGTH_LONG).show();
+//                    Toast.makeText(CarNewActivity.this, edt_text, Toast.LENGTH_LONG).show();
                     if (edt_text.length() > 17)
                         edt_text = edt_text.substring(0, 17);
                     edt.setText(edt_text);

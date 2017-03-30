@@ -14,86 +14,48 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/voice_volume_hint"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="12dp" />
 
     <ProgressBar
         android:id="@+id/voice_power_bar"
         style="@style/VoiceVolumeStyle"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/voice_volume_hint"
         android:max="100"
-        android:progress="0" />
+        android:progress="0"
+        android:layout_below="@+id/voice_volume_hint"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
-    <TextView
-        android:id="@+id/result_hint"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/voice_power_bar"
-        android:layout_marginTop="@dimen/element_vertical_margin"
-        android:text="@string/results_hint"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/result"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/result_hint" />
 
     <TextView
         android:id="@+id/current_state_hint"
         style="@style/CurrentStateHintStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/result"
-        android:layout_marginTop="@dimen/element_vertical_margin"
-        android:text="@string/current_state_hint" />
-
-    <TextView
-        android:id="@+id/current_state"
-        style="@style/CurrentStateTextStyle"
-        android:layout_width="match_parent"
+        android:textSize="36sp"
+        android:gravity="center"
+        android:text="Говорите!"
+        android:layout_marginTop="154dp"
+        android:layout_below="@+id/voice_power_bar"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+    <Button
+        android:layout_width="150dp"
+        android:id="@+id/btn_cancel"
         android:layout_height="wrap_content"
-        android:layout_below="@id/current_state_hint" />
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:id="@+id/btn_holder"
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-
-        android:layout_below="@id/current_state">
-        <!--style="?android:attr/buttonBarStyle"-->
-
-        <Button
-            android:id="@+id/cancel_btn"
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/cancel_btn" />
-        <!--style="?android:attr/buttonBarButtonStyle"-->
-        <Button
-            android:id="@+id/start_btn"
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/start_btn" />
-        <Button
-            android:id="@+id/finish_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/finish_btn" />
-        <!--style="?android:attr/buttonBarButtonStyle"-->
-    </LinearLayout>
-    <TextView
-        android:id="@+id/texts_all"
-        style="@style/CurrentStateTextStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btn_holder"
-        />
-
+        android:textAlignment="center"
+        android:layout_marginTop="100dp"
+        android:text="Отмена"
+        android:gravity="center"
+        android:layout_marginLeft="107dp"
+        android:layout_marginStart="107dp"
+        android:layout_below="@+id/current_state_hint"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="11dp" />
 </RelativeLayout>
