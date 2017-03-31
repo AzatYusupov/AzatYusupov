@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
@@ -25,6 +26,7 @@ import android.view.ViewManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
 //    }
     public static TextView textView;
     public static View emptyView;
+    private ProgressBar pbMain;
+    private List<CarModel> carList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -60,17 +64,61 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        pbMain = (ProgressBar) findViewById(R.id.pbMain);
         initToolbar();
+        initInternetConnection(true);
+    }
+    class MyTask extends AsyncTask<Void, Void, Boolean> {
 
-        initCarsList(true);
-        initFabNewCar();
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            return getCarList();
+        }
+        @Override
+        protected void onPostExecute(Boolean ok) {
+            super.onPostExecute(ok);
+            if (!ok) {
+                Toast.makeText(MainActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+            }
+            pbMain.setVisibility(View.GONE);
+            initCarsList();
+            initFabNewCar();
+        }
+    }
+    private boolean initInternetConnection(boolean firstTime) {
+        parentLayout = (LinearLayout) findViewById(R.id.layout_car_list);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        if (!isNetworkAvailable()) {
+            findViewById(R.id.fab_new_car).setVisibility(View.GONE);
+            if (firstTime) {
+                LayoutInflater.from(this).inflate(R.layout.no_internet_conn, (LinearLayout) findViewById(R.id.layout_car_list), true);
+                findViewById(R.id.textView).setVisibility(View.GONE);
+                params.gravity = Gravity.CENTER;
+                parentLayout.setLayoutParams(params);
+                initTryAgain();
+            }
+            return false;
+        }
+        else{
+            pbMain.setVisibility(View.VISIBLE);
+            MyTask mt = new MyTask();
+            mt.execute();
+            findViewById(R.id.fab_new_car).setVisibility(View.VISIBLE);
+            if (!firstTime) {
+                findViewById(R.id.btn_try_again).setVisibility(View.GONE);
+                findViewById(R.id.text_again).setVisibility(View.GONE);
+                params.gravity = Gravity.TOP;
+                parentLayout.setLayoutParams(params);
+            }
+            return true;
+        }
     }
     private void initTryAgain() {
         Button btnTryAgain =(Button)findViewById(R.id.btn_try_again);
         btnTryAgain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initCarsList(false);
+                initInternetConnection(false);
             }
         });
     }
@@ -80,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
-
     /**
      * Initial toolbar
      */
@@ -93,32 +140,29 @@ public class MainActivity extends AppCompatActivity {
      */
     private static LayoutInflater inflate;
     private static LinearLayout parentLayout;
-    public void initCarsList(boolean firstTime) {
-        parentLayout = (LinearLayout) findViewById(R.id.layout_car_list);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        if (!isNetworkAvailable()) {
-            findViewById(R.id.fab_new_car).setVisibility(View.GONE);
-            if (firstTime) {
-                LayoutInflater.from(this).inflate(R.layout.no_internet_conn, (LinearLayout) findViewById(R.id.layout_car_list), true);
-                findViewById(R.id.textView).setVisibility(View.GONE);
-                params.gravity = Gravity.CENTER;
-                parentLayout.setLayoutParams(params);
-                initTryAgain();
-            }
-            return;
+    private boolean getCarList() {
+        carList = new ArrayList<>();
+        HttpHandler handler = new HttpHandler();
+//        String url = Config.getMetaData(this, Config.apiUrlCars);
+        String url = Config.getUrlCars();
+        String jsonStr = handler.ReadHttpResponse(url);
+//        String jsonStr = "[{id : \"10\", imageUri : \"https://i.otto.de/i/otto/5431264/rc-auto-jamara-lamborghini-murcielago-lp-670-4-orange.jpg?$formatz$\", name : \"Name\", description : \"Desc\"}]";
+        if (jsonStr == null) {
+            return false;
         }
-        else{
-            findViewById(R.id.fab_new_car).setVisibility(View.VISIBLE);
-            if (!firstTime) {
-
-                findViewById(R.id.btn_try_again).setVisibility(View.GONE);
-                findViewById(R.id.text_again).setVisibility(View.GONE);
-                params.gravity = Gravity.TOP;
-                parentLayout.setLayoutParams(params);
+        JSONArray carsArray = null;
+        try {
+            carsArray = new JSONArray(jsonStr);
+            for (int i = 0; i < carsArray.length(); i++) {
+                carList.add(new CarModel(carsArray.getJSONObject(i).getInt("id"), carsArray.getJSONObject(i).getString("imageUri"), carsArray.getJSONObject(i).getString("name"), carsArray.getJSONObject(i).getString("description")));
             }
+            return true;
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-
-        List<CarModel> carList = new ArrayList<>();
+        return false;
+    }
+    public void initCarsList() {
 
         RecyclerView recyclerView = null;
         inflate = getLayoutInflater();
@@ -127,31 +171,11 @@ public class MainActivity extends AppCompatActivity {
         textView = (TextView) findViewById(R.id.textView);
         textView.setVisibility(View.VISIBLE);
 
-        HttpHandler handler = new HttpHandler();
-//        String url = Config.getMetaData(this, Config.apiUrlCars);
-        String url = Config.getUrlCars();
-        String jsonStr = handler.ReadHttpResponse(url);
-//        String jsonStr = "[{id : \"10\", imageUri : \"https://i.otto.de/i/otto/5431264/rc-auto-jamara-lamborghini-murcielago-lp-670-4-orange.jpg?$formatz$\", name : \"Name\", description : \"Desc\"}]";
-        if (jsonStr == null) {
-            Toast.makeText(MainActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
-            return;
-        }
-        JSONArray carsArray = null;
-        try {
-            carsArray = new JSONArray(jsonStr);
-            recyclerView = (RecyclerView) findViewById(R.id.list_car);
-            for (int i = 0; i < carsArray.length(); i++) {
-                carList.add(new CarModel(carsArray.getJSONObject(i).getInt("id"), carsArray.getJSONObject(i).getString("imageUri"), carsArray.getJSONObject(i).getString("name"), carsArray.getJSONObject(i).getString("description")));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
         if (carList.isEmpty()) {
             emptyListCars();
             return;
         }
-
+        recyclerView = (RecyclerView) findViewById(R.id.list_car);
         CarsListAdapter adapter = new CarsListAdapter(this, carList);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(mLayoutManager);
