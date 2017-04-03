@@ -15,7 +15,7 @@
             android:layout_gravity="center"
             android:layout_margin="10dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="396dp"
             android:textAlignment="center"
             android:text="@string/no_internet_connection_main"
             android:id="@+id/text_again"

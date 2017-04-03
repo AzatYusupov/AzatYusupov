@@ -158,8 +158,6 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
     }
 
     @Override
-    public int getItemCount() {
-        return carList.size();
-    }
+    public int getItemCount() { return carList.size(); }
 
 }

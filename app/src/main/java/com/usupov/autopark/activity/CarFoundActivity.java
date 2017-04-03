@@ -24,6 +24,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -181,7 +182,15 @@ public class CarFoundActivity extends AppCompatActivity {
     }
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_car_found);
+        toolbar.setNavigationIcon(R.drawable.ic_back_arrow);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(CarFoundActivity.this, CarNewActivity.class));
+                finish();;
+            }
+        });
     }
     private void initbtnSave() {
         Button btnSave = (Button) findViewById(R.id.btn_save_car);

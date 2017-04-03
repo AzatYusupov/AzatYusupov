@@ -230,7 +230,7 @@ public class PartActivity extends AppCompatActivity {
 //    }
 
     private void dfs(LinearLayout linLayout, CarCategory item, boolean first) {
-        if (!item.hasChildren()) {
+        if(!item.hasChildren()) {
 
         }
         else {
