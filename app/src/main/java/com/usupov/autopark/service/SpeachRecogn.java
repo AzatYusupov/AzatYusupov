@@ -110,6 +110,7 @@ public class SpeachRecogn {
         map.add(new Sort("р", "r"));
 
         map.add(new Sort("эс", "s"));
+        map.add(new Sort("ц", "c"));
 
         map.add(new Sort("так", "t"));
         map.add(new Sort("то", "t"));
@@ -146,6 +147,7 @@ public class SpeachRecogn {
         map.add(new Sort("\\(", ""));
         map.add(new Sort("\\)", ""));
         map.add(new Sort("\\.", ""));
+        map.add(new Sort(",", ""));
 
 
         map.add(new Sort("вида блин", "vw"));

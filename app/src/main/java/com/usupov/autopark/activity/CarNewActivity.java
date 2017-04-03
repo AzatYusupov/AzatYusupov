@@ -2,6 +2,7 @@ package com.usupov.autopark.activity;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.usupov.autopark.R;
@@ -27,6 +29,7 @@ import java.util.Locale;
 public class CarNewActivity extends AppCompatActivity {
 
     protected static final int RESULT_SPEECH = 1;
+    TextView tvVinError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,8 @@ public class CarNewActivity extends AppCompatActivity {
 
         initToolbar();
 
+        tvVinError = (TextView) findViewById(R.id.tvVinError);
+        tvVinError.setTextColor(Color.RED);
 
         initVoiceBtn();
         initVinEdittext();
@@ -67,9 +72,11 @@ public class CarNewActivity extends AppCompatActivity {
                     String jSonString = handler.ReadHttpResponse(url);
 //                    String jSonString = "{name : \"Mersedes\", description : \"Benz\"}";
                     if (jSonString==null) {
-                        Toast.makeText(CarNewActivity.this, getString(R.string.error_vin), Toast.LENGTH_LONG).show();
+                        tvVinError.setText(getString(R.string.error_vin));
+//                        Toast.makeText(CarNewActivity.this, getString(R.string.error_vin), Toast.LENGTH_LONG).show();
                     }
                     else {
+                        tvVinError.setText("");
                         JSONObject jObject = null;
                         try {
                             jObject = new JSONObject(jSonString);
@@ -88,6 +95,13 @@ public class CarNewActivity extends AppCompatActivity {
                             Toast.makeText(CarNewActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     }
+                }
+                else if (vinEditText.getText().length() > 17) {
+                    vinEditText.setText(vinEditText.getText().toString().substring(0, 17));
+                    Toast.makeText(CarNewActivity.this, getString(R.string.max_limit), Toast.LENGTH_LONG).show();
+                }
+                else {
+                    tvVinError.setText("");
                 }
             }
         });

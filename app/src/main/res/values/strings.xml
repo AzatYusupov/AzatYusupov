@@ -52,11 +52,14 @@
     <string name="no_internet_connection">Отсутствует интернет соединение</string>
     <string name="no_internet_connection_main">Отсутствует интернет соединение. Проверьте...</string>
     <string name="again_try">Повторить попытку</string>
-    <string name="error_vin">Не правильный vin номер, проверьте еще раз</string>
 
     <string name="car_success_added">Автомобиль успешно добавлено!</string>
     <string name="car_not_added">Автомобиль не добавлен!</string>
 
+    <!--Vin-->
+    <string name="error_vin">К сожалению автомобиль не найден, проверье VIN номер или воспользуйтесь поиском по
+параметрам</string>
+    <string name="max_limit">Длина Vin номера не могут больше чем 17</string>
 
     <!--Yandex Speach-->
     <string name="current_state_hint">Текушие состояние</string>

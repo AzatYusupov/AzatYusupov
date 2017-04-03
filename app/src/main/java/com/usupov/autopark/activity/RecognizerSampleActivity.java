@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import com.usupov.autopark.R;
 import android.support.v4.content.FileProvider;
+import android.view.View;
 
 /**
  * This file is a part of the samples for Yandex SpeechKit Mobile SDK.
@@ -31,8 +32,17 @@ public class RecognizerSampleActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_sample);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_yandex_spaech);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_back_arrow);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setResult(RESULT_CANCELED);
+                finish();
+            }
+        });
+        toolbar.setTitle("Yandex Speech");
     }
 
 }

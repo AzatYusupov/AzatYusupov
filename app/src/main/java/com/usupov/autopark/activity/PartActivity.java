@@ -82,7 +82,8 @@ public class PartActivity extends AppCompatActivity {
                 return;
             }
             LinearLayout lvMain = (LinearLayout) findViewById(R.id.lvMain);
-            dfs(lvMain, one0, true);
+            one0.setLinearLayout(lvMain);
+            dfs(one0, true);
         }
     }
     private String getJSONStringCategory (int carId) {
@@ -203,40 +204,43 @@ public class PartActivity extends AppCompatActivity {
 //        }
 //    }
 
-    private void dfs(LinearLayout linLayout, CarCategory item, boolean first) {
+    private void dfs(final CarCategory item, boolean first) {
+        if (item.isRealised())
+            return;
+        item.setRealised();
         if (!item.hasChildren()) {
 
         }
         else {
-            
             final LayoutInflater inflater = getLayoutInflater();
             for (final CarCategory child : item.getChildren()) {
-
-                View childView = inflater.inflate(R.layout.row_part, linLayout, false);
+                View childView = inflater.inflate(R.layout.row_part, item.getLinearLayout(), false);
                 TextView image = (TextView) childView.findViewById(R.id.partItemImage);
                 if (first) {
 //                    ImageView image = (ImageView)childView.findViewById(R.id.partItemImage);
 //                    image.setImageResource(R.drawable.ic_action_do_photo);
                     if (child.getPercent() > 0)
-                        image.setText(child.getPercent()+"%");
+                        image.setText(child.getPercent() + "%");
                     else
                         image.setText("");
                 }
                 else
                     image.setVisibility(View.INVISIBLE);
 
-                final TextView text = (TextView)childView.findViewById(R.id.partItemName);
+                final TextView text = (TextView) childView.findViewById(R.id.partItemName);
                 text.setText(child.getCategoryName());
 //                childView.setVisibility(View.VISIBLE);
+                item.getLinearLayout().addView(childView);
+                child.setView(childView);
 
-                linLayout.addView(childView);
-
-                final LinearLayout linearLayoutChildren = new LinearLayout(this);
+                final LinearLayout linearLayoutChild = new LinearLayout(this);
+                child.setLinearLayout(linearLayoutChild);
 
                 LinearLayout.LayoutParams leftMarginParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 leftMarginParams.leftMargin = leftmargin;
-                linearLayoutChildren.setVisibility(View.GONE);
+                child.getLinearLayout().setVisibility(View.GONE);
+
 
                 final ImageView arrowImage = (ImageView) childView.findViewById(R.id.partItemArrow);
                 if (child.hasChildren())
@@ -245,39 +249,36 @@ public class PartActivity extends AppCompatActivity {
                 childView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        dfs(child, false);
                         child.click();
                         if (!child.hasChildren()) {
                             Intent intent = new Intent(PartActivity.this, PartsInActivity.class);
                             intent.putExtra("carId", carId);
                             intent.putExtra("categoryId", child.getCategoryId());
-
+                            intent.putExtra("categoryName", child.getCategoryName());
                             startActivity(intent);
                             finish();
                         }
                         if (child.isFirstClick()) {
-                            linearLayoutChildren.setVisibility(View.VISIBLE);
+                            child.getLinearLayout().setVisibility(View.VISIBLE);
                             if (child.hasChildren()) {
                                 arrowImage.setImageResource(R.drawable.ic_action_arrow_opened);
-                                text.setTypeface(text.getTypeface(), Typeface.BOLD);
+                                text.setTypeface(null, Typeface.BOLD);
                             }
                         }
                         else {
                             if (child.hasChildren())
                                 arrowImage.setImageResource(R.drawable.ic_action_arrow_not_opened);
-                            linearLayoutChildren.setVisibility(View.GONE);
-                            text.setTypeface(text.getTypeface(), Typeface.NORMAL);
+                            child.getLinearLayout().setVisibility(View.GONE);
+                            text.setTypeface(null, Typeface.NORMAL);
                         }
 //                        Toast.makeText(PartActivity.this, child.getCategoryName()+" touched", Toast.LENGTH_LONG).show();
                     }
                 });
 
-                linearLayoutChildren.setOrientation(LinearLayout.VERTICAL);
-
-                linLayout.addView(linearLayoutChildren, leftMarginParams);
-                if (!first)
-                    dfs(linearLayoutChildren, child, false);
+                child.getLinearLayout().setOrientation(LinearLayout.VERTICAL);
+                item.getLinearLayout().addView(child.getLinearLayout(), leftMarginParams);
             }
         }
     }
-
 }

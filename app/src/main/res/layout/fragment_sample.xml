@@ -2,19 +2,30 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/SampleFragmentStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".activity.RecognizerSampleActivity"
     tools:showIn="@layout/activity_sample">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
 
+        android:layout_height="match_parent">
+    <include
+        android:id="@+id/toolbar_yandex_spaech"
+        layout="@layout/toolbar_yandex_speach"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        />
     <TextView
         android:id="@+id/voice_volume_hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/voice_volume_hint"
         android:textStyle="bold"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -26,6 +37,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:max="100"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:progress="0"
         android:layout_below="@+id/voice_volume_hint"
         android:layout_alignParentLeft="true"
@@ -45,17 +58,19 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
     <Button
-        android:layout_width="150dp"
-        android:id="@+id/btn_cancel"
+        android:layout_width="180dp"
+        android:id="@+id/btn_done"
+        android:textSize="20sp"
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:layout_marginTop="100dp"
-        android:text="Отмена"
+        android:text="Готов"
+        android:padding="20dp"
         android:gravity="center"
-        android:layout_marginLeft="107dp"
-        android:layout_marginStart="107dp"
+        android:layout_gravity="center"
         android:layout_below="@+id/current_state_hint"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="11dp" />
+    </LinearLayout>
 </RelativeLayout>

@@ -39,7 +39,12 @@
             android:background="@color/colorWhite"
             android:drawableRight="@drawable/ic_keyboard_voice_black"
             />
-
+        <TextView
+            android:id="@+id/tvVinError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="dsfdsf"
+           />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"

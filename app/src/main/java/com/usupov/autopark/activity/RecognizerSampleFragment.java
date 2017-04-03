@@ -63,7 +63,8 @@ public class RecognizerSampleFragment extends Fragment implements RecognizerList
 
     private Recognizer recognizer;
     private static String resultText;
-    private Button cancelBtn;
+    private Button btnDone;
+    private String curResult = "";
 
     public RecognizerSampleFragment() {
     }
@@ -91,13 +92,12 @@ public class RecognizerSampleFragment extends Fragment implements RecognizerList
 //        recognitionResult = (TextView) view.findViewById(R.id.result);
 //        textAll = (TextView) view.findViewById(R.id.texts_all);
         all_results = new ArrayList<>();
-        cancelBtn = (Button) view.findViewById(R.id.btn_cancel);
+        btnDone = (Button) view.findViewById(R.id.btn_done);
 
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
+        btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().setResult(Activity.RESULT_CANCELED, null);
-                getActivity().finish();
+                finish();
             }
         });
     }
@@ -162,7 +162,11 @@ public class RecognizerSampleFragment extends Fragment implements RecognizerList
 
     @Override
     public void onPartialResults(Recognizer recognizer, Recognition recognition, boolean b) {
-        RecognitionHypothesis[]h = recognition.getHypotheses();
+        curResult = recognition.getBestResultText();
+        all_results.clear();
+        for (RecognitionHypothesis r : recognition.getHypotheses()) {
+            all_results.add(r.getNormalized());
+        }
 //        String result = "";
 //        for (int i = 0; i < h.length; i++) {
 //            result += h[i].toString() + "\n";
@@ -173,13 +177,18 @@ public class RecognizerSampleFragment extends Fragment implements RecognizerList
 
     @Override
     public void onRecognitionDone(Recognizer recognizer, Recognition recognition) {
-        String curResult = recognition.getBestResultText();
+        curResult = recognition.getBestResultText();
 //        updateResult(curResult);
         all_results.clear();
         for (RecognitionHypothesis r : recognition.getHypotheses()) {
             all_results.add(r.getNormalized());
         }
         updateProgress(0);
+        finish();
+
+    }
+
+    private void finish() {
         Intent intent = new Intent();
         intent.putExtra("recognated_string", curResult);
         intent.putStringArrayListExtra("all_results", all_results);

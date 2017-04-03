@@ -33,13 +33,21 @@
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="40dp"
-            android:layout_marginBottom="40dp"
+            android:layout_marginBottom="2dp"
             android:elevation="8dp"
             android:hint="VIN номер"
             android:background="@color/colorWhite"
             android:drawableRight="@drawable/ic_keyboard_voice_black"
             />
-
+        <TextView
+            android:id="@+id/tvVinError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="40dp"
+            />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
