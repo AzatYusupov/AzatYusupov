@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_new_car"
@@ -33,13 +33,21 @@
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="40dp"
-            android:layout_marginBottom="40dp"
-            android:elevation="8dp"
+            android:layout_marginBottom="2dp"
+            android:elevation="2dp"
             android:hint="VIN номер"
             android:background="@color/colorWhite"
             android:drawableRight="@drawable/ic_keyboard_voice_black"
             />
-
+        <TextView
+            android:id="@+id/tvVinError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="40dp"
+            />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -141,5 +149,15 @@
         </LinearLayout>
 
     </LinearLayout>
-
-</android.support.design.widget.CoordinatorLayout>
+    <android.inputmethodservice.KeyboardView
+        android:id="@+id/keyboardview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_marginBottom="10dp"
+        android:visibility="gone"
+        />
+</RelativeLayout>

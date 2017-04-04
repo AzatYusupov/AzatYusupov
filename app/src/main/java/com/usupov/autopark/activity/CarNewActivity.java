@@ -1,21 +1,36 @@
 package com.usupov.autopark.activity;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.inputmethodservice.Keyboard;
+import android.inputmethodservice.KeyboardView;
+import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.usupov.autopark.R;
 import com.usupov.autopark.http.Config;
 import com.usupov.autopark.http.HttpHandler;
+import com.usupov.autopark.service.KeyboardChange;
 import com.usupov.autopark.service.SpeachRecogn;
 
 import org.json.JSONArray;
@@ -27,6 +42,10 @@ import java.util.Locale;
 public class CarNewActivity extends AppCompatActivity {
 
     protected static final int RESULT_SPEECH = 1;
+    TextView tvVinError;
+    private KeyboardView mKeyboardView;
+    private Keyboard vinKeyboard;
+    private EditText vinEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +55,12 @@ public class CarNewActivity extends AppCompatActivity {
 
         initToolbar();
 
+        initVinKeyboard();
+
+        tvVinError = (TextView) findViewById(R.id.tvVinError);
+        tvVinError.setTextColor(Color.RED);
+
+
 
         initVoiceBtn();
         initVinEdittext();
@@ -44,14 +69,84 @@ public class CarNewActivity extends AppCompatActivity {
     /**
      * Initial toolbar
      */
+    public void initVinKeyboard() {
+        Keyboard vinKeyboard = new Keyboard(this, R.xml.keyboard_vin);
+        mKeyboardView = (KeyboardView) findViewById(R.id.keyboardview);
+        mKeyboardView.setKeyboard(vinKeyboard);
+
+        mKeyboardView.setOnKeyboardActionListener(mOnKeyboardActionListener);
+    }
+    public void openKeyboard(View v)
+    {
+        mKeyboardView.setVisibility(View.VISIBLE);
+        mKeyboardView.setEnabled(true);
+        if( v!=null)((InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(v.getWindowToken(), 0);
+    }
+    private KeyboardView.OnKeyboardActionListener mOnKeyboardActionListener = new KeyboardView.OnKeyboardActionListener() {
+        @Override
+        public void onPress(int primaryCode) {
+        }
+        @Override
+        public void onRelease(int primaryCode) {
+        }
+        @Override
+        public void onKey(int primaryCode, int[] keyCodes) {
+            int postionCursor = vinEditText.getSelectionStart();
+            StringBuffer textValue = new StringBuffer(vinEditText.getText());
+            if (primaryCode==-1) {
+                if (postionCursor==0)
+                    return;
+                textValue.deleteCharAt(postionCursor-1);
+                vinEditText.setText(textValue);
+                vinEditText.setSelection(postionCursor-1);
+            }
+            else if (primaryCode==100) {
+                mKeyboardView.setVisibility(View.GONE);
+            }
+            else {
+                if (textValue.length()==17)
+                    return;
+                if (primaryCode==81 || primaryCode==79)
+                    primaryCode = 48;
+                if (primaryCode==73)
+                    primaryCode = 49;
+                textValue.insert(postionCursor, (char)(primaryCode)+"");
+                vinEditText.setText(textValue);
+                vinEditText.setSelection(postionCursor+1);
+            }
+        }
+        @Override
+        public void onText(CharSequence text) {
+        }
+        @Override
+        public void swipeLeft() {
+        }
+        @Override
+        public void swipeRight() {
+        }
+        @Override
+        public void swipeDown() {
+        }
+        @Override
+        public void swipeUp() {
+        }
+    };
     public void initVinEdittext() {
-        final EditText vinEditText = (EditText)findViewById(R.id.edittext_vin_number);
+        vinEditText = (EditText)findViewById(R.id.edittext_vin_number);
+
         final HttpHandler handler = new HttpHandler();
         final String urlVin = Config.getUrlVin();
+        vinEditText.setOnClickListener(new View.OnClickListener() {
+//            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+            @Override
+            public void onClick(View v) {
+                openKeyboard(vinEditText);
+            }
+        });
         vinEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                
             }
 
             @Override
@@ -67,9 +162,11 @@ public class CarNewActivity extends AppCompatActivity {
                     String jSonString = handler.ReadHttpResponse(url);
 //                    String jSonString = "{name : \"Mersedes\", description : \"Benz\"}";
                     if (jSonString==null) {
-                        Toast.makeText(CarNewActivity.this, getString(R.string.error_vin), Toast.LENGTH_LONG).show();
+                        tvVinError.setText(getString(R.string.error_vin));
+//                        Toast.makeText(CarNewActivity.this, getString(R.string.error_vin), Toast.LENGTH_LONG).show();
                     }
                     else {
+                        tvVinError.setText("");
                         JSONObject jObject = null;
                         try {
                             jObject = new JSONObject(jSonString);
@@ -85,9 +182,16 @@ public class CarNewActivity extends AppCompatActivity {
                             finish();
                         }
                         catch (Exception e) {
-                            Toast.makeText(CarNewActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+//                            Toast.makeText(CarNewActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     }
+                }
+                else if (vinEditText.getText().length() > 17) {
+                    vinEditText.setText(vinEditText.getText().toString().substring(0, 17));
+//                    Toast.makeText(CarNewActivity.this, getString(R.string.max_limit), Toast.LENGTH_LONG).show();
+                }
+                else {
+                    tvVinError.setText("");
                 }
             }
         });
@@ -125,21 +229,8 @@ public class CarNewActivity extends AppCompatActivity {
 
                     if(event.getRawX() >= (edt.getRight() - edt.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
 
-                        Intent intent = new Intent(
-                                RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-//                        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-//                        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-//                                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, "RU");
-                        try {
-                            startActivityForResult(intent, RESULT_SPEECH);
-                            edt.setText("");
-                        } catch (ActivityNotFoundException a) {
-                            Toast t = Toast.makeText(getApplicationContext(),
-                                    "Opps! Your device doesn't support Speech to Text",
-                                    Toast.LENGTH_SHORT);
-                            t.show();
-                        }
+                        Intent intent = new Intent(CarNewActivity.this, RecognizerSampleActivity.class);
+                        startActivityForResult(intent, RESULT_SPEECH);
 
                         return true;
                     }
@@ -149,6 +240,7 @@ public class CarNewActivity extends AppCompatActivity {
         });
 
     }
+//3VWBB61C4WM050210
 //45RT78WEDST12
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -159,16 +251,19 @@ public class CarNewActivity extends AppCompatActivity {
             case RESULT_SPEECH: {
                 if (resultCode == RESULT_OK && null != data) {
                     ArrayList<String> text = data
-                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-
+                            .getStringArrayListExtra("all_results");
                     EditText edt = (EditText) findViewById(R.id.edittext_vin_number);
 //                    edt.setText(text.get(0));
 
-                    String edt_text = "";
-                    if (edt.getText() != null)
-                        edt_text = edt.getText()+"";
-                    edt_text = SpeachRecogn.vinSpeach(text);
-                    Toast.makeText(CarNewActivity.this, edt_text, Toast.LENGTH_LONG).show();
+//                    String edt_text = "";
+//                    if (edt.getText() != null)
+//                        edt_text = edt.getText()+"";
+                    String edt_text = SpeachRecogn.vinSpeach(text);
+//                    Toast.makeText(CarNewActivity.this, text.size()+"", Toast.LENGTH_LONG).show();
+//                    String edt_text = data.getExtras().getString("recognated_string");
+//                    Toast.makeText(CarNewActivity.this, edt_text, Toast.LENGTH_LONG).show();
+                    if (edt_text.length() > 17)
+                        edt_text = edt_text.substring(0, 17);
                     edt.setText(edt_text);
                 }
                 break;

@@ -1,8 +1,10 @@
 package com.usupov.autopark.activity;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,9 +28,7 @@ import com.usupov.autopark.model.CarCategory;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Locale;
 
 public class PartActivity extends AppCompatActivity {
@@ -37,83 +38,58 @@ public class PartActivity extends AppCompatActivity {
     private static int carId;
 
     private static int leftmargin = 20;
+    private ProgressBar pbPart;
+    private CarCategory one0;
+    Context context;
+    MyTask mt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_part);
 
+        context = this;
         initTollbar();
 
         String carName = getIntent().getExtras().getString("carName");
         carId = getIntent().getExtras().getInt("carId");
 
 //        Toast.makeText(PartActivity.this, carId+"", Toast.LENGTH_LONG).show();
-
+        one0 = new CarCategory("", 0, 0);
         TextView carNameText = (TextView) findViewById(R.id.part_car_name);
         carNameText.setText(carName);
-
-//        CarCategory one1 = new CarCategory("Внутренняя отделка");
-//        CarCategory one2 = new CarCategory("Двигатель");
-//        CarCategory one3 = new CarCategory("Кузов");
-//        CarCategory one4 = new CarCategory("Подвеска амортизации");
-//        CarCategory one5 = new CarCategory("Подвеска оси/система подвески колес");
-//            CarCategory one11 = new CarCategory("Балка моста/подвески оси");
-//            CarCategory one12 = new CarCategory("Подвеска поперечного рычага");
-//                CarCategory one13 = new CarCategory("Подвеска/крепление ходовой части");
-//                CarCategory one14 = new CarCategory("Рычаг (поперечный, диагональный, продольный)");
-//                    CarCategory one15 = new CarCategory("Рычаг независимой подвески колеса, подвеска колеса");
-//        CarCategory one6 = new CarCategory("Подготовка топливной системы");
-//        CarCategory one7 = new CarCategory("Ременный привод");
-//        CarCategory one8 = new CarCategory("Рулевое управление");
-//        CarCategory one9 = new CarCategory("Система зажигания, накаливания");
-//        CarCategory one10 = new CarCategory("Система охлаждения");
-//
-//        one5.getChildren().add(one11);
-//        one5.getChildren().add(one12);
-//        one12.getChildren().add(one13);
-//        one12.getChildren().add(one14);
-//        one14.getChildren().add(one15);
-//
-//        CarCategory one0 = new CarCategory("");
-//        one0.getChildren().add(one1);
-//        one0.getChildren().add(one2);
-//        one0.getChildren().add(one3);
-//        one0.getChildren().add(one4);
-//        one0.getChildren().add(one5);
-//        one0.getChildren().add(one6);
-//        one0.getChildren().add(one7);
-//        one0.getChildren().add(one8);
-//        one0.getChildren().add(one9);
-//        one0.getChildren().add(one10);
-
-
-        long s1 = System.currentTimeMillis();
-        String jSonStringCategory = getJSONStringCategory(carId);
-        long s2 = System.currentTimeMillis();
-        System.out.println("get Data time: "+(s2-s1)+" ms");
-        if (jSonStringCategory==null) {
-            Toast.makeText(PartActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        CarCategory one0 = new CarCategory("", 0, 0);
-        long t1 = System.currentTimeMillis();
-        go(one0, jSonStringCategory);
-        long t2 = System.currentTimeMillis();
-
-        LinearLayout lvMain = (LinearLayout) findViewById(R.id.lvMain);
-        dfs(lvMain, one0, true);
-        long t3 = System.currentTimeMillis();
-        System.out.println("go time : "+(t2-t1)+" ms");
-        System.out.println("dfs time : "+(t3-t2)+" ms");
-
+        pbPart = (ProgressBar) findViewById(R.id.pbParst);
+        mt = new MyTask();
+        mt.execute();
 //        iniSpeak();
     }
+    class MyTask extends AsyncTask<Void, Void, Boolean> {
 
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            String jSonStringCategory = getJSONStringCategory(carId);
+            if (jSonStringCategory==null)
+                return false;
+            go(one0, jSonStringCategory);
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean ok) {
+            super.onPostExecute(ok);
+            pbPart.setVisibility(View.GONE);
+            if (!ok) {
+                Toast.makeText(PartActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+                return;
+            }
+            LinearLayout lvMain = (LinearLayout) findViewById(R.id.lvMain);
+            one0.setLinearLayout(lvMain);
+            dfs(one0, true);
+        }
+    }
     private String getJSONStringCategory (int carId) {
         String url = Config.getUrlCar()+carId+"/"+Config.getpathCategory();
         System.out.println("URLLL="+url);
-        Toast.makeText(PartActivity.this, url, Toast.LENGTH_LONG).show();
+//        Toast.makeText(PartActivity.this, url, Toast.LENGTH_LONG).show();
         HttpHandler handler = new HttpHandler();
         String result = handler.ReadHttpResponse(url);
         return result;
@@ -139,7 +115,6 @@ public class PartActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
 
     private void initTollbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_part);
@@ -229,40 +204,43 @@ public class PartActivity extends AppCompatActivity {
 //        }
 //    }
 
-    private void dfs(LinearLayout linLayout, CarCategory item, boolean first) {
-        if(!item.hasChildren()) {
+    private void dfs(final CarCategory item, boolean first) {
+        if (item.isRealised())
+            return;
+        item.setRealised();
+        if (!item.hasChildren()) {
 
         }
         else {
-
             final LayoutInflater inflater = getLayoutInflater();
             for (final CarCategory child : item.getChildren()) {
-
-                View childView = inflater.inflate(R.layout.row_part, linLayout, false);
+                View childView = inflater.inflate(R.layout.row_part, item.getLinearLayout(), false);
                 TextView image = (TextView) childView.findViewById(R.id.partItemImage);
                 if (first) {
 //                    ImageView image = (ImageView)childView.findViewById(R.id.partItemImage);
 //                    image.setImageResource(R.drawable.ic_action_do_photo);
                     if (child.getPercent() > 0)
-                        image.setText(child.getPercent()+"%");
+                        image.setText(child.getPercent() + "%");
                     else
                         image.setText("");
                 }
                 else
                     image.setVisibility(View.INVISIBLE);
 
-                final TextView text = (TextView)childView.findViewById(R.id.partItemName);
+                final TextView text = (TextView) childView.findViewById(R.id.partItemName);
                 text.setText(child.getCategoryName());
 //                childView.setVisibility(View.VISIBLE);
+                item.getLinearLayout().addView(childView);
+                child.setView(childView);
 
-                linLayout.addView(childView);
-
-                final LinearLayout linearLayoutChildren = new LinearLayout(this);
+                final LinearLayout linearLayoutChild = new LinearLayout(this);
+                child.setLinearLayout(linearLayoutChild);
 
                 LinearLayout.LayoutParams leftMarginParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 leftMarginParams.leftMargin = leftmargin;
-                linearLayoutChildren.setVisibility(View.GONE);
+                child.getLinearLayout().setVisibility(View.GONE);
+
 
                 final ImageView arrowImage = (ImageView) childView.findViewById(R.id.partItemArrow);
                 if (child.hasChildren())
@@ -271,6 +249,7 @@ public class PartActivity extends AppCompatActivity {
                 childView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        dfs(child, false);
                         child.click();
                         if (!child.hasChildren()) {
                             Intent intent = new Intent(PartActivity.this, PartsInActivity.class);
@@ -281,26 +260,24 @@ public class PartActivity extends AppCompatActivity {
                             finish();
                         }
                         if (child.isFirstClick()) {
-                            linearLayoutChildren.setVisibility(View.VISIBLE);
+                            child.getLinearLayout().setVisibility(View.VISIBLE);
                             if (child.hasChildren()) {
                                 arrowImage.setImageResource(R.drawable.ic_action_arrow_opened);
-                                text.setTypeface(text.getTypeface(), Typeface.BOLD);
+                                text.setTypeface(null, Typeface.BOLD);
                             }
                         }
                         else {
                             if (child.hasChildren())
                                 arrowImage.setImageResource(R.drawable.ic_action_arrow_not_opened);
-                            linearLayoutChildren.setVisibility(View.GONE);
-                            text.setTypeface(text.getTypeface(), Typeface.NORMAL);
+                            child.getLinearLayout().setVisibility(View.GONE);
+                            text.setTypeface(null, Typeface.NORMAL);
                         }
 //                        Toast.makeText(PartActivity.this, child.getCategoryName()+" touched", Toast.LENGTH_LONG).show();
                     }
                 });
 
-                linearLayoutChildren.setOrientation(LinearLayout.VERTICAL);
-
-                linLayout.addView(linearLayoutChildren, leftMarginParams);
-                dfs(linearLayoutChildren, child, false);
+                child.getLinearLayout().setOrientation(LinearLayout.VERTICAL);
+                item.getLinearLayout().addView(child.getLinearLayout(), leftMarginParams);
             }
         }
     }

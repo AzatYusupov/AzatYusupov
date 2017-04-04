@@ -31,7 +31,6 @@ public class SpeachRecogn {
     }
     public static String vinSpeach(ArrayList<String> text) {
 
-
         ArrayList<Sort> map = new ArrayList<>();
 
         map.add(new Sort("раз", "1"));
@@ -52,7 +51,6 @@ public class SpeachRecogn {
         map.add(new Sort("восемь", "8"));
 
         map.add(new Sort("девять", "9"));
-
 
         map.add(new Sort("эй", "a"));
         map.add(new Sort("а", "a"));
@@ -112,6 +110,7 @@ public class SpeachRecogn {
         map.add(new Sort("р", "r"));
 
         map.add(new Sort("эс", "s"));
+        map.add(new Sort("ц", "c"));
 
         map.add(new Sort("так", "t"));
         map.add(new Sort("то", "t"));
@@ -145,6 +144,10 @@ public class SpeachRecogn {
 
         map.add(new Sort(" ", ""));
         map.add(new Sort("-", ""));
+        map.add(new Sort("\\(", ""));
+        map.add(new Sort("\\)", ""));
+        map.add(new Sort("\\.", ""));
+        map.add(new Sort(",", ""));
 
 
         map.add(new Sort("вида блин", "vw"));
@@ -153,7 +156,9 @@ public class SpeachRecogn {
         map.add(new Sort("вида", "vw"));
 
         Collections.sort(map);
+
         String res = "";
+
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++");
         for (int i = 0; i < text.size(); i++) {
             String variant = text.get(i).trim();
@@ -172,15 +177,13 @@ public class SpeachRecogn {
                 System.out.println("variant="+variant+" hasn't been sent to the server");
             variant = variant.toLowerCase();
             System.out.println(variant+"   ------");
-
             for (Sort s : map) {
+//                System.out.println(s.key+" "+s.value+" 88888888888888888888888888888");
                 variant = variant.replaceAll(s.key, s.value.trim());
             }
-
             //78954621358741001
-
             System.out.println(variant+"    ++++++++");
-            if (variant.length() <= 17 && variant.length() > res.length())
+            if (res.length()==0)
                 res = variant;
         }
         return res;
