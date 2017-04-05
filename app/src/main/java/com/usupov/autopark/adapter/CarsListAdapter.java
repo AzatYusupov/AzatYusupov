@@ -2,9 +2,11 @@ package com.usupov.autopark.adapter;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DecorContentParent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -70,24 +72,38 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
                     public boolean onMenuItemClick(MenuItem item) {
 
                         switch (item.getItemId()) {
-
                             case R.id.btnCareDelete:
-                                System.out.println("Deleted car id = "+carList.get(position).getId());
-                                boolean result = handler.deleteQuery(urlCarDelete+carList.get(position).getId());
-                                String message = carList.get(position).getFullName()+" ";
-                                if (result) {
-                                    carList.remove(position);
-                                    notifyItemRemoved(position);
-                                    notifyDataSetChanged();
-                                    message += context.getString(R.string.car_success_deleted);
-                                    System.out.println("Removed id : "+position);
-                                    if (carList.isEmpty()) {
-                                       MainActivity.emptyListCars();
-                                    }
-                                }
-                                else
-                                    message += context.getString(R.string.car_not_deleted);
-                                Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                                new AlertDialog.Builder(context)
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .setTitle("Удалить автомобиль")
+                                        .setMessage("Вместе с удалением автомобиля из гаража будут удалены все запчасти," +
+                                                " добавленные к нему. Вы уверены, что хотите удалить автомобиль "
+                                                + carList.get(position).getFullName() + "?")
+                                        .setPositiveButton("Да", new DialogInterface.OnClickListener()
+                                        {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                System.out.println("Deleted car id = "+carList.get(position).getId());
+                                                boolean result = handler.deleteQuery(urlCarDelete+carList.get(position).getId());
+                                                String message = carList.get(position).getFullName()+" ";
+                                                if (result) {
+                                                    carList.remove(position);
+                                                    notifyItemRemoved(position);
+                                                    notifyDataSetChanged();
+                                                    message += context.getString(R.string.car_success_deleted);
+                                                    System.out.println("Removed id : "+position);
+                                                    if (carList.isEmpty()) {
+                                                        MainActivity.emptyListCars();
+                                                    }
+                                                }
+                                                else
+                                                    message += context.getString(R.string.car_not_deleted);
+                                                Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                                            }
+
+                                        })
+                                        .setNegativeButton("Нет", null)
+                                        .show();
                                 return true;
                             case R.id.btnCarEdit:
                                 //
