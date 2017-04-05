@@ -13,7 +13,7 @@
 
         android:orientation="vertical">
         <include
-            android:id="@+id/toolbar_new_car"
+            android:id="@+id/toolbar_car_found"
             layout="@layout/toolbar_car_found"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

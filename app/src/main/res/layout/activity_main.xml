@@ -36,6 +36,7 @@
                 >
 
                 <TextView
+
                     android:text="Выбрать автомобиль"
                     android:visibility="gone"
                     android:layout_width="match_parent"

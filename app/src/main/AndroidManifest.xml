@@ -86,7 +86,7 @@
             android:label="@string/app_part">
         </activity>
         <activity android:name=".activity.RecognizerSampleActivity"
-            android:label="Yandex Speach">
+            android:label="Yandex Speech">
         </activity>
     </application>
 

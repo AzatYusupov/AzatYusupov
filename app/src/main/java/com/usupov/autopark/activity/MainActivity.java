@@ -53,7 +53,10 @@ public class MainActivity extends AppCompatActivity {
     public static TextView textView;
     public static View emptyView;
     private ProgressBar pbMain;
-    private List<CarModel> carList;
+    public static List<CarModel> carList;
+    private RecyclerView recyclerView;
+    public static TextView tvEmptyCarList;
+    public static String msgCarsNotFound, msgCarNotYet;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -65,7 +68,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         pbMain = (ProgressBar) findViewById(R.id.pbMain);
+
         initToolbar();
+        initEmptyView();
+        initRecyclerview();
+
         initInternetConnection(true);
     }
     class MyTask extends AsyncTask<Void, Void, Boolean> {
@@ -81,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
             }
             pbMain.setVisibility(View.GONE);
-            initCarsList();
+            initCarsList(carList);
             initFabNewCar();
         }
     }
@@ -162,35 +169,50 @@ public class MainActivity extends AppCompatActivity {
         }
         return false;
     }
-    public void initCarsList() {
-
-        RecyclerView recyclerView = null;
-        inflate = getLayoutInflater();
-        parentLayout = (LinearLayout) findViewById(R.id.layout_car_list);
-
-        textView = (TextView) findViewById(R.id.textView);
-        textView.setVisibility(View.VISIBLE);
-
-        if (carList.isEmpty()) {
-            emptyListCars();
-            return;
-        }
+    private void  initRecyclerview() {
         recyclerView = (RecyclerView) findViewById(R.id.list_car);
-        CarsListAdapter adapter = new CarsListAdapter(this, carList);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
         recyclerView.setNestedScrollingEnabled(false);
     }
+    public void initCarsList(List<CarModel> carList1) {
+        tvEmptyCarList.setText("");
+        textView.setVisibility(View.VISIBLE);
+        CarsListAdapter adapter = new CarsListAdapter(this, carList1);
+        recyclerView.setAdapter(adapter);
 
-    public static void emptyListCars() {
+        if (carList.isEmpty()) {
+            textView.setVisibility(View.GONE);
+            tvEmptyCarList.setText(getString(R.string.car_list_empty));
+            return;
+        }
+        if (carList1.isEmpty()) {
+            textView.setVisibility(View.GONE);
+            tvEmptyCarList.setText(getString(R.string.car_list_empty1));
+            return;
+        }
+    }
+    private void initEmptyView() {
+        textView = (TextView) findViewById(R.id.textView);
+        msgCarsNotFound = getString(R.string.car_list_empty1);
+        msgCarNotYet = getString(R.string.car_list_empty);
+
+        inflate = getLayoutInflater();
+        parentLayout = (LinearLayout) findViewById(R.id.layout_car_list);
+        emptyView = inflate.inflate(R.layout.empty_car_list, parentLayout, true);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         parentLayout.setLayoutParams(params);
         params.gravity = Gravity.CENTER;
-        emptyView = inflate.inflate(R.layout.empty_car_list, parentLayout, true);
+        tvEmptyCarList = (TextView) emptyView.findViewById(R.id.empty_car_list);
+    }
+    public static void tryEmpty() {
         textView.setVisibility(View.GONE);
-        emptyView.setVisibility(View.VISIBLE);
+        if (carList.isEmpty()) {
+            tvEmptyCarList.setText(msgCarNotYet);
+            return;
+        }
+        tvEmptyCarList.setText(msgCarsNotFound);
     }
 
     private void initFabNewCar() {
@@ -216,8 +238,31 @@ public class MainActivity extends AppCompatActivity {
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filtreCars(newText);
+                return false;
+            }
+        });
         return true;
 
+    }
+    private void filtreCars(String matchString) {
+        matchString = matchString.toLowerCase().trim();
+        List<CarModel> filteredCarList = new ArrayList<>();
+        for (CarModel car : carList) {
+            String fulName = car.getFullName().toLowerCase();
+            if (fulName.indexOf(matchString) >= 0) {
+                filteredCarList.add(car);
+            }
+        }
+        initCarsList(filteredCarList);
     }
 
     @Override

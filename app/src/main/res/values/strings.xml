@@ -49,6 +49,7 @@
     <string name="car_success_deleted">успешно удалено!</string>
     <string name="car_not_deleted">не удалено.</string>
     <string name="car_list_empty">У вас пока нет автомобилей</string>
+    <string name="car_list_empty1">Автомобили не найдены</string>
     <string name="no_internet_connection">Отсутствует интернет соединение</string>
     <string name="no_internet_connection_main">Отсутствует интернет соединение. Проверьте...</string>
     <string name="again_try">Повторить попытку</string>

@@ -1,43 +1,29 @@
 package com.usupov.autopark.activity;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
-import android.os.Build;
 import android.os.Bundle;
-import android.speech.RecognizerIntent;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.usupov.autopark.R;
 import com.usupov.autopark.http.Config;
 import com.usupov.autopark.http.HttpHandler;
-import com.usupov.autopark.service.KeyboardChange;
 import com.usupov.autopark.service.SpeachRecogn;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class CarNewActivity extends AppCompatActivity {
 
@@ -59,8 +45,6 @@ public class CarNewActivity extends AppCompatActivity {
 
         tvVinError = (TextView) findViewById(R.id.tvVinError);
         tvVinError.setTextColor(Color.RED);
-
-
 
         initVoiceBtn();
         initVinEdittext();
@@ -133,7 +117,7 @@ public class CarNewActivity extends AppCompatActivity {
     };
     public void initVinEdittext() {
         vinEditText = (EditText)findViewById(R.id.edittext_vin_number);
-
+        vinEditText.setBackgroundResource(R.drawable.vin_right_border);
         final HttpHandler handler = new HttpHandler();
         final String urlVin = Config.getUrlVin();
         vinEditText.setOnClickListener(new View.OnClickListener() {
@@ -146,7 +130,7 @@ public class CarNewActivity extends AppCompatActivity {
         vinEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                
+
             }
 
             @Override
@@ -163,10 +147,12 @@ public class CarNewActivity extends AppCompatActivity {
 //                    String jSonString = "{name : \"Mersedes\", description : \"Benz\"}";
                     if (jSonString==null) {
                         tvVinError.setText(getString(R.string.error_vin));
+                        vinEditText.setBackgroundResource(R.drawable.vin_error_border);
 //                        Toast.makeText(CarNewActivity.this, getString(R.string.error_vin), Toast.LENGTH_LONG).show();
                     }
                     else {
                         tvVinError.setText("");
+                        vinEditText.setBackgroundResource(R.drawable.vin_right_border);
                         JSONObject jObject = null;
                         try {
                             jObject = new JSONObject(jSonString);
@@ -192,6 +178,7 @@ public class CarNewActivity extends AppCompatActivity {
                 }
                 else {
                     tvVinError.setText("");
+                    vinEditText.setBackgroundResource(R.drawable.vin_right_border);
                 }
             }
         });

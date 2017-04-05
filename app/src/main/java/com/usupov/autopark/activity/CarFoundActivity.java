@@ -182,6 +182,14 @@ public class CarFoundActivity extends AppCompatActivity {
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_car_found);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_back_arrow);
+        toolbar.setNavigationOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(CarFoundActivity.this, CarNewActivity.class));
+                finish();
+            }
+        });
     }
     private void initbtnSave() {
         Button btnSave = (Button) findViewById(R.id.btn_save_car);
