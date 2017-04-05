@@ -188,7 +188,7 @@ public class CarFoundActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(CarFoundActivity.this, CarNewActivity.class));
-                finish();;
+                finish();
             }
         });
     }

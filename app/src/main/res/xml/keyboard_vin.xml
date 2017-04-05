@@ -49,9 +49,9 @@
         <Key android:codes="66"    android:keyLabel="B" android:horizontalGap="0.5%p"/>
         <Key android:codes="78"    android:keyLabel="N" android:horizontalGap="0.5%p" />
         <Key android:codes="77"    android:keyLabel="M" android:horizontalGap="0.5%p"/>
-        <Key android:codes="-1"    android:keyLabel="Backspace" android:keyWidth="15%p" android:horizontalGap="2%p"/>
     </Row>
     <Row>
-        <Key android:codes="100"   android:keyLabel="Закрыть" android:keyWidth="30%p" android:horizontalGap="35%p"/>
+        <Key android:codes="-1"    android:keyLabel="Backspace" android:keyWidth="30%p" android:horizontalGap="15%p"/>
+        <Key android:codes="100"   android:keyLabel="Закрыть" android:keyWidth="30%p" android:horizontalGap="5%p"/>
     </Row>
 </Keyboard>

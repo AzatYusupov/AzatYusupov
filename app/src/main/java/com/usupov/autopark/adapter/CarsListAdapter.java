@@ -83,17 +83,25 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
                                         {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                System.out.println("Deleted car id = "+carList.get(position).getId());
-                                                boolean result = handler.deleteQuery(urlCarDelete+carList.get(position).getId());
+                                                int carId = carList.get(position).getId();
+                                                System.out.println("Deleted car id = "+carId);
+                                                boolean result = handler.deleteQuery(urlCarDelete+carId);
                                                 String message = carList.get(position).getFullName()+" ";
                                                 if (result) {
                                                     carList.remove(position);
+                                                    for (int i = 0; i < MainActivity.carList.size(); i++) {
+                                                        if (MainActivity.carList.get(i).getId()==carId) {
+                                                            MainActivity.carList.remove(i);
+                                                            break;
+                                                        }
+                                                    }
                                                     notifyItemRemoved(position);
                                                     notifyDataSetChanged();
                                                     message += context.getString(R.string.car_success_deleted);
                                                     System.out.println("Removed id : "+position);
+
                                                     if (carList.isEmpty()) {
-                                                        MainActivity.emptyListCars();
+                                                        MainActivity.tryEmpty();
                                                     }
                                                 }
                                                 else
@@ -136,7 +144,6 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-
         CarModel carListItem = carList.get(position);
         holder.fullName.setText(carListItem.getFullName());
         holder.description.setText(carListItem.getDescription());
