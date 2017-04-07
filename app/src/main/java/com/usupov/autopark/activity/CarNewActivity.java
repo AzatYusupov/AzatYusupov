@@ -69,9 +69,12 @@ public class CarNewActivity extends AppCompatActivity {
     private KeyboardView.OnKeyboardActionListener mOnKeyboardActionListener = new KeyboardView.OnKeyboardActionListener() {
         @Override
         public void onPress(int primaryCode) {
+            if (primaryCode==-1 || primaryCode==100 || primaryCode==101)
+                mKeyboardView.setPreviewEnabled(false);
         }
         @Override
         public void onRelease(int primaryCode) {
+            mKeyboardView.setPreviewEnabled(true);
         }
         @Override
         public void onKey(int primaryCode, int[] keyCodes) {
@@ -86,6 +89,9 @@ public class CarNewActivity extends AppCompatActivity {
             }
             else if (primaryCode==100) {
                 mKeyboardView.setVisibility(View.GONE);
+            }
+            else if (primaryCode==101) {
+                vinEditText.setText("");
             }
             else {
                 if (textValue.length()==17)
