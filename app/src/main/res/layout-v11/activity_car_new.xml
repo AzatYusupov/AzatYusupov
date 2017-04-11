@@ -48,6 +48,14 @@
             android:layout_marginRight="10dp"
             android:layout_marginBottom="40dp"
             />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:gravity="center_horizontal"
+            android:background="@color/windowBackground"
+            android:text="Искать по оригинальному каталогу" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -56,19 +64,14 @@
             android:elevation="8dp"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:textColor="@android:color/black"
-                android:gravity="center_horizontal"
-                android:text="Искать по оригинальному каталогу" />
             <LinearLayout
+                android:id="@+id/brand"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="?android:attr/listPreferredItemHeight"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
+                android:layout_marginTop="10dp"
                 >
                 <TextView
                     android:layout_width="78dp"
@@ -81,6 +84,7 @@
                     />
 
                 <TextView
+                    android:id="@+id/selectedBranName"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="не выбран"
@@ -91,13 +95,19 @@
                     />
 
             </LinearLayout>
-
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/windowBackground"
+                >
+            </View>
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="?android:attr/listPreferredItemHeight"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
+                android:layout_marginTop="10dp"
                 >
 
                 <TextView
@@ -111,6 +121,7 @@
                     />
 
                 <TextView
+                    android:id="@+id/selectedModelName"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="не выбрана"
@@ -121,13 +132,19 @@
                     />
 
             </LinearLayout>
-
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/windowBackground"
+                >
+            </View>
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="?android:attr/listPreferredItemHeight"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
+                android:layout_marginTop="10dp"
                 >
 
                 <TextView
@@ -141,6 +158,7 @@
                     />
 
                 <TextView
+                    android:id="@+id/selectedYear"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="не выбран"

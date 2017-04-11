@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.usupov.autopark">
 
-    <!--<uses-sdk android:minSdkVersion="16" android:targetSdkVersion="25" />-->
+    <!-- <uses-sdk android:minSdkVersion="16" android:targetSdkVersion="25" /> -->
 
     <input-method xmlns:android="http://schemas.android.com/apk/res/android"
-        android:settingsActivity="com.menny.android.anysoftkeyboard.MainSettings"/>
+        android:settingsActivity="com.menny.android.anysoftkeyboard.MainSettings" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
 
     <uses-feature
         android:name="android.hardware.camera2"
@@ -35,7 +32,7 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
 
-        <!--<meta-data android:name="api_url_cars" android:value="http://88.99.174.4:8080/api/cars"></meta-data>-->
+        <!-- <meta-data android:name="api_url_cars" android:value="http://88.99.174.4:8080/api/cars"></meta-data> -->
 
         <activity
             android:name=".activity.MainActivity"
@@ -48,29 +45,23 @@
         <activity
             android:name=".activity.PartsInActivity"
             android:label="@string/title_activity_part"
-            android:theme="@style/AppTheme">
-
-        </activity>
-
+            android:theme="@style/AppTheme"></activity>
         <activity
             android:name=".activity.CarFoundActivity"
-            android:label="@string/app_car_new">
-        </activity>
-
+            android:label="@string/app_car_new"></activity>
         <activity
             android:name=".activity.CameraActivity"
             android:configChanges="orientation"
             android:label="@string/capture_image">
+
             <!-- android:screenOrientation="landscape" -->
         </activity>
-
         <activity
-            android:configChanges="keyboard|keyboardHidden|navigation"
             android:name=".activity.CarNewActivity"
+            android:configChanges="keyboard|keyboardHidden|navigation"
             android:label="@string/app_car_new">
 
         </activity>
-
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -82,12 +73,13 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".activity.PartActivity"
-            android:label="@string/app_part">
-        </activity>
-        <activity android:name=".activity.RecognizerSampleActivity"
-            android:label="Yandex Speech">
-        </activity>
+        <activity
+            android:name=".activity.PartActivity"
+            android:label="@string/app_part"></activity>
+        <activity
+            android:name=".activity.RecognizerSampleActivity"
+            android:label="Yandex Speech"></activity>
+        <activity android:name=".activity.SelectBrand"></activity>
     </application>
 
 </manifest>

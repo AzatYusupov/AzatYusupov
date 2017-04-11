@@ -14,24 +14,33 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.usupov.autopark.R;
 import com.usupov.autopark.http.Config;
 import com.usupov.autopark.http.HttpHandler;
+import com.usupov.autopark.model.CarBrand;
 import com.usupov.autopark.service.SpeachRecogn;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CarNewActivity extends AppCompatActivity {
 
     protected static final int RESULT_SPEECH = 1;
+    protected static final int RESULT_BRAND = 2;
     TextView tvVinError;
     private KeyboardView mKeyboardView;
     private Keyboard vinKeyboard;
     private EditText vinEditText;
+
+    private int selectedBrand = -1;
+    private int selectedModel = -1;
+    private int selectedYear = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +57,7 @@ public class CarNewActivity extends AppCompatActivity {
 
         initVoiceBtn();
         initVinEdittext();
+        iniitBrandClick();
     }
 
     /**
@@ -246,22 +256,25 @@ public class CarNewActivity extends AppCompatActivity {
                     ArrayList<String> text = data
                             .getStringArrayListExtra("all_results");
                     EditText edt = (EditText) findViewById(R.id.edittext_vin_number);
-//                    edt.setText(text.get(0));
-
-//                    String edt_text = "";
-//                    if (edt.getText() != null)
-//                        edt_text = edt.getText()+"";
-                    String edt_text = SpeachRecogn.vinSpeach(text);
-//                    Toast.makeText(CarNewActivity.this, text.size()+"", Toast.LENGTH_LONG).show();
-//                    String edt_text = data.getExtras().getString("recognated_string");
-//                    Toast.makeText(CarNewActivity.this, edt_text, Toast.LENGTH_LONG).show();
+                    String edt_text = SpeachRecogn.vinSpeach(text).toUpperCase();
                     if (edt_text.length() > 17)
                         edt_text = edt_text.substring(0, 17);
                     edt.setText(edt_text);
                 }
                 break;
             }
-
+            case RESULT_BRAND : {
+                if (resultCode==RESULT_OK && data != null) {
+                    int brandId = data.getExtras().getInt("brandId");
+                    String brandName =  data.getExtras().getString("brandName");
+                    TextView tvBrandName = (TextView)findViewById(R.id.selectedBranName);
+                    tvBrandName.setTextColor(Color.BLACK);
+                    tvBrandName.setText(brandName);
+                    selectedBrand = brandId;
+                    selectedModel = -1;
+                    selectedYear = -1;
+                }
+            }
         }
 
     }
@@ -270,5 +283,15 @@ public class CarNewActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
     }
+    private void iniitBrandClick() {
+        LinearLayout linearLayoutBrand = (LinearLayout) findViewById(R.id.brand);
 
+        linearLayoutBrand.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CarNewActivity.this, SelectBrand.class);
+                startActivityForResult(intent, RESULT_BRAND);
+            }
+        });
+    }
 }
