@@ -39,7 +39,17 @@
             android:id="@+id/item_car_thumbnail"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:scaleType="centerInside"
+            android:scaleType="centerCrop"
+            android:elevation="2dp"
+            android:layout_margin="8dp"
+            android:layout_marginRight="20dp"
+            />
+        <ImageView
+            android:src="@drawable/top_image_1"
+            android:id="@+id/top_image_1"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:scaleType="centerCrop"
             android:elevation="2dp"
             android:layout_margin="8dp"
             android:layout_marginRight="20dp"

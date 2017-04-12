@@ -34,5 +34,6 @@
     <style name="CurrentStateHintStyle" parent="CurrentStateTextStyle">
         <item name="android:textStyle">bold</item>
     </style>
+
     <style name="VoiceVolumeStyle" parent="android:Widget.ProgressBar.Horizontal" />
 </resources>
