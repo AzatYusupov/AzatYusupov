@@ -7,46 +7,8 @@
     android:layout_height="wrap_content"
     android:minHeight="?attr/actionBarSize"
     android:background="?attr/colorPrimary"
-    android:elevation="8dp"
+    android:elevation="4dp"
+    app:layout_scrollFlags="scroll"
     app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-    <!--<LinearLayout-->
-        <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="vertical">-->
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_marginTop="15dp"-->
-            <!--android:textAppearance="@style/TextAppearance.AppCompat.Title"-->
-            <!--android:text="@string/app_name"/>-->
-        <!--<LinearLayout-->
-            <!--android:layout_marginTop="20dp"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:orientation="horizontal">-->
-            <!--<TextView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:textSize="16sp"-->
-                <!--android:layout_gravity="left"-->
-                <!--android:text="Мото"/>-->
-            <!--<TextView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:textSize="16sp"-->
-                <!--android:layout_marginLeft="30dp"-->
-                <!--android:layout_gravity="center_horizontal"-->
-                <!--android:text="Легковые"/>-->
-            <!--<TextView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:textSize="16sp"-->
-                <!--android:layout_gravity="right"-->
-                <!--android:layout_marginLeft="30dp"-->
-                <!--android:layout_marginRight="-50dp"-->
-                <!--android:text="Грузовые и коммерческие"/>-->
-        <!--</LinearLayout>-->
-    <!--</LinearLayout>-->
 </android.support.v7.widget.Toolbar>

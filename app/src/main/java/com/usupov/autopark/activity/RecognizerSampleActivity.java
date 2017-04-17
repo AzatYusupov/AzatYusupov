@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import com.usupov.autopark.R;
-import android.support.v4.content.FileProvider;
+
 import android.view.View;
 
 /**
@@ -30,7 +30,7 @@ public class RecognizerSampleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_sample);
+        setContentView(R.layout.activity_yandex_speach);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_yandex_spaech);
         setSupportActionBar(toolbar);

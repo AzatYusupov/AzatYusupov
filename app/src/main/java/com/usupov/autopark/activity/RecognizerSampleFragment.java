@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -21,10 +20,8 @@ import ru.yandex.speechkit.RecognitionHypothesis;
 import ru.yandex.speechkit.Recognizer;
 import ru.yandex.speechkit.RecognizerListener;
 import ru.yandex.speechkit.SpeechKit;
-import android.support.v4.content.FileProvider;
 
 import com.usupov.autopark.R;
-import com.usupov.autopark.service.SpeachRecogn;
 
 import java.util.ArrayList;
 
@@ -79,7 +76,7 @@ public class RecognizerSampleFragment extends Fragment implements RecognizerList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_sample, container, false);
+        return inflater.inflate(R.layout.fragment_yandex_speech, container, false);
     }
 
     @Override

@@ -6,8 +6,5 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".activity.RecognizerSampleActivity">
-
-
-    <include layout="@layout/content_sample" />
-
+    <include layout="@layout/content_yandex_speech" />
 </android.support.design.widget.CoordinatorLayout>

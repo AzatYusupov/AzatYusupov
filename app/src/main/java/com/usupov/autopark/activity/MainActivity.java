@@ -252,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         emptyView = inflate.inflate(R.layout.empty_car_list, parentLayout, true);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         parentLayout.setLayoutParams(params);
-        params.gravity = Gravity.CENTER;
+//        params.gravity = Gravity.CENTER;
         tvEmptyCarList = (TextView) emptyView.findViewById(R.id.empty_car_list);
     }
     public static void tryEmpty() {

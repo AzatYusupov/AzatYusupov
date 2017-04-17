@@ -175,6 +175,7 @@
     </LinearLayout>
     <android.inputmethodservice.KeyboardView
         android:id="@+id/keyboardview"
+        android:padding="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -182,7 +183,6 @@
         android:focusable="true"
         android:keyPreviewLayout="@layout/preview_key"
         android:focusableInTouchMode="true"
-        android:layout_marginBottom="10dp"
         android:layout_centerVertical="true"
         android:visibility="gone"
         />

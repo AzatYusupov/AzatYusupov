@@ -8,23 +8,21 @@
     android:background="@color/windowBackground"
     android:fitsSystemWindows="true"
     tools:context=".activity.MainActivity">
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <include
             android:id="@+id/toolbar_main"
             layout="@layout/toolbar_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
         <android.support.v4.widget.NestedScrollView
             android:fitsSystemWindows="true"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:clipToPadding="false"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:background="@color/windowBackground"
             >
             <LinearLayout
@@ -34,21 +32,24 @@
                 android:descendantFocusability="blocksDescendants"
                 android:orientation="vertical"
                 >
-
                 <TextView
-
                     android:text="Выбрать автомобиль"
-                    android:visibility="gone"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/textView"
                     android:textStyle="normal|bold"
                     android:textSize="20sp"
-                    android:layout_marginTop="0dp"
+                    android:layout_marginTop="?attr/actionBarSize"
                     android:layout_marginBottom="12dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:textColor="@android:color/black"
+                    android:overScrollMode="never"
+                    />
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/list_car"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:overScrollMode="never"
                     />
                 <ProgressBar
@@ -57,14 +58,8 @@
                     android:layout_gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/list_car"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    />
-
             </LinearLayout>
-         </android.support.v4.widget.NestedScrollView>
+        </android.support.v4.widget.NestedScrollView>
 
     </LinearLayout>
 

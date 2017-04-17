@@ -12,5 +12,5 @@
 <color name="bg_gradient_start">#31244e</color>
 <color name="bg_gradient_end">#6b394c</color>
     <color name="colorWhite">#FFFFFF</color>
-    <color name="colorYellow">#FFF44F</color>
+    <color name="colorYellow">#CCCC00</color>
 </resources>
