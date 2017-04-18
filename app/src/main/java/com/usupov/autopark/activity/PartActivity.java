@@ -1,5 +1,6 @@
 package com.usupov.autopark.activity;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -41,6 +42,7 @@ public class PartActivity extends AppCompatActivity {
     private ProgressBar pbPart;
     private CarCategory one0;
     Context context;
+    String carName;
     MyTask mt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,7 @@ public class PartActivity extends AppCompatActivity {
         context = this;
         initTollbar();
 
-        String carName = getIntent().getExtras().getString("carName");
+        carName = getIntent().getExtras().getString("carName");
         carId = getIntent().getExtras().getInt("carId");
 
 //        Toast.makeText(PartActivity.this, carId+"", Toast.LENGTH_LONG).show();
@@ -256,8 +258,8 @@ public class PartActivity extends AppCompatActivity {
                             intent.putExtra("carId", carId);
                             intent.putExtra("categoryId", child.getCategoryId());
                             intent.putExtra("categoryName", child.getCategoryName());
+                            intent.putExtra("car_full_name", carName);
                             startActivity(intent);
-                            finish();
                         }
                         if (child.isFirstClick()) {
                             child.getLinearLayout().setVisibility(View.VISIBLE);

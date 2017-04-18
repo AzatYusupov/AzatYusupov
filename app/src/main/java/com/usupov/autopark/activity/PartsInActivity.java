@@ -8,6 +8,8 @@ import android.media.Image;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -53,7 +55,7 @@ public class PartsInActivity extends AppCompatActivity {
         carId = intent.getExtras().getInt("carId");
         categoryId = intent.getExtras().getInt("categoryId");
         photoList = new ArrayList<>();
-
+        initTollbar();
         TextView tViewPartInname = (TextView) findViewById(R.id.part_in_name);
         tViewPartInname.setText(partInName);
 
@@ -67,6 +69,17 @@ public class PartsInActivity extends AppCompatActivity {
 
         initBtnSavePartIn();
 
+    }
+    private void initTollbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_car_found);
+        toolbar.setTitle(getString(R.string.Xarakteristika) + " " + getIntent().getStringExtra("car_full_name"));
+        toolbar.setNavigationIcon(R.drawable.ic_back_arrow);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
     private void initBtnSavePartIn() {
         Button btnSave = (Button) findViewById(R.id.save_part_in);
