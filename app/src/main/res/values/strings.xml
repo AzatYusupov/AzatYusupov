@@ -82,4 +82,7 @@
 
     <string name="action_settings">Settings</string>
 
+    <!--Select car with catalog-->
+    <string name="select_brand">Выберите марку</string>
+
 </resources>

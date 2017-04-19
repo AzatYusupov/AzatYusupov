@@ -78,7 +78,7 @@
         <activity
             android:name=".activity.RecognizerSampleActivity"
             android:label="Yandex Speech" />
-        <activity android:name=".activity.SelectBrand" />
+        <activity android:name=".fragment.SelectBrandFragment" />
     </application>
 
 </manifest>

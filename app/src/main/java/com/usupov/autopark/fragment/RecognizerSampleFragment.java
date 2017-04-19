@@ -1,4 +1,4 @@
-package com.usupov.autopark.activity;
+package com.usupov.autopark.fragment;
 
 import android.app.Activity;
 import android.content.Context;

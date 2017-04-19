@@ -95,12 +95,12 @@
                     />
 
             </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:background="@color/windowBackground"
-                >
-            </View>
+            <!--<View-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="3dp"-->
+                <!--android:background="@color/windowBackground"-->
+                <!--&gt;-->
+            <!--</View>-->
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -132,12 +132,12 @@
                     />
 
             </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:background="@color/windowBackground"
-                >
-            </View>
+            <!--<View-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="3dp"-->
+                <!--android:background="@color/windowBackground"-->
+                <!--&gt;-->
+            <!--</View>-->
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"

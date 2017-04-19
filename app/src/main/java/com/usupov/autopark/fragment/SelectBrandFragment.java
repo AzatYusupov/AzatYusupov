@@ -1,14 +1,16 @@
-package com.usupov.autopark.activity;
+package com.usupov.autopark.fragment;
 
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.usupov.autopark.R;
@@ -16,15 +18,15 @@ import com.usupov.autopark.model.CarBrand;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
-public class SelectBrand extends AppCompatActivity {
-
+public class SelectBrandFragment extends DialogFragment {
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_select_brand);
-
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_select_brand, container, true);
+        int height = getActivity().getWindow().getAttributes().height * 9 / 10;
+        height = 500;
+        view.setMinimumHeight(height);
         final List<CarBrand> brandList = new ArrayList<>();
 
         brandList.add(new CarBrand(1, "Acura", "https://8096-presscdn-0-43-pagely.netdna-ssl.com/wp-content/uploads/2014/10/Acura-Logo.jpg"));
@@ -36,8 +38,8 @@ public class SelectBrand extends AppCompatActivity {
         brandList.add(new CarBrand(7, "Toyota", "https://8096-presscdn-0-43-pagely.netdna-ssl.com/wp-content/uploads/2014/10/toyota-logo1.jpg"));
         brandList.add(new CarBrand(8, "ИЖ", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2FipULUBwKcWWpEZG8WRDkc1kjWU05DTTL1QtSFLASKjG3C3Y"));
 
-        LinearLayout linearLayoutBrandList = (LinearLayout) findViewById(R.id.brandList);
-        LayoutInflater inflater = getLayoutInflater();
+
+        LinearLayout linearLayoutBrandList = (LinearLayout) view.findViewById(R.id.brandList);
 
         for (int i = 0; i < brandList.size(); i++) {
             final CarBrand brandItem = brandList.get(i);
@@ -49,17 +51,19 @@ public class SelectBrand extends AppCompatActivity {
             TextView brandName = (TextView) brandView.findViewById(R.id.brandName);
             brandName.setText(brandItem.getName());
 
-            brandView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent();
-                    intent.putExtra("brandId", brandItem.getId());
-                    intent.putExtra("brandName", brandItem.getName());
-                    setResult(RESULT_OK, intent);
-                    finish();
-                }
-            });
+//            brandView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Intent intent = new Intent();
+//                    intent.putExtra("brandId", brandItem.getId());
+//                    intent.putExtra("brandName", brandItem.getName());
+//                    setResult(RESULT_OK, intent);
+//                    finish();
+//                }
+//            });
             linearLayoutBrandList.addView(brandView);
         }
+        return view;
+
     }
 }

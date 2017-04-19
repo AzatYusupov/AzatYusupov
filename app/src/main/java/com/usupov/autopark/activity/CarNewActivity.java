@@ -1,24 +1,35 @@
 package com.usupov.autopark.activity;
 
 import android.app.Activity;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
+import android.support.constraint.solver.widgets.Rectangle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.usupov.autopark.R;
+import com.usupov.autopark.adapter.BrandListAdapter;
+import com.usupov.autopark.fragment.SelectBrandFragment;
 import com.usupov.autopark.http.Config;
 import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.model.CarBrand;
@@ -32,7 +43,6 @@ import java.util.List;
 public class CarNewActivity extends AppCompatActivity {
 
     protected static final int RESULT_SPEECH = 1;
-    protected static final int RESULT_BRAND = 2;
     TextView tvVinError;
     private KeyboardView mKeyboardView;
     private Keyboard vinKeyboard;
@@ -41,6 +51,9 @@ public class CarNewActivity extends AppCompatActivity {
     private int selectedBrand = -1;
     private int selectedModel = -1;
     private int selectedYear = -1;
+    private int selectedBrandListId = -1;
+    private int selectedModelLisId = -1;
+    private int selectedYearListId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -263,20 +276,7 @@ public class CarNewActivity extends AppCompatActivity {
                 }
                 break;
             }
-            case RESULT_BRAND : {
-                if (resultCode==RESULT_OK && data != null) {
-                    int brandId = data.getExtras().getInt("brandId");
-                    String brandName =  data.getExtras().getString("brandName");
-                    TextView tvBrandName = (TextView)findViewById(R.id.selectedBranName);
-                    tvBrandName.setTextColor(Color.BLACK);
-                    tvBrandName.setText(brandName);
-                    selectedBrand = brandId;
-                    selectedModel = -1;
-                    selectedYear = -1;
-                }
-            }
         }
-
     }
 
     @Override
@@ -289,8 +289,44 @@ public class CarNewActivity extends AppCompatActivity {
         linearLayoutBrand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CarNewActivity.this, SelectBrand.class);
-                startActivityForResult(intent, RESULT_BRAND);
+                final List<CarBrand> brandList = new ArrayList<>();
+                brandList.add(new CarBrand(1, "Acura", "https://8096-presscdn-0-43-pagely.netdna-ssl.com/wp-content/uploads/2014/10/Acura-Logo.jpg"));
+                brandList.add(new CarBrand(2, "BMW", "https://8096-presscdn-0-43-pagely.netdna-ssl.com/wp-content/uploads/2014/10/bmw-logo.jpg"));
+                brandList.add(new CarBrand(3, "Ferrari", "https://8096-presscdn-0-43-pagely.netdna-ssl.com/wp-content/uploads/2014/10/ferrari-logo.jpg"));
+                brandList.add(new CarBrand(4, "Ford", "https://8096-presscdn-0-43-pagely.netdna-ssl.com/wp-content/uploads/2014/10/ford-logo.jpg"));
+                brandList.add(new CarBrand(5, "Hyundai", "https://8096-presscdn-0-43-pagely.netdna-ssl.com/wp-content/uploads/2014/10/hyundai-logo.jpg"));
+                brandList.add(new CarBrand(6, "Jeep", "https://8096-presscdn-0-43-pagely.netdna-ssl.com/wp-content/uploads/2014/10/Jeep-Logo-300x120.jpg"));
+                brandList.add(new CarBrand(7, "Toyota", "https://8096-presscdn-0-43-pagely.netdna-ssl.com/wp-content/uploads/2014/10/toyota-logo1.jpg"));
+                brandList.add(new CarBrand(8, "ИЖ", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2FipULUBwKcWWpEZG8WRDkc1kjWU05DTTL1QtSFLASKjG3C3Y"));
+
+                final AlertDialog.Builder builderBrand = new AlertDialog.Builder(CarNewActivity.this);
+                builderBrand.setTitle(getString(R.string.select_brand));
+
+                String[]brandNames = new String[brandList.size()];
+                for (int i = 0; i < brandNames.length; i++) {
+                    brandNames[i] = brandList.get(i).getName();
+                }
+                builderBrand.setSingleChoiceItems(brandNames, selectedBrandListId, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        selectedBrand = brandList.get(which).getId();
+                        String brandName =  brandList.get(which).getName();
+                        TextView tvBrandName = (TextView)findViewById(R.id.selectedBranName);
+                        tvBrandName.setTextColor(Color.BLACK);
+                        tvBrandName.setText(brandName);
+                        selectedModel = -1;
+                        selectedYear =  -1;
+                        selectedBrandListId = which;
+                        dialog.dismiss();
+                    }
+                });
+                builderBrand.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builderBrand.show();
             }
         });
     }

@@ -7,11 +7,12 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/listPreferredItemHeight"
         android:background="?attr/selectableItemBackground"
-        android:weightSum="10"
+        android:weightSum="6"
+        android:orientation="horizontal"
         android:padding="5dp"
         android:gravity="center">
         <ImageView
-            android:layout_weight="7"
+            android:layout_weight="2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/brandImage"
@@ -24,10 +25,12 @@
             android:gravity="center"
             android:textColor="@android:color/black"
             />
+        <!--<ImageView-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:id="@+id/selectedBrandImage"-->
+            <!--android:src="@drawable/ic_keyboard_voice_black"-->
+            <!--/>-->
     </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/black">
-    </View>
 </LinearLayout>
