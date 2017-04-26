@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
         StrictMode.setThreadPolicy(policy);
-
+        carList = null;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_nav);
 
@@ -319,6 +319,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
     private void filtreCars(String matchString) {
+        if(carList == null)
+            return;
         matchString = matchString.toLowerCase().trim();
         List<CarModel> filteredCarList = new ArrayList<>();
         for (CarModel car : carList) {
