@@ -62,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RecyclerView recyclerView;
     public static TextView tvEmptyCarList;
     public static String msgCarsNotFound, msgCarNotYet;
+
+    private final int requestCodeCarNew = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -270,11 +272,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fabNewCar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(v.getContext(), CarNewActivity.class));
-                finish();
+                startActivityForResult(new Intent(v.getContext(), CarNewActivity.class), requestCodeCarNew);
             }
         });
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case requestCodeCarNew :
+                if (resultCode==RESULT_OK) {
+                    finish();
+                    startActivity(getIntent());
+                }
+                else {
+                }
+        }
     }
 
     @Override

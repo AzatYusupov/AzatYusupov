@@ -56,12 +56,23 @@ dependencies {
     //    compile ('com.github.navasmdc:PhoneTutorial:1.+@aar') {
     //        exclude module: 'support-v4'
     //    }
-    compile('org.apache.httpcomponents:httpmime:4.+') {
-        exclude module: "httpclient"
+//    compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.3.5'
+//    compile "org.apache.httpcomponents:httpmime:4.2.3"
+    compile ('org.apache.httpcomponents:httpmime:4.3.5') {
+        // avoid "is ignored for the default configuration X" warnings
+        // since httpclient is included in the android SDK.
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     }
-    compile('org.apache.httpcomponents:httpcore:4.+') {
-        exclude module: "httpclient"
-    }
+    compile group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.5'
+
+//    compile('org.apache.httpcomponents:httpmime:4.+') {
+//        exclude module: "httpclient"
+//    }
+//    compile('org.apache.httpcomponents:httpcore:4.3.5') {
+//        exclude module: "httpclient"
+//    }
+
+
 //    compile group: 'org.apache.httpcomponents' , name: 'httpclient-android' , version: '4.3.5.1'
 //    compile 'org.apache.james:apache-mime4j:0.8.0'
 //    compile 'org.apache.httpcomponents:httpclient:4.5.3'

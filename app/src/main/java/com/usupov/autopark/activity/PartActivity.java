@@ -262,6 +262,7 @@ public class PartActivity extends AppCompatActivity {
                         if (child.isFirstClick()) {
                             child.getLinearLayout().setVisibility(View.VISIBLE);
                             if (child.hasChildren()) {
+                                //To do ic_action_arrow_opened
                                 arrowImage.setImageResource(R.drawable.ic_action_arrow_opened);
                                 text.setTypeface(null, Typeface.BOLD);
                             }

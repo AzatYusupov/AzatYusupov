@@ -84,5 +84,7 @@
 
     <!--Select car with catalog-->
     <string name="select_brand">Выберите марку</string>
+    <string name="select_model">Выберите модель</string>
+    <string name="select_year">Выберите год</string>
 
 </resources>

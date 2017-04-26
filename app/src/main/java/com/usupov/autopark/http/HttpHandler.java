@@ -12,6 +12,7 @@ import android.util.Log;
 import com.android.internal.http.multipart.MultipartEntity;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
@@ -34,6 +35,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.util.CharsetUtils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -47,7 +49,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -175,8 +179,38 @@ public class HttpHandler {
         }
         return false;
     }
+    public boolean postWithOneFile(String urlTo, HashMap<String, String> params, String filePath) {
+        try {
+            System.out.println("Urlllllllll="+urlTo);
+            MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
+            entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 
-    public boolean postQuery(String urlTo, HashMap<String, String> parmas, String filepath) {
+            for (String key : params.keySet()) {
+                entityBuilder.addTextBody(key, params.get(key));
+            }
+            if (filePath != null && !filePath.equals("")) {
+                entityBuilder.addBinaryBody("file", new File(filePath));
+            }
+            HttpPost post = new HttpPost(urlTo);
+//            post.addHeader("User-Agent", "Test");
+//            post.addHeader("Content-type", "multipart/form-data");
+//            post.addHeader("Accept", "image/jpg");
+
+            HttpEntity entity = entityBuilder.build();
+            post.setEntity(entity);
+
+            HttpClient client = new DefaultHttpClient();
+            HttpResponse response = client.execute(post);
+            System.out.println("ressssssssssssssssssssssssssssssss"+response.getStatusLine().getStatusCode()+"+++++++++++++++++++++++++********");
+            System.out.println("OKKKKKKKKKKKKKKKKKKKKKK");
+            if (response.getStatusLine().getStatusCode()==200)
+                return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public boolean postQuery(String urlTo, HashMap<String, String> params, String filepath) {
         HttpURLConnection connection = null;
         DataOutputStream outputStream = null;
 
@@ -186,11 +220,11 @@ public class HttpHandler {
 
         int bytesRead, bytesAvailable, bufferSize;
         byte[] buffer;
-        int maxBufferSize = 1 * 1024 * 1024;
+        int maxBufferSize = 10 * 1024 * 1024;
 
         try {
             System.out.println(filepath + " ----------");
-
+            System.out.println("urllllllllllllllllllll="+urlTo);
 
             URL url = new URL(urlTo);
             connection = (HttpURLConnection) url.openConnection();
@@ -234,10 +268,9 @@ public class HttpHandler {
                 outputStream.writeBytes(lineEnd);
             }
             // Upload POST Data
-            Iterator<String> keys = parmas.keySet().iterator();
-            while (keys.hasNext()) {
-                String key = keys.next();
-                String value = parmas.get(key);
+            Iterator<String> keys = params.keySet().iterator();
+            for (String key : params.keySet()) {
+                String value = params.get(key);
                 outputStream.writeBytes(twoHyphens + boundary + lineEnd);
                 outputStream.writeBytes("Content-Disposition: form-data; name=\"" + key + "\"" + lineEnd);
                 outputStream.writeBytes("Content-Type: text/plain" + lineEnd);

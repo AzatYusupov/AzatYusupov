@@ -187,7 +187,6 @@ public class CarFoundActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(CarFoundActivity.this, CarNewActivity.class));
                 finish();
             }
         });
@@ -197,21 +196,23 @@ public class CarFoundActivity extends AppCompatActivity {
         btnSave.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 String vinNumber = vinNumberView.getText()+"";
                 String carName = carNameView.getText()+"";
                 String url = Config.getUrlCarCreat();
-//                String url = "https://httpbin.org/post";
+//                url = "https://httpbin.org/post";
                 HttpHandler handler = new HttpHandler();
-                HashMap<String, String> pairs = new HashMap<String, String>();
-
+                HashMap<String, String> pairs = new HashMap<>();
+                System.out.println(vinNumber);
+                Log.v("vin", vinNumber);
                 pairs.put("vin", vinNumber);
-//                pairs.add(new BasicNameValuePair("vin", vinNumber));
                 try {
-                    boolean result = handler.postQuery(url, pairs, imagePath);
+//                    Toast.makeText(CarFoundActivity.this, vinNumber, Toast.LENGTH_LONG).show();
+                    boolean result = handler.postWithOneFile(url, pairs, imagePath);
                     imagePath = null;
                     if (result) {
                         Toast.makeText(CarFoundActivity.this, getString(R.string.car_success_added), Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(CarFoundActivity.this, MainActivity.class));
+                        setResult(RESULT_OK);
                         finish();
                     }
                     else

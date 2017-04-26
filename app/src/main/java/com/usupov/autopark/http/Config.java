@@ -24,6 +24,10 @@ public class Config {
 //    public final static String urlServer = "http://192.168.1.4:8080/api/";
     private final static String apiCarCreat = "car/create";
     private final static String pathCategory = "category";
+    private final static  String pathModel = "model";
+
+    private final static String pathBrands = "brand";
+    private final static String pathYears = "year";
 //    public static String getMetaData(Context contex, String name) {
 //        try {
 //            ApplicationInfo ai = contex.getPackageManager().getApplicationInfo(contex.getPackageName(), PackageManager.GET_META_DATA);
@@ -53,5 +57,14 @@ public class Config {
     }
     public static String getUrlCar() {
         return urlServer + pathCar;
+    }
+    public static String getUrlBrands() {
+        return urlServer + pathBrands;
+    }
+    public static String getPathModel() {
+        return pathModel;
+    }
+    public static String getPathYears() {
+        return pathYears;
     }
 }
