@@ -1,6 +1,7 @@
 <resources>
 
     <!--Название приложение-->
+    <string name="charactersitic">Характеристики</string>
     <string name="app_name">Автопарк</string>
     <string name="app_car_new">Добавить автомобиль</string>
     <string name="app_part">Узлы автомобиля</string>

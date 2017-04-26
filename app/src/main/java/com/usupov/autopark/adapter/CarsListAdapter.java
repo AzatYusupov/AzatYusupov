@@ -1,6 +1,7 @@
 package com.usupov.autopark.adapter;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -168,7 +169,7 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
                 intent.putExtra("carId", carId);
                 intent.putExtra("carName", carName);
                 context.startActivity(intent);
-                
+                ((Activity) context).finish();
             }
         });
         /*holder.overflow.setOnClickListener(new View.OnClickListener() {
