@@ -22,23 +22,44 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text"
-            android:ems="@android:integer/config_longAnimTime"
-            android:id="@+id/edittext_vin_number"
-            android:padding="10dp"
-            android:maxLength="17"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="2dp"
-            android:elevation="2dp"
-            android:hint="Искать по VIN номеру"
-            android:background="@color/colorWhite"
-            android:drawableRight="@drawable/ic_keyboard_voice_black"
-            />
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:ems="@android:integer/config_longAnimTime"
+                    android:id="@+id/edittext_vin_number"
+                    android:maxLength="17"
+                    android:padding="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginBottom="2dp"
+                    android:elevation="2dp"
+                    android:hint="Искать по VIN номеру"
+                    android:background="@color/colorWhite"
+                    />
+                <ImageView
+                    android:clickable="true"
+                    android:layout_gravity="end"
+                    android:layout_marginRight="55dp"
+                    android:layout_marginTop="47dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    app:srcCompat="@drawable/ic_close_black"
+                    android:id="@+id/steret_text" />
+                <ImageView
+                    android:clickable="true"
+                    android:layout_marginRight="15dp"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="47dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    app:srcCompat="@drawable/ic_keyboard_voice_black"
+                    android:id="@+id/voice_button" />
+            </FrameLayout>
         <TextView
             android:id="@+id/tvVinError"
             android:layout_width="match_parent"

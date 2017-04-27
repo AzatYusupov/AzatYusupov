@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -220,36 +222,49 @@ public class CarNewActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-
     }
 
     private void initVoiceBtn() {
 
         final EditText edt = (EditText) findViewById(R.id.edittext_vin_number);
-        edt.setOnTouchListener(new View.OnTouchListener() {
-
+        final ImageView steret_text = (ImageView) findViewById(R.id.steret_text);
+        ImageView voice_button = (ImageView) findViewById(R.id.voice_button);
+        steret_text.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                final int DRAWABLE_LEFT = 0;
-                final int DRAWABLE_TOP = 1;
-                final int DRAWABLE_RIGHT = 2;
-                final int DRAWABLE_BOTTOM = 3;
-
-                if(event.getAction() == MotionEvent.ACTION_UP) {
-
-                    if(event.getRawX() >= (edt.getRight() - edt.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-
-                        Intent intent = new Intent(CarNewActivity.this, RecognizerSampleActivity.class);
-                        startActivityForResult(intent, RESULT_SPEECH);
-
-                        return true;
-                    }
-                }
-                return false;
+            public void onClick(View v) {
+                edt.setText("");
             }
         });
+        voice_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CarNewActivity.this, RecognizerSampleActivity.class);
+                startActivityForResult(intent, RESULT_SPEECH);
+            }
+        });
+//        edt.setOnTouchListener(new View.OnTouchListener() {
+//
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//
+//                final int DRAWABLE_LEFT = 0;
+//                final int DRAWABLE_TOP = 1;
+//                final int DRAWABLE_RIGHT = 2;
+//                final int DRAWABLE_BOTTOM = 3;
+//
+//                if(event.getAction() == MotionEvent.ACTION_UP) {
+//
+//                    if(event.getRawX() >= (edt.getRight() - edt.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+//
+//                        Intent intent = new Intent(CarNewActivity.this, RecognizerSampleActivity.class);
+//                        startActivityForResult(intent, RESULT_SPEECH);
+//
+//                        return true;
+//                    }
+//                }
+//                return false;
+//            }
+//        });
 
     }
 //3VWBB61C4WM050210
