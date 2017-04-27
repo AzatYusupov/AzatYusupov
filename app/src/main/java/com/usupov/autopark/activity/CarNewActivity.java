@@ -16,6 +16,7 @@ import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -45,7 +46,7 @@ public class CarNewActivity extends AppCompatActivity {
     private KeyboardView mKeyboardView;
     private Keyboard vinKeyboard;
     private EditText vinEditText;
-
+    private Button new_car_find_btn;
     ProgressBar pbSelectCatalog;
 
     private int selectedBrand = -1;
@@ -60,6 +61,8 @@ public class CarNewActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_new);
+
+        new_car_find_btn = (Button) findViewById(R.id.new_car_find_btn);
 
         initToolbar();
 
@@ -341,6 +344,7 @@ public class CarNewActivity extends AppCompatActivity {
                         selectedModel = -1;
                         selectedYear =  -1;
                         selectedBrandListId = which;
+                        new_car_find_btn.setVisibility(View.GONE);
                         dialog.dismiss();
                     }
                 });
@@ -385,6 +389,7 @@ public class CarNewActivity extends AppCompatActivity {
                         tvYearName.setTextColor(Color.GRAY);
                         selectedYear =  -1;
                         selectedModelLisId = which;
+                        new_car_find_btn.setVisibility(View.GONE);
                         dialog.dismiss();
                     }
                 });
@@ -425,6 +430,7 @@ public class CarNewActivity extends AppCompatActivity {
                         tvYearName.setTextColor(Color.BLACK);
                         tvYearName.setText(yearName);
                         selectedYearListId= which;
+                        new_car_find_btn.setVisibility(View.VISIBLE);
                         dialog.dismiss();
                     }
                 });

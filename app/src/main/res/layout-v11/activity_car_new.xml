@@ -194,6 +194,17 @@
             </LinearLayout>
 
         </LinearLayout>
+        <Button
+            android:clickable="true"
+            android:visibility="gone"
+            android:textStyle="bold"
+            android:background="@color/colorAccent"
+            android:textColor="@color/textColorPrimary"
+            android:text="@string/find"
+            android:id="@+id/new_car_find_btn"
+            android:layout_gravity="center"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content" />
         <ProgressBar
             android:visibility="gone"
             android:id="@+id/progress_select_catalog"
