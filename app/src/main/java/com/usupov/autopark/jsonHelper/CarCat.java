@@ -12,16 +12,15 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Azat on 21.04.2017.
- */
 
 public class CarCat {
 
     public static List<CatalogBrand> getBradList() {
-
+		
         HttpHandler handler = new HttpHandler();
+		
         try {
+			
             String jsonString = handler.ReadHttpResponse(Config.getUrlBrands());
             JSONArray jsonArray = new JSONArray(jsonString);
             List<CatalogBrand> brandList = new ArrayList<>();
@@ -34,18 +33,21 @@ public class CarCat {
                 brandList.add(carBrand);
             }
             return brandList;
+			
         } catch (Exception e) {
             e.printStackTrace();
         }
+		
         return null;
 
     }
+    public static List<CatalogModel> getModels ( int brandId){
 
-    public static List<CatalogModel> getModels(int brandId) {
-
-        String url = Config.getUrlBrands()+"/"+brandId+"/"+Config.getPathModel();
+        String url = Config.getUrlBrands() + "/" + brandId + "/" + Config.getPathModel();
         HttpHandler handler = new HttpHandler();
+
         try {
+
             String jsonString = handler.ReadHttpResponse(url);
             JSONArray jsonArray = new JSONArray(jsonString);
             List<CatalogModel> modelList = new ArrayList<>();
@@ -57,18 +59,19 @@ public class CarCat {
                 modelList.add(catalogModel);
             }
             return modelList;
-        }
-        catch (Exception ex) {
+
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return null;
 
+        return null;
     }
 
-    public static List<CatalogYear> getYears(int brandId, int modelId) {
+    public static List<CatalogYear> getYears ( int brandId, int modelId){
 
         String url = Config.getUrlBrands() + "/" + brandId + "/" + Config.getPathModel() + "/" + modelId + "/" + Config.getPathYears();
         HttpHandler handler = new HttpHandler();
+
         try {
             List<CatalogYear> yearList = new ArrayList<>();
             String jsonString = handler.ReadHttpResponse(url);
@@ -82,12 +85,11 @@ public class CarCat {
                 yearList.add(catalogYear);
             }
             return yearList;
-        }
-        catch (Exception e) {
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
         return null;
-
     }
-
 }
