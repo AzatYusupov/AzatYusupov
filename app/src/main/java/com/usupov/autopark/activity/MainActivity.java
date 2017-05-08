@@ -35,22 +35,14 @@ import android.widget.Toast;
 
 import com.usupov.autopark.R;
 import com.usupov.autopark.adapter.CarsListAdapter;
-import com.usupov.autopark.http.Config;
-import com.usupov.autopark.http.HttpHandler;
+import com.usupov.autopark.jsonHelper.Car;
 import com.usupov.autopark.model.CarModel;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
-//    @Override
-//    protected void onResume() {
-//        Toast.makeText(MainActivity.this, "Resumed", Toast.LENGTH_LONG).show();
-//    }
     public static TextView textView;
     public static View emptyView;
     private ProgressBar pbMain;
@@ -113,7 +105,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            return getCarList();
+            carList = Car.getCatList();
+            if (carList==null)
+                return false;
+            return true;
         }
         @Override
         protected void onPostExecute(Boolean ok) {
@@ -200,28 +195,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     private static LayoutInflater inflate;
     private static LinearLayout parentLayout;
-    private boolean getCarList() {
-        carList = new ArrayList<>();
-        HttpHandler handler = new HttpHandler();
-//        String url = Config.getMetaData(this, Config.apiUrlCars);
-        String url = Config.getUrlCars();
-        String jsonStr = handler.ReadHttpResponse(url);
-//        String jsonStr = "[{id : \"10\", imageUri : \"https://i.otto.de/i/otto/5431264/rc-auto-jamara-lamborghini-murcielago-lp-670-4-orange.jpg?$formatz$\", name : \"Name\", description : \"Desc\"}]";
-        if (jsonStr == null) {
-            return false;
-        }
-        JSONArray carsArray = null;
-        try {
-            carsArray = new JSONArray(jsonStr);
-            for (int i = 0; i < carsArray.length(); i++) {
-                carList.add(new CarModel(carsArray.getJSONObject(i).getInt("id"), carsArray.getJSONObject(i).getString("imageUri"), carsArray.getJSONObject(i).getString("name"), carsArray.getJSONObject(i).getString("description")));
-            }
-            return true;
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
+
     private void  initRecyclerview() {
         recyclerView = (RecyclerView) findViewById(R.id.list_car);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
@@ -229,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setNestedScrollingEnabled(false);
     }
+
     public void initCarsList(List<CarModel> carList1) {
         tvEmptyCarList.setText("");
         textView.setVisibility(View.VISIBLE);
@@ -246,6 +221,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return;
         }
     }
+
     private void initEmptyView() {
         textView = (TextView) findViewById(R.id.textView);
         msgCarsNotFound = getString(R.string.car_list_empty1);
@@ -259,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        params.gravity = Gravity.CENTER;
         tvEmptyCarList = (TextView) emptyView.findViewById(R.id.empty_car_list);
     }
+
     public static void tryEmpty() {
         textView.setVisibility(View.GONE);
         if (carList.isEmpty()) {
@@ -316,8 +293,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
         return true;
-
     }
+
     private void filtreCars(String matchString) {
         if(carList == null)
             return;

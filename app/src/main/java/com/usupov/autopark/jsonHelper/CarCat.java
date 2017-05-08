@@ -1,4 +1,4 @@
-package com.usupov.autopark.json_to_list;
+package com.usupov.autopark.jsonHelper;
 
 import com.usupov.autopark.http.Config;
 import com.usupov.autopark.http.HttpHandler;
@@ -7,7 +7,6 @@ import com.usupov.autopark.model.CatalogModel;
 import com.usupov.autopark.model.CatalogYear;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -17,8 +16,10 @@ import java.util.List;
  * Created by Azat on 21.04.2017.
  */
 
-public class CarNew {
+public class CarCat {
+
     public static List<CatalogBrand> getBradList() {
+
         HttpHandler handler = new HttpHandler();
         try {
             String jsonString = handler.ReadHttpResponse(Config.getUrlBrands());
@@ -37,10 +38,12 @@ public class CarNew {
             e.printStackTrace();
         }
         return null;
+
     }
+
     public static List<CatalogModel> getModels(int brandId) {
+
         String url = Config.getUrlBrands()+"/"+brandId+"/"+Config.getPathModel();
-        System.out.println("uuuuuuuuuuuuuuuuuuuurl="+url);
         HttpHandler handler = new HttpHandler();
         try {
             String jsonString = handler.ReadHttpResponse(url);
@@ -59,10 +62,12 @@ public class CarNew {
             ex.printStackTrace();
         }
         return null;
+
     }
+
     public static List<CatalogYear> getYears(int brandId, int modelId) {
+
         String url = Config.getUrlBrands() + "/" + brandId + "/" + Config.getPathModel() + "/" + modelId + "/" + Config.getPathYears();
-        System.out.println("urlllllllllllllllllllllllllllllllllll="+url);
         HttpHandler handler = new HttpHandler();
         try {
             List<CatalogYear> yearList = new ArrayList<>();
@@ -82,5 +87,7 @@ public class CarNew {
             e.printStackTrace();
         }
         return null;
+
     }
+
 }

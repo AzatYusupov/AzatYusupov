@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +16,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -26,7 +24,7 @@ import android.widget.Toast;
 import com.usupov.autopark.R;
 import com.usupov.autopark.http.Config;
 import com.usupov.autopark.http.HttpHandler;
-import com.usupov.autopark.json_to_list.CarNew;
+import com.usupov.autopark.jsonHelper.CarCat;
 import com.usupov.autopark.model.CatalogBrand;
 import com.usupov.autopark.model.CatalogModel;
 import com.usupov.autopark.model.CatalogYear;
@@ -173,11 +171,9 @@ public class CarNewActivity extends AppCompatActivity {
                     String vin = vinEditText.getText()+"";
                     String url = urlVin+vinEditText.getText();
                     String jSonString = handler.ReadHttpResponse(url);
-//                    String jSonString = "{name : \"Mersedes\", description : \"Benz\"}";
                     if (jSonString==null) {
                         tvVinError.setText(getString(R.string.error_vin));
                         vinEditText.setBackgroundResource(R.drawable.vin_error_border);
-//                        Toast.makeText(CarNewActivity.this, getString(R.string.error_vin), Toast.LENGTH_LONG).show();
                     }
                     else {
                         tvVinError.setText("");
@@ -196,15 +192,18 @@ public class CarNewActivity extends AppCompatActivity {
                             startActivityForResult(intent, REQUEST_ADD);
                         }
                         catch (Exception e) {
-//                            Toast.makeText(CarNewActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+
                         }
                     }
                 }
                 else if (vinEditText.getText().length() > 17) {
                     vinEditText.setText(vinEditText.getText().toString().substring(0, 17));
-//                    Toast.makeText(CarNewActivity.this, getString(R.string.max_limit), Toast.LENGTH_LONG).show();
                 }
                 else {
+                    if (vinEditText.getText()==null || vinEditText.getText().length()==0)
+                        vinEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_voice_black, 0);
+                    else
+                        vinEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_close, 0);
                     tvVinError.setText("");
                     vinEditText.setBackgroundResource(R.drawable.vin_right_border);
                 }
@@ -227,44 +226,32 @@ public class CarNewActivity extends AppCompatActivity {
     private void initVoiceBtn() {
 
         final EditText edt = (EditText) findViewById(R.id.edittext_vin_number);
-        final ImageView steret_text = (ImageView) findViewById(R.id.steret_text);
-        ImageView voice_button = (ImageView) findViewById(R.id.voice_button);
-        steret_text.setOnClickListener(new View.OnClickListener() {
+        edt.setOnTouchListener(new View.OnTouchListener() {
+
             @Override
-            public void onClick(View v) {
-                edt.setText("");
+            public boolean onTouch(View v, MotionEvent event) {
+
+                final int DRAWABLE_LEFT = 0;
+                final int DRAWABLE_TOP = 1;
+                final int DRAWABLE_RIGHT = 2;
+                final int DRAWABLE_BOTTOM = 3;
+
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+
+                    if(event.getRawX() >= (edt.getRight() - edt.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        if (edt.getText()==null || edt.getText().length()==0) {
+                            Intent intent = new Intent(CarNewActivity.this, RecognizerSampleActivity.class);
+                            startActivityForResult(intent, RESULT_SPEECH);
+                        }
+                        else {
+                            vinEditText.setText("");
+                        }
+                        return true;
+                    }
+                }
+                return false;
             }
         });
-        voice_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(CarNewActivity.this, RecognizerSampleActivity.class);
-                startActivityForResult(intent, RESULT_SPEECH);
-            }
-        });
-//        edt.setOnTouchListener(new View.OnTouchListener() {
-//
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//
-//                final int DRAWABLE_LEFT = 0;
-//                final int DRAWABLE_TOP = 1;
-//                final int DRAWABLE_RIGHT = 2;
-//                final int DRAWABLE_BOTTOM = 3;
-//
-//                if(event.getAction() == MotionEvent.ACTION_UP) {
-//
-//                    if(event.getRawX() >= (edt.getRight() - edt.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-//
-//                        Intent intent = new Intent(CarNewActivity.this, RecognizerSampleActivity.class);
-//                        startActivityForResult(intent, RESULT_SPEECH);
-//
-//                        return true;
-//                    }
-//                }
-//                return false;
-//            }
-//        });
 
     }
 //3VWBB61C4WM050210
@@ -308,7 +295,7 @@ public class CarNewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                final List<CatalogBrand> brandList = CarNew.getBradList();
+                final List<CatalogBrand> brandList = CarCat.getBradList();
                 if (brandList==null) {
                     Toast.makeText(CarNewActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
                     return;
@@ -359,7 +346,7 @@ public class CarNewActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (selectedBrand==-1)
                     return;
-                final List<CatalogModel> modelList = CarNew.getModels(selectedBrand);
+                final List<CatalogModel> modelList = CarCat.getModels(selectedBrand);
                 if (modelList==null) {
                     Toast.makeText(CarNewActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
                     return;
@@ -403,7 +390,7 @@ public class CarNewActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (selectedBrand==-1 || selectedModel==-1)
                     return;
-                final List<CatalogYear> yearList = CarNew.getYears(selectedBrand, selectedModel);
+                final List<CatalogYear> yearList = CarCat.getYears(selectedBrand, selectedModel);
                 if (yearList==null) {
                     Toast.makeText(CarNewActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
                     return;
