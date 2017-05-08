@@ -84,6 +84,7 @@
     <string name="action_settings">Settings</string>
 
     <!--Select car with catalog-->
+    <string name="find">Найти</string>
     <string name="select_brand">Выберите марку</string>
     <string name="select_model">Выберите модель</string>
     <string name="select_year">Выберите год</string>
