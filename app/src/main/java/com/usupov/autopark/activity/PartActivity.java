@@ -10,12 +10,16 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -26,11 +30,16 @@ import com.usupov.autopark.R;
 import com.usupov.autopark.http.Config;
 import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.model.CarCategory;
+import com.usupov.autopark.service.SpeachRecogn;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.ArrayList;
 import java.util.Locale;
+
+import static com.usupov.autopark.activity.CarNewActivity.REQUEST_ADD;
+import static com.usupov.autopark.activity.CarNewActivity.RESULT_SPEECH;
 
 public class PartActivity extends AppCompatActivity {
 
@@ -40,6 +49,7 @@ public class PartActivity extends AppCompatActivity {
 
     private static int leftmargin = 20;
     private ProgressBar pbPart;
+    private FrameLayout part_frame_edit_steret_voicebtn;
     private CarCategory one0;
     Context context;
     String carName;
@@ -60,9 +70,11 @@ public class PartActivity extends AppCompatActivity {
         TextView carNameText = (TextView) findViewById(R.id.part_car_name);
         carNameText.setText(carName);
         pbPart = (ProgressBar) findViewById(R.id.pbParst);
+        part_frame_edit_steret_voicebtn = (FrameLayout) findViewById(R.id.part_frame_edit_steret_voicebtn);
         mt = new MyTask();
         mt.execute();
-//        iniSpeak();
+        iniSpeak();
+        initVinEdittext();
     }
     class MyTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -79,6 +91,9 @@ public class PartActivity extends AppCompatActivity {
         protected void onPostExecute(Boolean ok) {
             super.onPostExecute(ok);
             pbPart.setVisibility(View.GONE);
+            TextView carNameText = (TextView) findViewById(R.id.part_car_name);
+            carNameText.setVisibility(View.VISIBLE);
+            part_frame_edit_steret_voicebtn.setVisibility(View.VISIBLE);
             if (!ok) {
                 Toast.makeText(PartActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
                 return;
@@ -96,13 +111,39 @@ public class PartActivity extends AppCompatActivity {
         String result = handler.ReadHttpResponse(url);
         return result;
     }
+    public void initVinEdittext()
+    {
+        numberPart = (EditText) findViewById(R.id.edittext_part_number);
+        numberPart.setBackgroundResource(R.drawable.vin_right_border);
+        numberPart.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (numberPart.getText()==null || numberPart.getText().length()==0)
+                    numberPart.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_voice_black, 0);
+                else
+                    numberPart.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_close, 0);
+                numberPart.setBackgroundResource(R.drawable.vin_right_border);
+                dfssearch(one0, true, numberPart.getText().toString());
+            }
+        });
+    }
 
     private void go(CarCategory parentCat, String result) {
         try {
             if (result.equals("null"))
                 return;
             JSONArray array = new JSONArray(result);
-            if (array==null || array.length()==0)
+            if (array== null || array.length()==0)
                 return;
             for (int i = 0; i < array.length(); i++) {
                 int id = array.getJSONObject(i).getInt("id");
@@ -133,45 +174,35 @@ public class PartActivity extends AppCompatActivity {
 
     }
 
-//    private void iniSpeak() {
-//
-//
-//        numberPart = (EditText) findViewById(R.id.edittext_part_number);
-//
-//        numberPart.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//
-//                final int DRAWABLE_LEFT = 0;
-//                final int DRAWABLE_TOP = 1;
-//                final int DRAWABLE_RIGHT = 2;
-//                final int DRAWABLE_BOTTOM = 3;
-//
-//                if(event.getAction() == MotionEvent.ACTION_UP) {
-//
-//                    if(event.getRawX() >= (numberPart.getRight() - numberPart.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-//                        Intent intent = new Intent(
-//                                RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-//                        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, "en-US");
-//                        try {
-//                            promptSpeechInput();
-//                        } catch (ActivityNotFoundException a) {
-//                            Toast t = Toast.makeText(getApplicationContext(),
-//                                    "Opps! Your device doesn't support Speech to Text",
-//                                    Toast.LENGTH_SHORT);
-//                            t.show();
-//                        }
-//
-//                        return true;
-//
-//                    }
-//
-//                }
-//
-//                return false;
-//            }
-//        });
-//    }
+    private void iniSpeak() {
+        final EditText edt = (EditText) findViewById(R.id.edittext_part_number);
+        edt.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                final int DRAWABLE_LEFT = 0;
+                final int DRAWABLE_TOP = 1;
+                final int DRAWABLE_RIGHT = 2;
+                final int DRAWABLE_BOTTOM = 3;
+
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+
+                    if(event.getRawX() >= (edt.getRight() - edt.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        if (edt.getText()==null || edt.getText().length()==0) {
+                            Intent intent = new Intent(PartActivity.this, RecognizerSampleActivity.class);
+                            startActivityForResult(intent, RESULT_SPEECH);
+                        }
+                        else {
+                            edt.setText("");
+                        }
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+    }
     private void promptSpeechInput() {
 
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -188,7 +219,32 @@ public class PartActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
         }
     }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case RESULT_SPEECH: {
+                if (resultCode == RESULT_OK && null != data) {
+                    ArrayList<String> text = data
+                            .getStringArrayListExtra("all_results");
+                    EditText edt = (EditText) findViewById(R.id.edittext_part_number);
+                    String edt_text = SpeachRecogn.vinSpeach(text).toUpperCase();
+                    if (edt_text.length() > 17)
+                        edt_text = edt_text.substring(0, 17);
+                    edt.setText(edt_text);
+                }
+                break;
+            }
+            case REQUEST_ADD: {
+                if (resultCode==RESULT_OK) {
+                    setResult(RESULT_OK);
+                    finish();
+                }
+                break;
+            }
+        }
+    }
 //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        super.onActivityResult(requestCode, resultCode, data);
 //
@@ -230,7 +286,8 @@ public class PartActivity extends AppCompatActivity {
                     image.setVisibility(View.INVISIBLE);
 
                 final TextView text = (TextView) childView.findViewById(R.id.partItemName);
-                text.setText(child.getCategoryName());
+                child.setTextView(text);
+                child.getTextView().setText(child.getCategoryName());
 //                childView.setVisibility(View.VISIBLE);
                 item.getLinearLayout().addView(childView);
                 child.setView(childView);
@@ -242,17 +299,16 @@ public class PartActivity extends AppCompatActivity {
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 leftMarginParams.leftMargin = leftmargin;
                 child.getLinearLayout().setVisibility(View.GONE);
-
-
                 final ImageView arrowImage = (ImageView) childView.findViewById(R.id.partItemArrow);
+                child.setOpenandcloseimg(arrowImage);
                 if (child.hasChildren())
-                    arrowImage.setImageResource(R.drawable.ic_action_arrow_not_opened);
+                    child.getOpenandcloseimg().setImageResource(R.drawable.ic_action_arrow_not_opened);
 
                 childView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dfs(child, false);
                         child.click();
+                        Log.d("mylogs", "" + child.getCategoryName());
                         if (!child.hasChildren()) {
                             Intent intent = new Intent(PartActivity.this, PartsInActivity.class);
                             intent.putExtra("carId", carId);
@@ -262,26 +318,71 @@ public class PartActivity extends AppCompatActivity {
                             startActivity(intent);
                         }
                         if (child.isFirstClick()) {
+                            Log.d("mylogs", "1" + child.getCategoryName());
                             child.getLinearLayout().setVisibility(View.VISIBLE);
                             if (child.hasChildren()) {
-                                //To do ic_action_arrow_opened
-                                arrowImage.setImageResource(R.drawable.ic_action_arrow_opened);
-                                text.setTypeface(null, Typeface.BOLD);
+                                child.getOpenandcloseimg().setImageResource(R.drawable.ic_action_arrow_opened);
+                                child.getTextView().setTypeface(null, Typeface.BOLD);
                             }
                         }
                         else {
+                            Log.d("mylogs", "2" + child.getCategoryName());
                             if (child.hasChildren())
-                                arrowImage.setImageResource(R.drawable.ic_action_arrow_not_opened);
+                                child.getOpenandcloseimg().setImageResource(R.drawable.ic_action_arrow_not_opened);
                             child.getLinearLayout().setVisibility(View.GONE);
-                            text.setTypeface(null, Typeface.NORMAL);
+                            child.getTextView().setTypeface(null, Typeface.NORMAL);
                         }
 //                        Toast.makeText(PartActivity.this, child.getCategoryName()+" touched", Toast.LENGTH_LONG).show();
                     }
                 });
-
+                dfs(child, false);
                 child.getLinearLayout().setOrientation(LinearLayout.VERTICAL);
                 item.getLinearLayout().addView(child.getLinearLayout(), leftMarginParams);
             }
         }
+    }
+    public boolean dfssearch(final CarCategory item, boolean first, String search) {
+        boolean have = false;
+        if(!item.hasChildren()) {
+            String categoryname = item.getCategoryName();
+            categoryname.toLowerCase();
+            search.toLowerCase();
+            if(search.equals("")) {
+                return true;
+            }
+            have = (categoryname.indexOf(search) != -1);
+            return have;
+        }
+        else {
+            item.getLinearLayout().setVisibility(View.VISIBLE);
+            if(!first) {
+                item.getOpenandcloseimg().setImageResource(R.drawable.ic_action_arrow_opened);
+                item.setFirstClick(true);
+                item.getTextView().setTypeface(null, Typeface.BOLD);
+            }
+            for (final CarCategory child : item.getChildren()) {
+                if (dfssearch(child, false, search)) {
+                    have = true;
+                    child.getView().setVisibility(View.VISIBLE);
+                }
+                else
+                    child.getView().setVisibility(View.GONE);
+            }
+            if(!have) {
+                item.getLinearLayout().setVisibility(View.GONE);
+                if(!first) {
+                    item.getOpenandcloseimg().setImageResource(R.drawable.ic_action_arrow_not_opened);
+                    item.click();
+                    item.getTextView().setTypeface(null, Typeface.NORMAL);
+                }
+            }
+            if(search.equals("") && !first) {
+                item.getLinearLayout().setVisibility(View.GONE);
+                item.getOpenandcloseimg().setImageResource(R.drawable.ic_action_arrow_not_opened);
+                item.click();
+                item.getTextView().setTypeface(null, Typeface.NORMAL);
+            }
+        }
+        return have;
     }
 }

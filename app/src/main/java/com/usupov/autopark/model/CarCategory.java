@@ -1,7 +1,9 @@
 package com.usupov.autopark.model;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -18,12 +20,29 @@ public class CarCategory {
     int percent;
     private ArrayList<CarCategory>chilren;
     private boolean isFirstClick;
+    private ImageView openandcloseimg;
+    public TextView textname;
     public CarCategory(String categoryName, int categoryId, int percent) {
         this.categoryName = categoryName;
         this.categoryId = categoryId;
         this.percent = percent;
         this.chilren = new ArrayList<>();
         this.isRealised = false;
+    }
+    public void setFirstClick(boolean firstClick) {
+        this.isFirstClick = firstClick;
+    }
+    public void setTextView(TextView textname) {
+        this.textname = textname;
+    }
+    public TextView getTextView() {
+        return this.textname;
+    }
+    public ImageView getOpenandcloseimg() {
+        return this.openandcloseimg;
+    }
+    public void setOpenandcloseimg (ImageView openandcloseimg) {
+        this.openandcloseimg = openandcloseimg;
     }
     public boolean isRealised() {
         return isRealised;
