@@ -179,9 +179,38 @@ public class HttpHandler {
         }
         return false;
     }
+    public boolean postWithMultipleFiles(String urlTo, HashMap<String, String> params, List<String> filePaths) {
+        try {
+            MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
+            entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+
+            for (String key : params.keySet()) {
+                entityBuilder.addTextBody(key, params.get(key));
+            }
+            if (filePaths != null && filePaths.size() > 0) {
+                for (int i = 0; i < filePaths.size(); i++) {
+                    entityBuilder.addBinaryBody("file["+i+"]", new File(filePaths.get(i)));
+                }
+            }
+            HttpPost post = new HttpPost(urlTo);
+//            post.addHeader("User-Agent", "Test");
+//            post.addHeader("Content-type", "multipart/form-data");
+//            post.addHeader("Accept", "image/jpg");
+
+            HttpEntity entity = entityBuilder.build();
+            post.setEntity(entity);
+
+            HttpClient client = new DefaultHttpClient();
+            HttpResponse response = client.execute(post);
+            if (response.getStatusLine().getStatusCode()==200)
+                return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
     public boolean postWithOneFile(String urlTo, HashMap<String, String> params, String filePath) {
         try {
-            System.out.println("Urlllllllll="+urlTo);
             MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
             entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 
@@ -201,8 +230,6 @@ public class HttpHandler {
 
             HttpClient client = new DefaultHttpClient();
             HttpResponse response = client.execute(post);
-            System.out.println("ressssssssssssssssssssssssssssssss"+response.getStatusLine().getStatusCode()+"+++++++++++++++++++++++++********");
-            System.out.println("OKKKKKKKKKKKKKKKKKKKKKK");
             if (response.getStatusLine().getStatusCode()==200)
                 return true;
         } catch (Exception e) {

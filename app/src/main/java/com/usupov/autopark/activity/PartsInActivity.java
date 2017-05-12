@@ -54,7 +54,6 @@ public class PartsInActivity extends AppCompatActivity {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-
         initBtnSavePartIn();
 
     }
@@ -95,18 +94,15 @@ public class PartsInActivity extends AppCompatActivity {
                 String comment = ((EditText)findViewById(R.id.part_in_comment)).getText().toString();
 
                 String url = Config.getUrlCar()+carId+"/"+Config.getpathCategory()+"/"+categoryId+"/create";
-                HashMap<String, String> map = new HashMap<String, String>();
+                HashMap<String, String> map = new HashMap<>();
                 map.put("brand", brand);
                 map.put("status", status);
                 map.put("store", store);
                 map.put("comment", comment);
                 HttpHandler handler = new HttpHandler();
-                System.out.println(photoList.size()+"        **********************");
+//                System.out.println(photoList.size()+"        **********************");
                 boolean result;
-                if (!photoList.isEmpty())
-                    result = handler.postQuery(url, map, photoList.get(0));
-                else
-                    result = handler.postQuery(url, map, null);
+                result = handler.postWithMultipleFiles(url, map, photoList);
                 if (result) {
                     Toast.makeText(PartsInActivity.this, "OK", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(PartsInActivity.this, MainActivity.class));
@@ -193,7 +189,7 @@ public class PartsInActivity extends AppCompatActivity {
                     final ImageView image = (ImageView) viev.findViewById(R.id.image_part_in);
                     final ImageView imageClose = (ImageView)viev.findViewById(R.id.image_part_in_close);
                     image.setImageBitmap(bitmap);
-                    imageClose.setImageResource(R.drawable.ic_action_close);
+                    imageClose.setImageResource(R.drawable.ysk_ic_close);
 
                     imageClose.setOnClickListener(new View.OnClickListener() {
                         @Override

@@ -1,6 +1,5 @@
 package com.usupov.autopark.activity;
 
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -88,8 +87,6 @@ public class PartActivity extends AppCompatActivity {
     }
     private String getJSONStringCategory (int carId) {
         String url = Config.getUrlCar()+carId+"/"+Config.getpathCategory();
-        System.out.println("URLLL="+url);
-//        Toast.makeText(PartActivity.this, url, Toast.LENGTH_LONG).show();
         HttpHandler handler = new HttpHandler();
         String result = handler.ReadHttpResponse(url);
         return result;

@@ -39,13 +39,16 @@
                 />
         </LinearLayout>
         <HorizontalScrollView
+            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
-            android:layout_height="150dp">
+            android:layout_height="200dp">
             <LinearLayout
                 android:id="@+id/layout_parts_in"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="200dp"
                 android:orientation="horizontal"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 android:layout_margin="10dp"
                 android:layout_marginBottom="100dp">
             </LinearLayout>
