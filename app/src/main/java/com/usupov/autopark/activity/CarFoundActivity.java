@@ -33,10 +33,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.usupov.autopark.R;
 import com.usupov.autopark.http.Config;
 import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.model.CarFoundModel;
+import com.usupov.autopark.model.CarModel;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -74,12 +76,15 @@ public class CarFoundActivity extends AppCompatActivity {
         mCameraImageView.setVisibility(View.GONE);
         imagePath = null;
     }
-
+    private CarModel car;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_found);
-        setCarInforms(new CarFoundModel(getIntent().getExtras().getString("name"), getIntent().getExtras().getString("vin"), "2.0/211 л.с./ Бензин", 2015, "Купе", "Полный", "Механическая"));
+        Gson g = new Gson();
+        car = g.fromJson(getIntent().getExtras().getString("car"), CarModel.class);
+        car.setFullName();
+        setCarInforms(new CarFoundModel(car.getFullName(), car.getVin(), "", car.getYearName(), "", "", ""));
         initToolbar();
 
         mCameraImageView = (ImageView) findViewById(R.id.ivPhotoCar);
@@ -163,6 +168,8 @@ public class CarFoundActivity extends AppCompatActivity {
 
         vinNumberView = (TextView) findViewById(R.id.vin_number);
         vinNumberView.setText(car.getVinNumber());
+        if (car.getVinNumber() == null || car.getVinNumber().length() == 0)
+            findViewById(R.id.vin_text).setVisibility(View.GONE);
 /*
         TextView engine = (TextView) findViewById(R.id.engine);
         engine.setText(car.getEngine());
@@ -197,17 +204,15 @@ public class CarFoundActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String vinNumber = vinNumberView.getText()+"";
-                String carName = carNameView.getText()+"";
                 String url = Config.getUrlCarCreat();
-//                url = "https://httpbin.org/post";
                 HttpHandler handler = new HttpHandler();
                 HashMap<String, String> pairs = new HashMap<>();
-                System.out.println(vinNumber);
-                Log.v("vin", vinNumber);
-                pairs.put("vin", vinNumber);
+                if (car.getVin()!= null && car.getVin().length() > 0)
+                    pairs.put("vin", car.getVin());
+                pairs.put("brandId", car.getBrandId()+"");
+                pairs.put("modelId", car.getModelId()+"");
+                pairs.put("yearId", car.getYearId()+"");
                 try {
-//                    Toast.makeText(CarFoundActivity.this, vinNumber, Toast.LENGTH_LONG).show();
                     boolean result = handler.postWithOneFile(url, pairs, imagePath);
                     imagePath = null;
                     if (result) {

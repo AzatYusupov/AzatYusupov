@@ -1,5 +1,7 @@
 package com.usupov.autopark.jsonHelper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.usupov.autopark.http.Config;
 import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.model.CarModel;
@@ -19,37 +21,34 @@ public class Car {
 
     public static List<CarModel> getCatList() {
 
-        List<CarModel> carList = new ArrayList<>();
         HttpHandler handler = new HttpHandler();
         String url = Config.getUrlCars();
         String jsonStr = handler.ReadHttpResponse(url);
         if (jsonStr == null)
             return null;
+        List<CarModel> carList = new ArrayList<>();
         JSONArray carsArray = null;
         try {
             carsArray = new JSONArray(jsonStr);
             for (int i = 0; i < carsArray.length(); i++) {
-                CarModel carModel = new CarModel();
                 JSONObject carObject = carsArray.getJSONObject(i);
 
-                carModel.setId(carObject.getInt("id"));
+                Gson gson = new Gson();
+                CarModel carModel = gson.fromJson(carObject.toString(), CarModel.class);
 
-                carModel.setBrandId(carObject.getInt("brandId"));
-                carModel.setModelId(carObject.getInt("modelId"));
-                carModel.setYearId(carObject.getInt("yearId"));
+//                carModel.setId(carObject.getInt("id"));
+//
+//                carModel.setBrandId(carObject.getInt("brandId"));
+//                carModel.setModelId(carObject.getInt("modelId"));
+//                carModel.setYearId(carObject.getInt("yearId"));
+//
+//                carModel.setBrandName(carObject.getString("brandName"));
+//                carModel.setModelName(carObject.getString("modelName"));
+//                carModel.setYearName(carObject.getString("yearName"));
+//
+//                carModel.setVin(carObject.getString("vin"));
+                carModel.setFullName();
 
-                carModel.setBrandName(carObject.getString("brandName"));
-                carModel.setModelName(carObject.getString("modelName"));
-                carModel.setYearName(carObject.getString("yearName"));
-
-                carModel.setVin(carObject.getString("vin"));
-
-                String fullName = carModel.getBrandName()+" "+carModel.getModelName()+", "+carModel.getYearName();
-                if (carModel.getModelName().startsWith(carModel.getBrandName())) {
-                    fullName = carModel.getBrandName()+" "+carModel.getModelName().substring(carModel.getBrandName().length()+1)+", "+carModel.getYearName();
-                }
-                
-                carModel.setFullName(fullName);
                 carList.add(carModel);
             }
             return carList;
@@ -57,7 +56,33 @@ public class Car {
             e.printStackTrace();
         }
         return null;
-
     }
+    public static CarModel getCarWithVin(String vin) {
 
+        HttpHandler handler = new HttpHandler();
+        final String urlVin = Config.getUrlVin();
+        String url = urlVin+"/"+vin;
+        String jSonString = handler.ReadHttpResponse(url);
+
+        return fromJsonToCarModel(jSonString);
+    }
+    public static CarModel getCarByCatalog(int brandId, int modelId, int yearId) {
+        HttpHandler handler = new HttpHandler();
+        final String url = Config.getUrlGetByCatalog(brandId, modelId, yearId);
+        String jsonString = handler.ReadHttpResponse(url);
+
+        return fromJsonToCarModel(jsonString);
+    }
+    private static CarModel fromJsonToCarModel(String jsonString) {
+        if (jsonString==null)
+            return null;
+
+        try {
+            Gson g = new Gson();
+            return g.fromJson(jsonString, CarModel.class);
+        }
+        catch (Exception e){}
+
+        return null;
+    }
 }

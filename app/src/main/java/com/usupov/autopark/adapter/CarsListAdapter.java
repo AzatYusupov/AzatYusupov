@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.DecorContentParent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -23,13 +22,11 @@ import com.bumptech.glide.Glide;
 import com.usupov.autopark.R;
 import com.usupov.autopark.activity.MainActivity;
 import com.usupov.autopark.activity.PartActivity;
-import com.usupov.autopark.activity.PartsInActivity;
 import com.usupov.autopark.http.Config;
 import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.model.CarModel;
 
 import java.util.List;
-import java.util.logging.Handler;
 
 public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyViewHolder> {
 
@@ -169,7 +166,6 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
                 intent.putExtra("carId", carId);
                 intent.putExtra("carName", carName);
                 context.startActivity(intent);
-                ((Activity) context).finish();
             }
         });
         /*holder.overflow.setOnClickListener(new View.OnClickListener() {

@@ -92,4 +92,10 @@ dependencies {
     compile 'com.yandex.android:speechkit:2.5.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
+
+    compile 'com.fasterxml.jackson.core:jackson-core:2.5.3'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.3'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.5.3'
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.3.1'
+
 }

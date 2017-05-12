@@ -89,4 +89,5 @@
     <string name="select_model">Выберите модель</string>
     <string name="select_year">Выберите год</string>
 
+    <string name="by_catalog_not_found">По таким каталогам автомобиль не найден</string>
 </resources>

@@ -205,6 +205,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void initCarsList(List<CarModel> carList1) {
+        if (carList==null)
+            carList = new ArrayList<>();
+        if (carList1==null)
+            carList1 = new ArrayList<>();
         tvEmptyCarList.setText("");
         textView.setVisibility(View.VISIBLE);
         CarsListAdapter adapter = new CarsListAdapter(this, carList1);

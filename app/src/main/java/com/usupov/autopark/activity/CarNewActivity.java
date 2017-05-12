@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -22,16 +23,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.usupov.autopark.R;
 import com.usupov.autopark.http.Config;
 import com.usupov.autopark.http.HttpHandler;
+import com.usupov.autopark.jsonHelper.Car;
 import com.usupov.autopark.jsonHelper.CarCat;
+import com.usupov.autopark.model.CarModel;
 import com.usupov.autopark.model.CatalogBrand;
 import com.usupov.autopark.model.CatalogModel;
 import com.usupov.autopark.model.CatalogYear;
 import com.usupov.autopark.service.SpeachRecogn;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +46,7 @@ public class CarNewActivity extends AppCompatActivity {
     private KeyboardView mKeyboardView;
     private Keyboard vinKeyboard;
     private EditText vinEditText;
-    private Button new_car_find_btn;
+    private Button newCarFindBtn;
     ProgressBar pbSelectCatalog;
 
     private int selectedBrand = -1;
@@ -60,7 +62,7 @@ public class CarNewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_new);
 
-        new_car_find_btn = (Button) findViewById(R.id.new_car_find_btn);
+        newCarFindBtn = (Button) findViewById(R.id.new_car_find_btn);
 
         initToolbar();
 
@@ -72,8 +74,22 @@ public class CarNewActivity extends AppCompatActivity {
         initVoiceBtn();
         initVinEdittext();
         initCatalogSelect();
+        newCarFindBtn.setOnClickListener(catalogFindBtnClick);
     }
-
+    private View.OnClickListener catalogFindBtnClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            CarModel car = Car.getCarByCatalog(selectedBrand, selectedModel, selectedYear);
+            if (car==null)
+                Toast.makeText(CarNewActivity.this, getString(R.string.by_catalog_not_found), Toast.LENGTH_LONG).show();
+            else {
+                Intent intent = new Intent(CarNewActivity.this, CarFoundActivity.class);
+                Gson g = new Gson();
+                intent.putExtra("car", g.toJson(car));
+                startActivityForResult(intent, REQUEST_ADD);
+            }
+        }
+    };
     /**
      * Initial toolbar
      */
@@ -148,8 +164,7 @@ public class CarNewActivity extends AppCompatActivity {
     public void initVinEdittext() {
         vinEditText = (EditText)findViewById(R.id.edittext_vin_number);
         vinEditText.setBackgroundResource(R.drawable.vin_right_border);
-        final HttpHandler handler = new HttpHandler();
-        final String urlVin = Config.getUrlVin();
+
         vinEditText.setOnClickListener(new View.OnClickListener() {
 //            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
             @Override
@@ -172,31 +187,18 @@ public class CarNewActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 if (vinEditText.getText().length()==17) {
                     String vin = vinEditText.getText()+"";
-                    String url = urlVin+vinEditText.getText();
-                    String jSonString = handler.ReadHttpResponse(url);
-                    if (jSonString==null) {
+                    CarModel car = Car.getCarWithVin(vin);
+                    if (car==null) {
                         tvVinError.setText(getString(R.string.error_vin));
                         vinEditText.setBackgroundResource(R.drawable.vin_error_border);
                     }
                     else {
                         tvVinError.setText("");
                         vinEditText.setBackgroundResource(R.drawable.vin_right_border);
-                        JSONObject jObject = null;
-                        try {
-                            jObject = new JSONObject(jSonString);
-                            String name = jObject.getString("name");
-                            String description = jObject.getString("description");
-                            Intent intent = new Intent(CarNewActivity.this, CarFoundActivity.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putString("name", name);
-                            bundle.putString("description", description);
-                            bundle.putString("vin", vin);
-                            intent.putExtras(bundle);
-                            startActivityForResult(intent, REQUEST_ADD);
-                        }
-                        catch (Exception e) {
-
-                        }
+                        Intent intent = new Intent(CarNewActivity.this, CarFoundActivity.class);
+                        Gson g = new Gson();
+                        intent.putExtra("car", g.toJson(car));
+                        startActivityForResult(intent, REQUEST_ADD);
                     }
                 }
                 else if (vinEditText.getText().length() > 17) {
@@ -331,7 +333,7 @@ public class CarNewActivity extends AppCompatActivity {
                         selectedModel = -1;
                         selectedYear =  -1;
                         selectedBrandListId = which;
-                        new_car_find_btn.setVisibility(View.GONE);
+                        newCarFindBtn.setVisibility(View.GONE);
                         dialog.dismiss();
                     }
                 });
@@ -376,7 +378,7 @@ public class CarNewActivity extends AppCompatActivity {
                         tvYearName.setTextColor(Color.GRAY);
                         selectedYear =  -1;
                         selectedModelLisId = which;
-                        new_car_find_btn.setVisibility(View.GONE);
+                        newCarFindBtn.setVisibility(View.GONE);
                         dialog.dismiss();
                     }
                 });
@@ -417,7 +419,7 @@ public class CarNewActivity extends AppCompatActivity {
                         tvYearName.setTextColor(Color.BLACK);
                         tvYearName.setText(yearName);
                         selectedYearListId= which;
-                        new_car_find_btn.setVisibility(View.VISIBLE);
+                        newCarFindBtn.setVisibility(View.VISIBLE);
                         dialog.dismiss();
                     }
                 });

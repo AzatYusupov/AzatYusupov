@@ -1,8 +1,11 @@
 package com.usupov.autopark.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class CarModel {
 
     private String fullName, imageUrl, description;
+    //@JsonProperty("id")
     private int id;
     private int brandId, modelId, yearId;
     private String brandName, modelName, yearName;
@@ -19,7 +22,11 @@ public class CarModel {
     public void setId(int id) {
         this.id = id;
     }
-    public void setFullName(String fullName) {
+    public void setFullName() {
+        String fullName = this.brandName+" "+this.modelName+", "+this.yearName;
+        if (this.modelName.startsWith(this.brandName)) {
+            fullName = this.brandName+" "+this.modelName.substring(this.brandName.length()+1)+", "+this.yearName;
+        }
         this.fullName = fullName;
     }
 
