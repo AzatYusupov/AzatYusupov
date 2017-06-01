@@ -18,9 +18,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.usupov.autopark.R;
 import com.usupov.autopark.http.Config;
 import com.usupov.autopark.http.HttpHandler;
+import com.usupov.autopark.model.PartModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,18 +36,17 @@ public class PartsInActivity extends AppCompatActivity {
     private static int carId;
     private static int categoryId;
     private static ArrayList<String> photoList;
+    private static PartModel part;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parts_in);
-        Intent intent = getIntent();
-        String partInName = intent.getExtras().getString("categoryName");
-        carId = intent.getExtras().getInt("carId");
-        categoryId = intent.getExtras().getInt("categoryId");
+        Gson g = new Gson();
+        part = g.fromJson(getIntent().getExtras().getString("part"), PartModel.class);
         photoList = new ArrayList<>();
         initTollbar();
         TextView tViewPartInname = (TextView) findViewById(R.id.part_in_name);
-        tViewPartInname.setText(partInName);
+        tViewPartInname.setText(part.getTitle());
 
         findViewById(R.id.btn_photo_part_in).setOnClickListener(mCaptureImageButtonClickListener);
         linLayoutPhotoParts = (LinearLayout)findViewById(R.id.layout_parts_in);
@@ -92,24 +93,23 @@ public class PartsInActivity extends AppCompatActivity {
                 }
                 String store = ((EditText)findViewById(R.id.part_in_store)).getText().toString();
                 String comment = ((EditText)findViewById(R.id.part_in_comment)).getText().toString();
-
-                String url = Config.getUrlCar()+carId+"/"+Config.getpathCategory()+"/"+categoryId+"/create";
+                String url = Config.getUrlCar()+part.getCarId()+"/"+Config.getpathCategory()+"/"+part.getCategoryId()+"/create";
                 HashMap<String, String> map = new HashMap<>();
+                map.put("partId", part.getId()+"");
                 map.put("brand", brand);
                 map.put("status", status);
                 map.put("store", store);
                 map.put("comment", comment);
                 HttpHandler handler = new HttpHandler();
-//                System.out.println(photoList.size()+"        **********************");
                 boolean result;
                 result = handler.postWithMultipleFiles(url, map, photoList);
                 if (result) {
-                    Toast.makeText(PartsInActivity.this, "OK", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(PartsInActivity.this, MainActivity.class));
+                    Toast.makeText(PartsInActivity.this, getString(R.string.part_added),Toast.LENGTH_LONG).show();
+                    setResult(RESULT_OK);
                     finish();
                 }
                 else
-                    Toast.makeText(PartsInActivity.this, "NOT", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PartsInActivity.this, getString(R.string.part_not_added),Toast.LENGTH_LONG).show();
 
             }
         });

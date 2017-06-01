@@ -29,8 +29,7 @@ public class SpeachRecogn {
             this.value = value;
         }
     }
-    public static String vinSpeach(ArrayList<String> text) {
-
+    public static String changeWordsToDigits(String str) {
         ArrayList<Sort> map = new ArrayList<>();
 
         map.add(new Sort("раз", "1"));
@@ -156,6 +155,14 @@ public class SpeachRecogn {
         map.add(new Sort("вида", "vw"));
 
         Collections.sort(map);
+        for (Sort s : map) {
+            str = str.replaceAll(s.key, s.value.trim());
+        }
+        return str;
+    }
+    public static String vinSpeach(ArrayList<String> text) {
+
+
 
         String res = "";
 
@@ -177,15 +184,22 @@ public class SpeachRecogn {
                 System.out.println("variant="+variant+" hasn't been sent to the server");
             variant = variant.toLowerCase();
             System.out.println(variant+"   ------");
-            for (Sort s : map) {
-//                System.out.println(s.key+" "+s.value+" 88888888888888888888888888888");
-                variant = variant.replaceAll(s.key, s.value.trim());
-            }
-            //78954621358741001
+            variant = changeWordsToDigits(variant);
             System.out.println(variant+"    ++++++++");
             if (res.length()==0)
                 res = variant;
         }
         return res;
+    }
+    public static String partToNormal(String reconNatedtext) {
+        reconNatedtext = changeWordsToDigits(reconNatedtext);
+        String afterFiltrText = "";
+        for (int i = 0; i < reconNatedtext.length(); i++) {
+            char w = reconNatedtext.charAt(i);
+            if (Character.isLetter(w) || Character.isDigit(w) || w=='-' || w==' ') {
+                afterFiltrText += w;
+            }
+        }
+        return afterFiltrText;
     }
 }

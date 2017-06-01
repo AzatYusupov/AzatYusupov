@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:background="#EDEEFA"
     android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
+    android:descendantFocusability="beforeDescendants"
     tools:context=".activity.PartsInActivity">
 
     <LinearLayout
@@ -16,149 +18,156 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="5">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:layout_weight="4"
-                android:textColor="@color/colorPrimary"
-                android:text="Рычаг подвески, передний левый"
-                android:id="@+id/part_in_name"
-                />
-            <TextView
-                android:layout_weight="1"
-                android:text="XXXXXXXXX"
-                android:visibility="invisible"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
-        </LinearLayout>
-        <HorizontalScrollView
-            android:layout_marginTop="20dp"
-            android:layout_width="match_parent"
-            android:layout_height="200dp">
-            <LinearLayout
-                android:id="@+id/layout_parts_in"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:layout_margin="10dp"
-                android:layout_marginBottom="100dp">
-            </LinearLayout>
-        </HorizontalScrollView>
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <LinearLayout
+                android:layout_width="match_parent"
                 android:orientation="vertical"
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-            <EditText
-                android:inputType="text"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:hint="Производитель*"
-                android:id="@+id/part_in_manufacturer"
-                android:background="@color/colorWhite"
-                android:padding="15dp"
-                />
-            <View
+                android:orientation="horizontal"
+                android:weightSum="5">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:layout_marginRight="50dp"
+                    android:layout_weight="4"
+                    android:textColor="@color/colorPrimary"
+                    android:text="Рычаг подвески, передний левый"
+                    android:id="@+id/part_in_name"
+                    />
+                <TextView
+                    android:layout_weight="1"
+                    android:text="XXXXXXXXX"
+                    android:visibility="invisible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+            </LinearLayout>
+            <HorizontalScrollView
+                android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@android:color/darker_gray">
-            </View>
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:hint="Состояние*"
-                android:id="@+id/part_in_status"
-                android:inputType="text"
-                android:background="@color/colorWhite"
-                android:padding="15dp"
-                android:layout_marginTop="1dp"
-                />
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@android:color/darker_gray">
-            </View>
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:hint="Место на складе"
-                android:id="@+id/part_in_store"
-                android:inputType="text"
-                android:background="@color/colorWhite"
-                android:padding="15dp"
-                android:layout_marginTop="1dp"
-                />
-            <!--
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Место на складе"
-                android:layout_margin="10dp"
-                android:layout_marginTop="20dp"/>
-                -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@android:color/darker_gray">
-            </View>
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:hint="Комментарий"
-                android:gravity="top"
-                android:id="@+id/part_in_comment"
-                android:inputType="textMultiLine"
-                android:padding="15dp"
-                android:paddingBottom="40dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="7dp"
-                android:layout_marginBottom="5dp"
-                android:background="@color/colorWhite"
-                android:scrollHorizontally="false"
-                />
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@android:color/darker_gray">
-            </View>
-            <Button
-                android:layout_width="match_parent"
-                android:layout_marginLeft="50dp"
-                android:layout_marginRight="50dp"
-                android:layout_marginTop="10dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/save_button_bg"
-                android:layout_gravity="bottom|center"
-                android:id="@+id/save_part_in"
-                android:text="Сохранить"
-                android:textColor="@color/colorWhite"
-                />
+                android:layout_height="200dp">
+                <LinearLayout
+                    android:id="@+id/layout_parts_in"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:layout_margin="10dp"
+                    android:layout_marginBottom="100dp">
+                </LinearLayout>
+            </HorizontalScrollView>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <EditText
+                    android:inputType="text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:hint="Производитель*"
+                    android:id="@+id/part_in_manufacturer"
+                    android:background="@color/colorWhite"
+                    android:padding="15dp"
+                    />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@android:color/darker_gray">
+                </View>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:hint="Состояние*"
+                    android:id="@+id/part_in_status"
+                    android:inputType="text"
+                    android:background="@color/colorWhite"
+                    android:padding="15dp"
+                    android:layout_marginTop="1dp"
+                    />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@android:color/darker_gray">
+                </View>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:hint="Место на складе"
+                    android:id="@+id/part_in_store"
+                    android:inputType="text"
+                    android:background="@color/colorWhite"
+                    android:padding="15dp"
+                    android:layout_marginTop="1dp"
+                    />
+                <!--
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Место на складе"
+                    android:layout_margin="10dp"
+                    android:layout_marginTop="20dp"/>
+                    -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@android:color/darker_gray">
+                </View>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:hint="Комментарий"
+                    android:gravity="top"
+                    android:id="@+id/part_in_comment"
+                    android:inputType="textMultiLine"
+                    android:padding="15dp"
+                    android:paddingBottom="40dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/colorWhite"
+                    android:scrollHorizontally="false"
+                    />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@android:color/darker_gray">
+                </View>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginRight="50dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/save_button_bg"
+                    android:layout_gravity="bottom|center"
+                    android:id="@+id/save_part_in"
+                    android:text="Сохранить"
+                    android:textColor="@color/colorWhite"
+                    />
+                </LinearLayout>
             </LinearLayout>
         </ScrollView>
     </LinearLayout>

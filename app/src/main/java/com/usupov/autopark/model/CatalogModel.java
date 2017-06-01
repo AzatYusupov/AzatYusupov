@@ -1,9 +1,5 @@
 package com.usupov.autopark.model;
 
-/**
- * Created by Azat on 21.04.2017.
- */
-
 public class CatalogModel {
     private int id;
     private String name;

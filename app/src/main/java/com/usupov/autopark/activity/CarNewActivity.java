@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,14 +18,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.usupov.autopark.R;
-import com.usupov.autopark.http.Config;
-import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.jsonHelper.Car;
 import com.usupov.autopark.jsonHelper.CarCat;
 import com.usupov.autopark.model.CarModel;
@@ -44,10 +40,8 @@ public class CarNewActivity extends AppCompatActivity {
     protected static final int REQUEST_ADD = 2;
     TextView tvVinError;
     private KeyboardView mKeyboardView;
-    private Keyboard vinKeyboard;
     private EditText vinEditText;
     private Button newCarFindBtn;
-    ProgressBar pbSelectCatalog;
 
     private int selectedBrand = -1;
     private int selectedModel = -1;
@@ -102,9 +96,9 @@ public class CarNewActivity extends AppCompatActivity {
     }
     public void openKeyboard(View v)
     {
+        if( v!=null)((InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(v.getWindowToken(), 0);
         mKeyboardView.setVisibility(View.VISIBLE);
         mKeyboardView.setEnabled(true);
-        if( v!=null)((InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(v.getWindowToken(), 0);
     }
     private KeyboardView.OnKeyboardActionListener mOnKeyboardActionListener = new KeyboardView.OnKeyboardActionListener() {
         @Override
@@ -251,6 +245,10 @@ public class CarNewActivity extends AppCompatActivity {
                         else {
                             vinEditText.setText("");
                         }
+                        return true;
+                    }
+                    else {
+                        openKeyboard(vinEditText);
                         return true;
                     }
                 }

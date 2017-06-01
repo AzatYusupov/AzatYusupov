@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +44,7 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
         public TextView fullName, description;
         public ImageView thumbnail, overflow;
         public View homeView;
+        public ProgressBar progress;
 
         public MyViewHolder(View view) {
             super(view);
@@ -51,6 +53,7 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
             thumbnail = (ImageView) view.findViewById(R.id.item_car_thumbnail);
             overflow = (ImageView) view.findViewById(R.id.overflow);
             homeView = view.findViewById(R.id.home_view);
+            progress = (ProgressBar)view.findViewById(R.id.progress_car);
         }
     }
 
@@ -96,7 +99,7 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
                                                     notifyItemRemoved(position);
                                                     notifyDataSetChanged();
                                                     message += context.getString(R.string.car_success_deleted);
-                                                    System.out.println("Removed id : "+position);
+//                                                    System.out.println("Removed id : "+position);
 
                                                     if (carList.isEmpty()) {
                                                         MainActivity.tryEmpty();
@@ -145,6 +148,7 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
         CarModel carListItem = carList.get(position);
         holder.fullName.setText(carListItem.getFullName());
         holder.description.setText(carListItem.getDescription());
+        holder.progress.setProgress(carListItem.getPercent());
 
         // loading album cover using Glide library
         Glide.with(context).load(carListItem.getImageUrl()).into(holder.thumbnail);

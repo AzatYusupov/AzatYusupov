@@ -30,4 +30,8 @@
     </style>
 
     <style name="VoiceVolumeStyle" parent="android:Widget.ProgressBar.Horizontal" />
+
+    <style name="AppTheme.WhiteAccent">
+        <item name="colorAccent">@color/colorWhite</item> <!-- Whatever color you want-->
+    </style>
 </resources>

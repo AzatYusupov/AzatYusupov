@@ -5,22 +5,18 @@ import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
-/**
- * Created by Azat on 14.02.2017.
- */
-
 public class CarCategory {
     private boolean isRealised;
     private View view;
     private LinearLayout linearLayout;
-    private String categoryName;
-    int categoryId;
+    private String name;
+    int id;
     int percent;
     private ArrayList<CarCategory>chilren;
     private boolean isFirstClick;
-    public CarCategory(String categoryName, int categoryId, int percent) {
-        this.categoryName = categoryName;
-        this.categoryId = categoryId;
+    public CarCategory(String name, int id, int percent) {
+        this.name = name;
+        this.id = id;
         this.percent = percent;
         this.chilren = new ArrayList<>();
         this.isRealised = false;
@@ -31,11 +27,11 @@ public class CarCategory {
     public void setRealised() {
         this.isRealised = true;
     }
-    public String getCategoryName() {
-        return categoryName;
+    public String getName() {
+        return name;
     }
-    public int getCategoryId() {
-        return categoryId;
+    public int getId() {
+        return id;
     }
     public boolean isFirstClick() {
         return  this.isFirstClick;
@@ -43,8 +39,8 @@ public class CarCategory {
     public void click() {
         isFirstClick = !isFirstClick;
     }
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setName(String name) {
+        this.name = name;
         this.isFirstClick = false;
     }
     public int getPercent() {

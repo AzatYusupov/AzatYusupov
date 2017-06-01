@@ -1,30 +1,13 @@
 package com.usupov.autopark.activity;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -39,9 +22,6 @@ import com.usupov.autopark.http.Config;
 import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.model.CarFoundModel;
 import com.usupov.autopark.model.CarModel;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 
 
 public class CarFoundActivity extends AppCompatActivity {
@@ -77,6 +57,7 @@ public class CarFoundActivity extends AppCompatActivity {
         imagePath = null;
     }
     private CarModel car;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,7 +65,7 @@ public class CarFoundActivity extends AppCompatActivity {
         Gson g = new Gson();
         car = g.fromJson(getIntent().getExtras().getString("car"), CarModel.class);
         car.setFullName();
-        setCarInforms(new CarFoundModel(car.getFullName(), car.getVin(), "", car.getYearName(), "", "", ""));
+        setCarInforms();
         initToolbar();
 
         mCameraImageView = (ImageView) findViewById(R.id.ivPhotoCar);
@@ -151,42 +132,24 @@ public class CarFoundActivity extends AppCompatActivity {
                 mCameraBitmap = null;
             }
         }
-
     }
-
-
 
     private void startImageCapture() {
         startActivityForResult(new Intent(CarFoundActivity.this, CameraActivity.class), TAKE_PICTURE_REQUEST_B);
     }
-    private static TextView carNameView, vinNumberView ;
 
-    private void setCarInforms(CarFoundModel car) {
+    private void setCarInforms() {
 
-        carNameView = (TextView) findViewById(R.id.car_name);
-        carNameView.setText(car.getCarName());
+        ((TextView)findViewById(R.id.brandNameDesc)).setText(car.getBrandName());
+        ((TextView)findViewById(R.id.modelNameDesc)).setText(car.getModelName());
+        ((TextView)findViewById(R.id.yearNameDesc)).setText(car.getYearName());
 
-        vinNumberView = (TextView) findViewById(R.id.vin_number);
-        vinNumberView.setText(car.getVinNumber());
-        if (car.getVinNumber() == null || car.getVinNumber().length() == 0)
-            findViewById(R.id.vin_text).setVisibility(View.GONE);
-/*
-        TextView engine = (TextView) findViewById(R.id.engine);
-        engine.setText(car.getEngine());
-
-        TextView issueYear = (TextView) findViewById(R.id.issue_year);
-        issueYear.setText(car.getIssue_year()+"");
-
-        TextView carcase = (TextView) findViewById(R.id.carcase);
-        carcase.setText(car.getCarcase());
-
-        TextView driveUnit = (TextView) findViewById(R.id.drive_unit);
-        driveUnit.setText(car.getDrive_unit());
-
-        TextView KPP = (TextView) findViewById(R.id.kpp);
-        KPP.setText(car.getKpp());
-*/
+        if (car.getVin() != null && car.getVin().length() > 0) {
+            findViewById(R.id.vinLayout).setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.vinDesc)).setText(car.getVin());
+        }
     }
+
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_car_found);
         toolbar.setNavigationIcon(R.drawable.ic_back_arrow);
@@ -198,12 +161,12 @@ public class CarFoundActivity extends AppCompatActivity {
             }
         });
     }
+
     private void initbtnSave() {
         Button btnSave = (Button) findViewById(R.id.btn_save_car);
         btnSave.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 String url = Config.getUrlCarCreat();
                 HttpHandler handler = new HttpHandler();
                 HashMap<String, String> pairs = new HashMap<>();
@@ -212,6 +175,7 @@ public class CarFoundActivity extends AppCompatActivity {
                 pairs.put("brandId", car.getBrandId()+"");
                 pairs.put("modelId", car.getModelId()+"");
                 pairs.put("yearId", car.getYearId()+"");
+
                 try {
                     boolean result = handler.postWithOneFile(url, pairs, imagePath);
                     imagePath = null;

@@ -47,6 +47,7 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
  */
 
 public class RecognizerSampleFragment extends Fragment implements RecognizerListener {
+//    private static final String API_KEY_FOR_TESTS_ONLY = "069b6659-984b-4c5f-880e-aaedcfd84102";
     private static final String API_KEY_FOR_TESTS_ONLY = "8a2fdc7a-fc0d-476f-bebe-5f048ac278ac";
 
     private static final int REQUEST_PERMISSION_CODE = 1;
@@ -164,6 +165,7 @@ public class RecognizerSampleFragment extends Fragment implements RecognizerList
         for (RecognitionHypothesis r : recognition.getHypotheses()) {
             all_results.add(r.getNormalized());
         }
+//        System.out.println("PartialRRRRRRRRRRR"+" "+all_results.size());
 //        String result = "";
 //        for (int i = 0; i < h.length; i++) {
 //            result += h[i].toString() + "\n";
@@ -174,7 +176,9 @@ public class RecognizerSampleFragment extends Fragment implements RecognizerList
 
     @Override
     public void onRecognitionDone(Recognizer recognizer, Recognition recognition) {
+        System.out.println("Done***********************");
         curResult = recognition.getBestResultText();
+        System.out.println(all_results.size()+" +++++++++++++++++++++++++++++");
 //        updateResult(curResult);
         all_results.clear();
         for (RecognitionHypothesis r : recognition.getHypotheses()) {
@@ -182,10 +186,12 @@ public class RecognizerSampleFragment extends Fragment implements RecognizerList
         }
         updateProgress(0);
         finish();
+//        System.out.println("DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOON");
 
     }
 
     private void finish() {
+
         Intent intent = new Intent();
         intent.putExtra("recognated_string", curResult);
         intent.putStringArrayListExtra("all_results", all_results);
@@ -202,6 +208,8 @@ public class RecognizerSampleFragment extends Fragment implements RecognizerList
             updateStatus("Error occurred " + error.getString());
             resetRecognizer();
         }
+        finish();
+//        System.out.println("Errorrrrrrrrrrrrrr="+error.getString());
     }
 
     private void createAndStartRecognizer() {

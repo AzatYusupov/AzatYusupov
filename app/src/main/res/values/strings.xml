@@ -90,4 +90,8 @@
     <string name="select_year">Выберите год</string>
 
     <string name="by_catalog_not_found">По таким каталогам автомобиль не найден</string>
+
+    <!--Parts-->
+    <string name="part_added">Запчасть успешно добавлено!</string>
+    <string name="part_not_added">Запчасть не добавлено</string>
 </resources>

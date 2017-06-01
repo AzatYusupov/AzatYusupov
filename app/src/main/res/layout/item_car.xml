@@ -79,9 +79,19 @@
                 android:layout_below="@id/item_car_full_name"
                 android:textSize="12sp"
                 />
+            <ProgressBar
+                android:id="@+id/progress_car"
+                android:layout_width="match_parent"
+                android:layout_height="12dp"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:background="@android:color/white"
+                android:layout_marginRight="70dp"
+                android:progressDrawable="@drawable/progress_bar"
+                android:max="100"
+                android:progress="35"
+                />
 
         </LinearLayout>
 
     </RelativeLayout>
-
 </android.support.v7.widget.CardView>

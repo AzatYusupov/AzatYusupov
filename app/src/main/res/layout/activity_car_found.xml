@@ -72,6 +72,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
+                android:id="@+id/vinLayout"
+                android:visibility="gone"
                 android:orientation="horizontal">
                 <TextView
                     android:id="@+id/vin_text"
@@ -83,7 +85,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/vin_number"
+                    android:id="@+id/vinDesc"
                     android:layout_marginLeft="5dp"
                    />
             </LinearLayout>
@@ -105,7 +107,7 @@
                     android:layout_marginLeft="5dp"
                     />
             </LinearLayout>
-            <!--
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -114,13 +116,13 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Двигатель:"
+                    android:text="Марка:  "
                     android:textColor="@color/secondaryText"
                     />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/engine"
+                    android:id="@+id/brandNameDesc"
                     android:layout_marginLeft="5dp"
                  />
             </LinearLayout>
@@ -132,13 +134,13 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Год выпуска:"
+                    android:text="Молель:  "
                     android:textColor="@color/secondaryText"
                     />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/issue_year"
+                    android:id="@+id/modelNameDesc"
                     android:layout_marginLeft="5dp"
                 />
             </LinearLayout>
@@ -150,53 +152,16 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Кузов:"
+                    android:text="Год:  "
                     android:textColor="@color/secondaryText"
                     />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/carcase"
+                    android:id="@+id/yearNameDesc"
                     android:layout_marginLeft="5dp"
                   />
             </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Привод:"
-                    android:textColor="@color/secondaryText"
-                    />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/drive_unit"
-                    android:layout_marginLeft="5dp"
-                  />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="КПП:"
-                    android:textColor="@color/secondaryText"
-                    />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/kpp"
-                    android:layout_marginLeft="5dp"
-                  />
-            </LinearLayout>
-            -->
         </LinearLayout>
         </ScrollView>
     </LinearLayout>

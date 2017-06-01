@@ -76,7 +76,6 @@ public class Car {
     private static CarModel fromJsonToCarModel(String jsonString) {
         if (jsonString==null)
             return null;
-
         try {
             Gson g = new Gson();
             return g.fromJson(jsonString, CarModel.class);

@@ -1,8 +1,5 @@
 package com.usupov.autopark.model;
 
-/**
- * Created by Azat on 22.04.2017.
- */
 
 public class CatalogYear {
     private int id;

@@ -10,12 +10,14 @@ public class CarModel {
     private int brandId, modelId, yearId;
     private String brandName, modelName, yearName;
     private String vin;
+    private int percent;
 
-    public CarModel(int id, String imageUrl, String fullName, String description) {
+    public CarModel(int id, String imageUrl, String fullName, String description, int percent) {
         this.id = id;
         this.imageUrl = imageUrl;
         this.fullName = fullName;
         this.description = description;
+        this.percent = percent;
     }
     public CarModel() {}
 
@@ -24,10 +26,11 @@ public class CarModel {
     }
     public void setFullName() {
         String fullName = this.brandName+" "+this.modelName+", "+this.yearName;
-        if (this.modelName.startsWith(this.brandName)) {
+        if (this.modelName != null && this.modelName.startsWith(this.brandName)) {
             fullName = this.brandName+" "+this.modelName.substring(this.brandName.length()+1)+", "+this.yearName;
         }
         this.fullName = fullName;
+        this.description = fullName;
     }
 
     public void setImageUrl(String imageUrl) {
@@ -66,6 +69,10 @@ public class CarModel {
         this.vin = vin;
     }
 
+    public void setPercent(int percent) {
+        this.percent = percent;
+    }
+
     public int getId() {
         return id;
     }
@@ -86,7 +93,7 @@ public class CarModel {
     }
 
     public int getModelId() {
-        return this.brandId;
+        return this.modelId;
     }
 
     public int getYearId() {
@@ -107,5 +114,9 @@ public class CarModel {
 
     public String getVin() {
         return this.vin;
+    }
+
+    public int getPercent() {
+        return this.percent;
     }
 }

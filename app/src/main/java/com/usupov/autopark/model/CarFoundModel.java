@@ -1,9 +1,5 @@
 package com.usupov.autopark.model;
 
-/**
- * Created by Azat on 01.02.2017.
- */
-
 public class CarFoundModel {
     String carName;
     String vinNumber;
