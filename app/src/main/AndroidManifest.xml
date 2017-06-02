@@ -60,7 +60,7 @@
         <activity
             android:name=".activity.CarNewActivity"
             android:configChanges="keyboard|keyboardHidden|navigation"
-            android:label="@string/app_car_new"></activity>
+            android:label="@string/app_car_new" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -79,6 +79,7 @@
             android:name=".activity.RecognizerSampleActivity"
             android:label="Yandex Speech" />
         <activity android:name=".fragment.SelectBrandFragment" />
+        <activity android:name=".activity.EditCarInfo"></activity>
     </application>
 
 </manifest>

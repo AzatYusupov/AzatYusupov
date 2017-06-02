@@ -19,7 +19,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.usupov.autopark.R;
+import com.usupov.autopark.activity.EditCarInfo;
 import com.usupov.autopark.activity.MainActivity;
 import com.usupov.autopark.activity.PartActivity;
 import com.usupov.autopark.http.Config;
@@ -112,7 +114,11 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
                                         .show();
                                 return true;
                             case R.id.btnCarEdit:
-                                //
+                                Intent intent = new Intent(context, EditCarInfo.class);
+                                CarModel car = carList.get(position);
+                                Gson g = new Gson();
+                                intent.putExtra("car", g.toJson(car));
+                                context.startActivity(intent);
                                 return true;
 
                             default:

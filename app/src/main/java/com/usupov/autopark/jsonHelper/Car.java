@@ -1,5 +1,7 @@
 package com.usupov.autopark.jsonHelper;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.usupov.autopark.http.Config;
@@ -62,6 +64,7 @@ public class Car {
         HttpHandler handler = new HttpHandler();
         final String urlVin = Config.getUrlVin();
         String url = urlVin+"/"+vin;
+        Log.d("mylogs", "" + url);
         String jSonString = handler.ReadHttpResponse(url);
 
         return fromJsonToCarModel(jSonString);
