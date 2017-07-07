@@ -1,34 +1,22 @@
 package com.usupov.autopark.http;
 
-/**
- * Created by Azat on 26.02.2017.
- */
-
-import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-
-/**
- * Created by Azat on 26.02.2017.
- */
 
 public class Config {
 
-    public final static String apiUrlCars = "api_url_cars";
     private final static String urlCarDelete = "car/delete/";
     private final static String pathCar = "car/";
     private final static String urlVin = "car/vin/";
     private final static String urlCars = "cars/";
     public final static String urlServer = "http://88.99.174.4:8080/api/";
 //    public final static String urlServer = "http://192.168.1.4:8080/api/";
-//    public final static String urlServer = "http://192.168.1.103:8080/api/";
+//    public final static String urlServer = "http://192.168.1.102:8080/api/";
     private final static String apiCarCreat = "car/create";
     private final static String pathCategory = "category";
     private final static String pathModel = "model";
     private final static String pathBrands = "brand";
     private final static String pathYears = "year";
     private final static String pathUserPart = "user_part";
+    private final static String pathSignup = "signup";
 
     public static String getUrlCarDelete() {
         return urlServer +urlCarDelete;
@@ -72,4 +60,7 @@ public class Config {
         return urlServer + pathUserPart;
     }
 
+    public static String getUrlSignup() {
+        return urlServer + pathSignup;
+    }
 }

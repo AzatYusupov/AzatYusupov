@@ -19,7 +19,7 @@ import java.util.List;
 
 public class Car {
 
-    public static List<CarModel> getCatList() {
+    public static List<CarModel> getCarList() {
 
         HttpHandler handler = new HttpHandler();
         String url = Config.getUrlCars();

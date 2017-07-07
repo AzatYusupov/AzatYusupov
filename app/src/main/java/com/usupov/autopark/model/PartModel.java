@@ -1,21 +1,22 @@
 package com.usupov.autopark.model;
 
 public class PartModel {
-    private int id;
-    private int categoryId;
-    private String article;
-    private String title;
-    int carId;
-    public int getId() {
+    protected long id;
+    protected long categoryId;
+    protected String article;
+    protected String title;
+    protected long carId;
+    protected String brand, status, store, comment;
+    public long getId() {
         return this.id;
     }
     public String getArticle() {
         return this.article;
     }
-    public int getCategoryId() {
+    public long getCategoryId() {
         return this.categoryId;
     }
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
     public void setArticle(String article) {
@@ -30,16 +31,40 @@ public class PartModel {
     public void setTitle(String title) {
         this.title = title;
     }
-    public void setCarId(int carId) {
+    public void setCarId(long carId) {
         this.carId = carId;
     }
-    public int getCarId() {
+    public long getCarId() {
         return this.carId;
     }
-    public PartModel(int id, int categoryId, String article) {
+    public PartModel(long id, long categoryId, String article) {
         this.id = id;
         this.categoryId = categoryId;
         this.article = article;
+    }
+    public String getBrand() {
+        return brand;
+    }
+    public String getStatus() {
+        return status;
+    }
+    public String getStore() {
+        return store;
+    }
+    public String getComment() {
+        return comment;
+    }
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    public void setStore(String store) {
+        this.store = store;
+    }
+    public void setComment(String comment) {
+        this.comment = comment;
     }
     public PartModel(){}
 }

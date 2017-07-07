@@ -7,6 +7,7 @@ package com.usupov.autopark.http;
 import android.util.Log;
 
 
+import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -32,8 +33,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -45,11 +48,13 @@ public class HttpHandler {
 
     public HttpHandler() {
     }
+
     public String ReadHttpResponse(String url){
 
         HttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(url);
         try {
+            System.out.println("UUUUUUUUUUUUUUUUUUU="+url);
             HttpResponse response = client.execute(request);
             StatusLine sl = response.getStatusLine();
             int sc = sl.getStatusCode();
@@ -68,6 +73,7 @@ public class HttpHandler {
         }
         return null;
     }
+
     private String getResponseString(HttpResponse response) {
         HttpEntity ent = response.getEntity();
         try {
@@ -84,6 +90,7 @@ public class HttpHandler {
             return null;
         }
     }
+
     public boolean deleteQuery(String url) {
         HttpClient client = new DefaultHttpClient();
         HttpDelete request = new HttpDelete(url);
@@ -101,45 +108,29 @@ public class HttpHandler {
         return false;
     }
 
-    public boolean postQuery3(String urlTo, HashMap<String, String> parmas, String filepath) {
-        HttpPost post = new HttpPost(urlTo);
-        HttpClient hc = new DefaultHttpClient();
-
-        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-        Iterator<String> keys = parmas.keySet().iterator();
-        while (keys.hasNext()) {
-            String key = keys.next();
-            String value = parmas.get(key);
-            nameValuePairs.add(new BasicNameValuePair(key, value));
-        }
-
-        try {
-            post.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
-            post.getParams().setBooleanParameter("http.protocol.expect-continue", false);
-            HttpResponse rp = hc.execute(post);
-            return true;
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return false;
-    }
     public boolean postWithMultipleFiles(String urlTo, HashMap<String, String> params, List<String> filePaths) {
         try {
             MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
             entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 
+            ContentType contentType = ContentType.create(
+                    HTTP.PLAIN_TEXT_TYPE, HTTP.UTF_8);
             for (String key : params.keySet()) {
-                entityBuilder.addTextBody(key, params.get(key));
+                entityBuilder.addTextBody(key, params.get(key), contentType);
             }
 
-
             HttpPost post = new HttpPost(urlTo);
+//            post.setHeader("Accept-Charset","utf-8");
 //            post.addHeader("User-Agent", "Test");
 //            post.addHeader("Content-type", "multipart/form-data");
 //            post.addHeader("Accept", "image/jpg");
+
             HttpEntity entity = entityBuilder.build();
             post.setEntity(entity);
+//            System.out.println("--------------------------");
+//            for (String key : params.keySet()) {
+//                System.out.println(key + " " + params.get(key));
+//            }
 
             HttpClient client = new DefaultHttpClient();
             HttpResponse response = client.execute(post);
@@ -150,7 +141,6 @@ public class HttpHandler {
                     if (filePaths != null && filePaths.size() > 0) {
                         String url = Config.getUrlUserPart() +"/"+ userPartId + "/add_image";
 
-
                         for (int i = 0; i < filePaths.size(); i++) {
                             post = new HttpPost(url);
                             entityBuilder = MultipartEntityBuilder.create();
@@ -160,7 +150,7 @@ public class HttpHandler {
                             entity = entityBuilder.build();
                             post.setEntity(entity);
                             response = client.execute(post);
-                            System.out.println(response.getStatusLine().getStatusCode()+" codeeeeeeeeeeeeeeeeeee");
+//                            System.out.println(response.getStatusLine().getStatusCode()+" codeeeeeeeeeeeeeeeeeee");
                         }
                     }
                 }
@@ -172,113 +162,58 @@ public class HttpHandler {
         }
         return false;
     }
-    public boolean postWithOneFile(String urlTo, HashMap<String, String> params, String filePath) {
+
+    public int doSimplePost(String urlTo, List<NameValuePair> pairs) {
+        HttpClient client = new DefaultHttpClient();
+        HttpPost post = new HttpPost(urlTo);
+
+//        System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUU+ "+urlTo);
         try {
+            post.setEntity(new UrlEncodedFormEntity(pairs));
+            System.out.println("*-*-*-*-*-*-*-*");
+
+//            post.setHeader("Accept-Charset","utf-8")
+            HttpResponse response = client.execute(post);
+
+            return response.getStatusLine().getStatusCode();
+
+        } catch (Exception e) {
+
+//            System.out.println("*********************************");
+            e.printStackTrace();
+
+        }
+        return 0;
+    }
+
+    public int postWithOneFile(String urlTo, HashMap<String, String> params, String filePath) {
+
+        try {
+
             MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
             entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 
             for (String key : params.keySet()) {
                 entityBuilder.addTextBody(key, params.get(key));
             }
-            if (filePath != null && !filePath.equals("")) {
-                entityBuilder.addBinaryBody("file", new File(filePath));
-            }
-            HttpPost post = new HttpPost(urlTo);
-//            post.addHeader("User-Agent", "Test");
-//            post.addHeader("Content-type", "multipart/form-data");
-//            post.addHeader("Accept", "image/jpg");
 
+
+            if (filePath != null && !filePath.isEmpty())
+                entityBuilder.addBinaryBody("file", new File(filePath));
+
+            HttpPost post = new HttpPost(urlTo);
             HttpEntity entity = entityBuilder.build();
             post.setEntity(entity);
+//            post.setHeader("Accept-Charset","utf-8");
 
             HttpClient client = new DefaultHttpClient();
             HttpResponse response = client.execute(post);
-            if (response.getStatusLine().getStatusCode()==200)
-                return true;
-        } catch (Exception e) {
-            e.printStackTrace();
+
+            return response.getStatusLine().getStatusCode();
         }
-        return false;
-    }
-    public boolean postQuery(String urlTo, HashMap<String, String> params, String filepath) {
-        HttpURLConnection connection = null;
-        DataOutputStream outputStream = null;
-
-        String twoHyphens = "--";
-        String boundary = "*****" + Long.toString(System.currentTimeMillis()) + "*****";
-        String lineEnd = "\r\n";
-
-        int bytesRead, bytesAvailable, bufferSize;
-        byte[] buffer;
-        int maxBufferSize = 10 * 1024 * 1024;
-
-        try {
-            System.out.println(filepath + " ----------");
-            System.out.println("urllllllllllllllllllll="+urlTo);
-
-            URL url = new URL(urlTo);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.setDoOutput(true);
-            connection.setUseCaches(false);
-
-//            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Connection", "Keep-Alive");
-            connection.setRequestProperty("User-Agent", "Android Multipart HTTP Client 1.0");
-            connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-            connection.setRequestProperty( "charset", "utf-8");
-
-            outputStream = new DataOutputStream(connection.getOutputStream());
-            outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-            if (filepath != null && !filepath.equals("")) {
-                outputStream.writeBytes("Content-Disposition: form-data; name=\"" + "file" + "\"; filename=\"" + filepath + "\"" + lineEnd);
-//            outputStream.writeBytes("Content-Type: " + fileMimeType + lineEnd);
-                outputStream.writeBytes("Content-Transfer-Encoding: binary" + lineEnd);
-                outputStream.writeBytes(lineEnd);
-            }
-
-
-            if (filepath != null && !filepath.equals("")) {
-                System.out.println(filepath+"  *******");
-                File file = new File(filepath);
-                FileInputStream fileInputStream = new FileInputStream(file);
-
-                bytesAvailable = fileInputStream.available();
-                bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                buffer = new byte[bufferSize];
-
-                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-                while (bytesRead > 0) {
-                    outputStream.write(buffer, 0, bufferSize);
-                    bytesAvailable = fileInputStream.available();
-                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-                }
-
-                outputStream.writeBytes(lineEnd);
-            }
-            // Upload POST Data
-            Iterator<String> keys = params.keySet().iterator();
-            for (String key : params.keySet()) {
-                String value = params.get(key);
-                outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-                outputStream.writeBytes("Content-Disposition: form-data; name=\"" + key + "\"" + lineEnd);
-                outputStream.writeBytes("Content-Type: text/plain" + lineEnd);
-                outputStream.writeBytes(lineEnd);
-                outputStream.writeUTF(value);
-                outputStream.writeBytes(lineEnd);
-            }
-            System.out.println(filepath+"   9999999999999999999999");
-            outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-            System.out.println(connection.getResponseCode()+"  ++++++++++++++++++++++");
-            if (200 != connection.getResponseCode()) {
-                return false;
-            }
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            return 0;
         }
-        return false;
     }
 
     private static String convertInputStreamToString(InputStream inputStream)

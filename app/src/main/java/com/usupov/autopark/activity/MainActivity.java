@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
         StrictMode.setThreadPolicy(policy);
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initEmptyView();
         initRecyclerview();
         initInternetConnection(true);
+
     }
 
     @Override
@@ -105,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            carList = Car.getCatList();
+            carList = Car.getCarList();
             if (carList==null)
                 return false;
             return true;
@@ -150,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return true;
         }
     }
+
     private void initTryAgain() {
         Button btnTryAgain =(Button)findViewById(R.id.btn_try_again);
         btnTryAgain.setOnClickListener(new View.OnClickListener() {

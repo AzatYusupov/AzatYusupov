@@ -23,6 +23,8 @@ import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.model.CarFoundModel;
 import com.usupov.autopark.model.CarModel;
 
+import org.apache.http.HttpStatus;
+
 
 public class CarFoundActivity extends AppCompatActivity {
 
@@ -177,9 +179,9 @@ public class CarFoundActivity extends AppCompatActivity {
                 pairs.put("yearId", car.getYearId()+"");
 
                 try {
-                    boolean result = handler.postWithOneFile(url, pairs, imagePath);
+                    int result = handler.postWithOneFile(url, pairs, imagePath);
                     imagePath = null;
-                    if (result) {
+                    if (result== HttpStatus.SC_OK) {
                         Toast.makeText(CarFoundActivity.this, getString(R.string.car_success_added), Toast.LENGTH_LONG).show();
                         setResult(RESULT_OK);
                         finish();

@@ -3,6 +3,8 @@ package com.usupov.autopark.service;
 import com.usupov.autopark.http.Config;
 import com.usupov.autopark.http.HttpHandler;
 
+import org.apache.http.HttpStatus;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -176,8 +178,8 @@ public class SpeachRecogn {
                 data.put("vin", variant);
             else
                 data.put("vin", variant+"\n");
-            boolean result = handler.postQuery3(url, data, null);
-            if (result==true) {
+            int result = handler.postWithOneFile(url, data, null);
+            if (result== HttpStatus.SC_OK) {
                 System.out.println("variant="+variant+" has been sent to the server");
             }
             else
