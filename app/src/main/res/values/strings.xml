@@ -2,7 +2,7 @@
 
     <!--Название приложение-->
     <string name="charactersitic">Характеристики</string>
-    <string name="app_name">Автопарк</string>
+    <string name="app_name">Product card</string>
     <string name="app_car_new">Добавить автомобиль</string>
     <string name="app_part">Узлы автомобиля</string>
 
@@ -40,6 +40,7 @@
     <string name="capturing_image">Фотографировать новую картинку</string>
     <string name="done">Done</string>
     <string name="title_activity_part">PartActivity</string>
+    <string name="title_toolbar_camera">Новая фотография</string>
 
     <!-- Microfon -->
     <string name="speech_prompt">Говорите</string>

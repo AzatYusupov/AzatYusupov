@@ -40,13 +40,15 @@
         <!-- <meta-data android:name="api_url_cars" android:value="http://88.99.174.4:8080/api/cars"></meta-data> -->
 
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".activity.CarListActivity"
             android:label="@string/app_name">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".activity.PartsInActivity"
@@ -56,7 +58,7 @@
             android:name=".activity.CarFoundActivity"
             android:label="@string/app_car_new" />
         <activity
-            android:name=".activity.CameraActivity"
+            android:name=".activity.CameraActivityOld"
             android:configChanges="orientation"
             android:label="@string/capture_image">
 
@@ -85,21 +87,44 @@
             android:label="Yandex Speech" />
         <activity android:name=".fragment.SelectBrandFragment" />
         <activity android:name=".activity.LoginActivity">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+        <activity android:name=".activity.SignupActivity" />
+        <activity android:name=".activity.SignupSuccessActivity">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+
+        <activity android:name=".activity.PartListActivity">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
 
+
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".activity.SignupActivity" />
-        <activity android:name=".activity.SignupSuccessActivity" />
-        <activity android:name=".activity.PartListActivity">
-             <intent-filter>
-             <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".activity.CameraActivity">
 
-             <category android:name="android.intent.category.LAUNCHER" />
-             </intent-filter>
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
+        <activity android:name=".activity.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

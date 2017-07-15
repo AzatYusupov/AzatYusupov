@@ -1,5 +1,7 @@
 package com.usupov.autopark.jsonHelper;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
 import com.usupov.autopark.http.Config;
 import com.usupov.autopark.http.HttpHandler;
@@ -14,11 +16,11 @@ import java.util.List;
 
 public class Part {
 
-    public static List<PartModel> searchStartWith(long carId, String statsWith) {
+    public static List<PartModel> searchStartWith(long carId, String statsWith, Context context) {
         HttpHandler handler = new HttpHandler();
         String url = Config.getUrlCar() + carId+"/part/search?search="+statsWith;
         try {
-            String response = handler.ReadHttpResponse(url);
+            String response = handler.ReadHttpResponse(url, context);
             JSONArray partArray = new JSONArray(response);
             List<PartModel> partList = new ArrayList<>();
             for (int i = 0; i < partArray.length(); i++) {
@@ -34,12 +36,12 @@ public class Part {
         }
     }
 
-    public static List<UserPartModel> getUserPartList() {
+    public static List<UserPartModel> getUserPartList(Context context) {
         HttpHandler handler = new HttpHandler();
         String url = Config.getUrlUserPart();
 
         try {
-            String response = handler.ReadHttpResponse(url);
+            String response = handler.ReadHttpResponse(url, context);
             JSONArray userPartArray = new JSONArray(response);
             List<UserPartModel> userPartList = new ArrayList<>();
             for (int i = 0; i < userPartArray.length(); i++) {

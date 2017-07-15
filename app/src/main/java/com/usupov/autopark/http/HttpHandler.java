@@ -1,45 +1,33 @@
 package com.usupov.autopark.http;
 
-/**
- * Created by Azat on 26.02.2017.
- */
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 
-import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 public class HttpHandler {
@@ -49,23 +37,35 @@ public class HttpHandler {
     public HttpHandler() {
     }
 
-    public String ReadHttpResponse(String url){
+    public String getServerToken(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Config.APP_NAME, Context.MODE_PRIVATE);
+
+        if (!sharedPreferences.contains(Config.TOKEN))
+            return null;
+        String serverToken = sharedPreferences.getString(Config.TOKEN, null);
+        return serverToken;
+    }
+
+    public String ReadHttpResponse(String url, Context context){
+
+        String serverToken = getServerToken(context);
+//        if (serverToken==null)
+//            return null;
 
         HttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(url);
+        request.setHeader(Config.TOKEN, serverToken);
+
         try {
-            System.out.println("UUUUUUUUUUUUUUUUUUU="+url);
             HttpResponse response = client.execute(request);
             StatusLine sl = response.getStatusLine();
             int sc = sl.getStatusCode();
-            if (sc==200)
-            {
+
+            if (sc==HttpStatus.SC_OK)
                 return getResponseString(response);
-            }
             else
-            {
                 Log.e( "log_tag","I didn't  get the response!");
-            }
+
         } catch (ClientProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -91,14 +91,16 @@ public class HttpHandler {
         }
     }
 
-    public boolean deleteQuery(String url) {
+    public boolean deleteQuery(String url, Context context) {
+        String serverToken = getServerToken(context);
         HttpClient client = new DefaultHttpClient();
         HttpDelete request = new HttpDelete(url);
+        request.setHeader(Config.TOKEN, serverToken);
         try {
             HttpResponse response = client.execute(request);
             StatusLine sl = response.getStatusLine();
             int sc = sl.getStatusCode();
-            if (sc==200)
+            if (sc==HttpStatus.SC_OK)
                 return true;
         } catch (ClientProtocolException e) {
             e.printStackTrace();
@@ -108,8 +110,10 @@ public class HttpHandler {
         return false;
     }
 
-    public boolean postWithMultipleFiles(String urlTo, HashMap<String, String> params, List<String> filePaths) {
+    public boolean postWithMultipleFiles(String urlTo, HashMap<String, String> params, List<String> filePaths, Context context) {
         try {
+            String serverToken = getServerToken(context);
+
             MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
             entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 
@@ -127,6 +131,7 @@ public class HttpHandler {
 
             HttpEntity entity = entityBuilder.build();
             post.setEntity(entity);
+            post.setHeader(Config.TOKEN, serverToken);
 //            System.out.println("--------------------------");
 //            for (String key : params.keySet()) {
 //                System.out.println(key + " " + params.get(key));
@@ -134,7 +139,7 @@ public class HttpHandler {
 
             HttpClient client = new DefaultHttpClient();
             HttpResponse response = client.execute(post);
-            if (response.getStatusLine().getStatusCode()==200) {
+            if (response.getStatusLine().getStatusCode()== HttpStatus.SC_OK) {
                 String responseText = getResponseString(response);
                 try {
                     long userPartId = Long.parseLong(responseText);
@@ -163,38 +168,52 @@ public class HttpHandler {
         return false;
     }
 
-    public int doSimplePost(String urlTo, List<NameValuePair> pairs) {
-        HttpClient client = new DefaultHttpClient();
-        HttpPost post = new HttpPost(urlTo);
+    public int doSimplePost(String urlTo, List<NameValuePair> pairs, Context context) {
 
-//        System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUU+ "+urlTo);
-        try {
-            post.setEntity(new UrlEncodedFormEntity(pairs));
-            System.out.println("*-*-*-*-*-*-*-*");
-
-//            post.setHeader("Accept-Charset","utf-8")
-            HttpResponse response = client.execute(post);
-
-            return response.getStatusLine().getStatusCode();
-
-        } catch (Exception e) {
-
-//            System.out.println("*********************************");
-            e.printStackTrace();
-
+        HashMap<String, String> map = new HashMap<>();
+        for (NameValuePair pair : pairs) {
+            map.put(pair.getName(), pair.getValue());
         }
-        return 0;
+
+        return postWithOneFile(urlTo, map, null, context);
+
+////        HttpClient client = new DefaultHttpClient();
+////        HttpPost post = new HttpPost(urlTo);
+////
+//////        System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUU+ "+urlTo);
+////        try {
+////            ContentType contentType = ContentType.create(
+////                    HTTP.PLAIN_TEXT_TYPE, HTTP.UTF_8);
+////
+////            post.setHeader("Accept-Charset","utf-8");
+////            post.setEntity(new UrlEncodedFormEntity(pairs));
+////
+////            HttpResponse response = client.execute(post);
+////
+////            return response.getStatusLine().getStatusCode();
+////
+////        } catch (Exception e) {
+////
+//////            System.out.println("*********************************");
+////            e.printStackTrace();
+//
+//        }
+//        return 0;
     }
 
-    public int postWithOneFile(String urlTo, HashMap<String, String> params, String filePath) {
+    public int postWithOneFile(String urlTo, HashMap<String, String> params, String filePath, Context context) {
 
         try {
+            String serverToken = getServerToken(context);
 
             MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
             entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 
+            ContentType contentType = ContentType.create(
+                    HTTP.PLAIN_TEXT_TYPE, HTTP.UTF_8);
+
             for (String key : params.keySet()) {
-                entityBuilder.addTextBody(key, params.get(key));
+                entityBuilder.addTextBody(key, params.get(key), contentType);
             }
 
 
@@ -204,6 +223,7 @@ public class HttpHandler {
             HttpPost post = new HttpPost(urlTo);
             HttpEntity entity = entityBuilder.build();
             post.setEntity(entity);
+            post.setHeader(Config.TOKEN, serverToken);
 //            post.setHeader("Accept-Charset","utf-8");
 
             HttpClient client = new DefaultHttpClient();

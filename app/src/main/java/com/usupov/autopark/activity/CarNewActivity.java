@@ -73,7 +73,7 @@ public class CarNewActivity extends AppCompatActivity {
     private View.OnClickListener catalogFindBtnClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            CarModel car = Car.getCarByCatalog(selectedBrand, selectedModel, selectedYear);
+            CarModel car = Car.getCarByCatalog(selectedBrand, selectedModel, selectedYear, getBaseContext());
             if (car==null)
                 Toast.makeText(CarNewActivity.this, getString(R.string.by_catalog_not_found), Toast.LENGTH_LONG).show();
             else {
@@ -181,7 +181,7 @@ public class CarNewActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 if (vinEditText.getText().length()==17) {
                     String vin = vinEditText.getText()+"";
-                    CarModel car = Car.getCarWithVin(vin);
+                    CarModel car = Car.getCarWithVin(vin, getBaseContext());
                     if (car==null) {
                         tvVinError.setText(getString(R.string.error_vin));
                         vinEditText.setBackgroundResource(R.drawable.vin_error_border);
@@ -270,7 +270,7 @@ public class CarNewActivity extends AppCompatActivity {
                     ArrayList<String> text = data
                             .getStringArrayListExtra("all_results");
                     EditText edt = (EditText) findViewById(R.id.edittext_vin_number);
-                    String edt_text = SpeachRecogn.vinSpeach(text).toUpperCase();
+                    String edt_text = SpeachRecogn.vinSpeach(text, this).toUpperCase();
                     if (edt_text.length() > 17)
                         edt_text = edt_text.substring(0, 17);
                     edt.setText(edt_text);
@@ -298,7 +298,7 @@ public class CarNewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                final List<CatalogBrand> brandList = CarCat.getBradList();
+                final List<CatalogBrand> brandList = CarCat.getBradList(getBaseContext());
                 if (brandList==null) {
                     Toast.makeText(CarNewActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
                     return;
@@ -350,7 +350,7 @@ public class CarNewActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (selectedBrand==-1)
                     return;
-                final List<CatalogModel> modelList = CarCat.getModels(selectedBrand);
+                final List<CatalogModel> modelList = CarCat.getModels(selectedBrand, getBaseContext());
                 if (modelList==null) {
                     Toast.makeText(CarNewActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
                     return;
@@ -395,7 +395,7 @@ public class CarNewActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (selectedBrand==-1 || selectedModel==-1)
                     return;
-                final List<CatalogYear> yearList = CarCat.getYears(selectedBrand, selectedModel);
+                final List<CatalogYear> yearList = CarCat.getYears(selectedBrand, selectedModel, getBaseContext());
                 if (yearList==null) {
                     Toast.makeText(CarNewActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
                     return;

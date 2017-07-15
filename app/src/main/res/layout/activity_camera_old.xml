@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.CameraActivityOld">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Фото абтомобиля"
+        android:layout_margin="15dp"
+        android:textStyle="bold"
+        />
+    <FrameLayout
+        android:id="@+id/cameraFrame"
+        android:layout_width="match_parent"
+
+        android:layout_height="match_parent"
+
+        android:focusableInTouchMode="true"
+        android:layout_weight="12">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/camera_image_view"/>
+        <SurfaceView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusableInTouchMode="true"
+            android:id="@+id/preview_view"/>
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="98dp"
+        android:background="@color/colorPrimaryDark"
+        android:layout_marginTop="10dp"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/capture_image_button"
+            android:layout_width="70dp"
+            android:clickable="true"
+            android:layout_height="70dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_action_do_photo"/>
+        <ImageView
+            android:id="@+id/cancel_image_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:clickable="true"
+            android:layout_toLeftOf="@+id/capture_image_button"
+            android:layout_marginRight="30dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_action_close_camera"
+            />
+        <ImageView
+            android:id="@+id/save_image_button"
+            android:clickable="true"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_toRightOf="@+id/capture_image_button"
+            android:layout_marginLeft="30dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_image_done"
+            />
+
+    </RelativeLayout>
+</LinearLayout>

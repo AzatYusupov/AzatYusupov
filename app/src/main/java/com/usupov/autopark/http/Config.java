@@ -7,9 +7,11 @@ public class Config {
     private final static String pathCar = "car/";
     private final static String urlVin = "car/vin/";
     private final static String urlCars = "cars/";
-    public final static String urlServer = "http://88.99.174.4:8080/api/";
-//    public final static String urlServer = "http://192.168.1.4:8080/api/";
-//    public final static String urlServer = "http://192.168.1.102:8080/api/";
+
+    private final static String ipServer = "http://88.99.174.4:8080";
+    public final static String api = ipServer + "/api/";
+    public final static String apiOpen = ipServer + "/api/open/";
+
     private final static String apiCarCreat = "car/create";
     private final static String pathCategory = "category";
     private final static String pathModel = "model";
@@ -17,21 +19,22 @@ public class Config {
     private final static String pathYears = "year";
     private final static String pathUserPart = "user_part";
     private final static String pathSignup = "signup";
+    private final static String pathSignIn = "sign_in";
 
     public static String getUrlCarDelete() {
-        return urlServer +urlCarDelete;
+        return api +urlCarDelete;
     }
 
     public static String getUrlVin() {
-        return urlServer +urlVin;
+        return apiOpen +urlVin;
     }
 
     public static String getUrlCarCreat() {
-        return urlServer + apiCarCreat;
+        return api + apiCarCreat;
     }
 
     public static String getUrlCars() {
-        return urlServer + urlCars;
+        return api + urlCars;
     }
 
     public static String getpathCategory() {
@@ -39,11 +42,11 @@ public class Config {
     }
 
     public static String getUrlCar() {
-        return urlServer + pathCar;
+        return api + pathCar;
     }
 
     public static String getUrlBrands() {
-        return urlServer + pathBrands;
+        return apiOpen + pathBrands;
     }
 
     public static String getPathModel() {
@@ -63,4 +66,9 @@ public class Config {
     public static String getUrlSignup() {
         return urlServer + pathSignup;
     }
+    public static String getUrlSignIn() {
+        return urlServer + pathSignIn;
+    }
+    public static String TOKEN = "restApiToken";
+    public static String APP_NAME = "productCard";
 }

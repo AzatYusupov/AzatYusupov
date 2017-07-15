@@ -1,403 +1,312 @@
 package com.usupov.autopark.activity;
 
-/**
- * Created by Azat on 03.02.2017.
- */
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import android.Manifest;
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.hardware.Camera;
-import android.hardware.Camera.PictureCallback;
-import android.hardware.SensorManager;
-import android.os.Build;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
-import android.view.Display;
-import android.view.OrientationEventListener;
-import android.view.Surface;
+import android.support.v7.widget.Toolbar;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
-import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
+import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
+import android.widget.Button;
+import android.view.View;
+
+import android.hardware.Camera;
+import android.hardware.Camera.Size;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.usupov.autopark.R;
 
-public class CameraActivity extends AppCompatActivity implements PictureCallback, SurfaceHolder.Callback {
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
+public class CameraActivity extends Activity implements SurfaceHolder.Callback, View.OnClickListener, Camera.PictureCallback, Camera.PreviewCallback, Camera.AutoFocusCallback
+{
     public static final String EXTRA_CAMERA_DATA = "camera_data";
-    public static int orientation;
+    private Camera camera;
+    private SurfaceHolder surfaceHolder;
+    private SurfaceView preview;
+    private ImageView shotBtn, saveBtn, cancelBtn;
+    private static final int optimalImageSize = 320;
+    private Bitmap bitmapImage = null;
+    private ImageView resultView;
 
-    private static final String KEY_IS_CAPTURING = "is_capturing";
-
-    private Camera mCamera;
-    private ImageView mCameraImage;
-    public SurfaceView mCameraPreview;
-    private ImageView mCaptureImageButton;
-    private byte[] mCameraData;
-    private boolean mIsCapturing;
-    private boolean orientationPortatiat;
-    private FrameLayout cameraFrame;
-
-    OrientationEventListener myOrientationEventListener;
-
-    private OnClickListener mCaptureImageButtonClickListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            captureImage();
-        }
-    };
-
-    private OnClickListener mRecaptureImageButtonClickListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            setupImageCapture();
-        }
-    };
-    private OnClickListener mCancelButtonListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            finish();
-        }
-    };
-    Bitmap bitmapImage;
-    private OnClickListener mDoneButtonClickListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            try {
-                if (mCameraData != null) {
-                    String path = SaveImage(bitmapImage);
-                    Intent intent = new Intent();
-                    intent.putExtra(EXTRA_CAMERA_DATA, path);
-                    setResult(RESULT_OK, intent);
-                } else {
-                    setResult(RESULT_CANCELED);
-                }
-                finish();
-            }
-            catch(Exception ex) {
-                Toast.makeText(CameraActivity.this, ex.getMessage(), Toast.LENGTH_LONG)
-                        .show();
-            }
-        }
-    };
-
-    int angle;
-    ImageView saveButton, cancelButton;
-    private static int heightCameraPreview, widthCameraPreview;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
+        // если хотим, чтобы приложение постоянно имело портретную ориентацию
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        // если хотим, чтобы приложение было полноэкранным
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        // и без заголовка
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         setContentView(R.layout.activity_camera);
+        initToolbar();
+        // наше SurfaceView имеет имя SurfaceView01
+        preview = (SurfaceView) findViewById(R.id.image_preview);
 
-        mCameraImage = (ImageView) findViewById(R.id.camera_image_view);
-        mCameraImage.setVisibility(View.INVISIBLE);
-
-        mCameraPreview = (SurfaceView) findViewById(R.id.preview_view);
-        final SurfaceHolder surfaceHolder = mCameraPreview.getHolder();
+        surfaceHolder = preview.getHolder();
         surfaceHolder.addCallback(this);
         surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-        mCaptureImageButton = (ImageView) findViewById(R.id.capture_image_button);
-        mCaptureImageButton.setOnClickListener(mCaptureImageButtonClickListener);
+        // кнопка имеет имя Button01
+        shotBtn = (ImageView) findViewById(R.id.image_shot_btn);
+        shotBtn.setOnClickListener(this);
 
-        saveButton = (ImageView) findViewById(R.id.save_image_button);
-        saveButton.setOnClickListener(mDoneButtonClickListener);
-        saveButton.setVisibility(View.INVISIBLE);
+        cancelBtn = (ImageView) findViewById(R.id.image_cancel_btn);
+        cancelBtn.setOnClickListener(this);
 
-        cancelButton = (ImageView) findViewById(R.id.cancel_image_button);
-        cancelButton.setOnClickListener(mCancelButtonListener);
+        saveBtn = (ImageView) findViewById(R.id.image_save_btn);
+        saveBtn.setOnClickListener(this);
+        saveBtn.setVisibility(View.INVISIBLE);
 
-        mIsCapturing = true;
+        resultView = (ImageView) findViewById(R.id.image_result_view);
+        resultView.setVisibility(View.GONE);
+    }
 
-        cameraFrame = (FrameLayout)findViewById(R.id.cameraFrame);
-
-        myOrientationEventListener
-                = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL){
+    private void initToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_camera);
+        toolbar.setTitle("Фотографировать");
+        toolbar.setNavigationIcon(R.drawable.ic_back_arrow);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
-            public void onOrientationChanged(int arg0) {
-                // TODO Auto-generated method stub
-                angle = arg0;
-            }};
-
-        if (myOrientationEventListener.canDetectOrientation()){
-            myOrientationEventListener.enable();
-        }
-        else{
-            Toast.makeText(this, "Can't DetectOrientation", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int hasCameraPermission = checkSelfPermission(Manifest.permission.CAMERA);
-            List<String> permissions = new ArrayList<>();
-            if (hasCameraPermission != PackageManager.PERMISSION_GRANTED) {
-                permissions.add(Manifest.permission.CAMERA);
-
-                permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            public void onClick(View v) {
+                finish();
             }
-            if (!permissions.isEmpty()) {
-                requestPermissions(permissions.toArray(new String[permissions.size()]), 111);
-            }
-        }
-    }
-    private String SaveImage(Bitmap finalBitmap) {
-
-        String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/autopark_images");
-        if (!myDir.exists())
-            myDir.mkdir();
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String fname = "Image-"+ timeStamp +".jpg";
-        File file = new File (myDir, fname);
-        if (file.exists ()) file.delete ();
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            out.flush();
-            out.close();
-            return file.getAbsolutePath();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        });
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-
-        switch (requestCode) {
-            case 111: {
-                for (int i = 0; i < permissions.length; i++) {
-                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                        System.out.println("Permissions --> " + "Permission Granted: " + permissions[i]);
-
-
-                    } else if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
-                        System.out.println("Permissions --> " + "Permission Denied: " + permissions[i]);
-                    }
-                }
-            }
-            break;
-            default: {
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-            }
-        }
-    }
-    @Override
-    protected void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-
-        savedInstanceState.putBoolean(KEY_IS_CAPTURING, mIsCapturing);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        mIsCapturing = savedInstanceState.getBoolean(KEY_IS_CAPTURING, mCameraData == null);
-        if (mCameraData != null) {
-            setupImageDisplay();
-        } else {
-            setupImageCapture();
-        }
-    }
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-
-        if (mCamera != null) {
-            mCamera.release();
-            mCamera = null;
-        };
-    }
-    @Override
-    protected void onResume() {
+    protected void onResume()
+    {
         super.onResume();
-
-        if (mCamera == null) {
-            try {
-                mCamera = Camera.open(0);
-                mCamera.setDisplayOrientation(90);
-                Camera.Parameters params= mCamera.getParameters();
-                mCameraPreview.getLayoutParams().width = params.getPreviewSize().height;
-                mCameraPreview.getLayoutParams().height = params.getPreviewSize().width;
-                mCamera.setPreviewDisplay(mCameraPreview.getHolder());
-
-                params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
-                params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-
-                List<Camera.Size> sizes = params.getSupportedPictureSizes();
-                Camera.Size pictureSize = null;
-                int cnt = 0;
-                for (int i = sizes.size()-1; i >= 0; i--) {
-                    cnt++;
-                    pictureSize = sizes.get(i);
-                    if (cnt==4)
-                        break;
-                }
-                params.setPictureSize(pictureSize.width, pictureSize.height);
-                mCamera.setParameters(params);
-
-                for (Camera.Size size : sizes) {
-                    System.out.println(size.width+" "+size.height);
-                }
-                // setCameraDisplayOrientation(0);
-                if (mIsCapturing) {
-                    mCamera.startPreview();
-                }
-
-            } catch (Exception e) {
-                Toast.makeText(CameraActivity.this, e.getMessage()+"", Toast.LENGTH_LONG)
-                        .show();
-            }
-        }
+        camera = Camera.open();
     }
 
     @Override
-    protected void onPause() {
+    protected void onPause()
+    {
         super.onPause();
 
-        if (mCamera != null) {
-            mCamera.release();
-            mCamera = null;
+        if (camera != null)
+        {
+            camera.setPreviewCallback(null);
+            camera.stopPreview();
+            camera.release();
+            camera = null;
         }
     }
 
     @Override
-    public void onPictureTaken(byte[] data, Camera camera) {
-        mCameraData = data;
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height)
+    {
+    }
 
+    @Override
+    public void surfaceCreated(SurfaceHolder holder)
+    {
+        try
+        {
+            camera.setPreviewDisplay(holder);
+            camera.setPreviewCallback(this);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
 
-        int diff0 = Math.min(360-angle, angle);
-        int diff90 = Math.abs(angle-90);
-        int diff180 = Math.abs(angle-180);
-        int diff270 = Math.abs(angle-270);
+        for (Size size: camera.getParameters().getSupportedPictureSizes()) {
+            System.out.println(size.width+" "+size.height);
+        }
 
-        int minDiff = Math.min(Math.min(diff0, diff90), Math.min(diff180, diff270));
+//        Size previewSize = camera.getParameters().getPreviewSize();
+        Size previewSize = getOptimalSize();
+        float aspect = (float) previewSize.width / previewSize.height;
+//        System.out.println(previewSize.width+" "+previewSize.height+" ------");
+//        System.out.println("Aspect="+aspect);
 
-        if (minDiff==diff0)
-            orientation = 0;
-        else if (minDiff==diff90)
-            orientation = 90;
-        else if (minDiff==diff180)
-            orientation = 180;
+        int previewSurfaceWidth = preview.getWidth();
+        int previewSurfaceHeight = preview.getHeight();
+
+        LayoutParams lp = preview.getLayoutParams();
+
+        // здесь корректируем размер отображаемого preview, чтобы не было искажений
+
+        if (this.getResources().getConfiguration().orientation != Configuration.ORIENTATION_PORTRAIT)
+        {
+            // портретный вид
+            camera.setDisplayOrientation(90);
+            lp.height = previewSurfaceHeight;
+            lp.width = (int) (previewSurfaceHeight / aspect);
+
+            lp.height = lp.width;
+        }
         else
-            orientation = 270;
-        setupImageDisplay();
+        {
+            // ландшафтный
+            camera.setDisplayOrientation(0);
+            lp.width = previewSurfaceWidth;
+            lp.height = (int) (previewSurfaceWidth / aspect);
+
+            lp.height = lp.width;
+        }
+
+
+        preview.setLayoutParams(lp);
+        resultView.setLayoutParams(lp);
+        camera.startPreview();
     }
 
-    @Override
-    public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        try {
-            Camera.Parameters parameters = mCamera.getParameters();
-            if (this.getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
-                parameters.set("orientation", "portrait");
-                mCamera.setDisplayOrientation(90);
-                parameters.setRotation(90);
-
-                orientationPortatiat = true;
+    private Size getOptimalSize() {
+        Size previewSize = camera.getParameters().getPreviewSize();
+        double minRatio = 1e18;
+        for (Size size : camera.getParameters().getSupportedPreviewSizes()) {
+            if (size.height >= optimalImageSize && size.width >= optimalImageSize && Math.abs(1-size.width*1.0 / size.height) < minRatio) {
+                minRatio =  Math.abs(1-size.width*1.0 / size.height);
+                previewSize = size;
             }
-            else {
-                // This is an undocumented although widely known feature
-                parameters.set("orientation", "landscape");
-                // For Android 2.2 and above
-                mCamera.setDisplayOrientation(0);
-                // Uncomment for Android 2.0 and above
-                parameters.setRotation(0);
-                orientationPortatiat = false;
+        }
+        return previewSize;
+    }
+
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder)
+    {
+    }
+
+    @Override
+    public void onClick(View v)
+    {
+        switch (v.getId()) {
+            case R.id.image_shot_btn :
+                if (saveBtn.getVisibility()==View.VISIBLE) {
+                    shotBtn.setImageResource(R.drawable.ic_action_do_photo);
+                    saveBtn.setVisibility(View.INVISIBLE);
+
+                    resultView.setVisibility(View.GONE);
+                    preview.setVisibility(View.VISIBLE);
+
+                    camera.startPreview();
+                }
+                else {
+                    // либо делаем снимок непосредственно здесь
+                    // 	либо включаем обработчик автофокуса
+                    camera.takePicture(null, null, null, this);
+                    // camera.autoFocus(this);
+                }
+                break;
+            case R.id.image_cancel_btn :
+                Toast.makeText(CameraActivity.this, "Отменено", Toast.LENGTH_LONG).show();
+                setResult(RESULT_CANCELED);
+                finish();
+                break;
+            case R.id.image_save_btn :
+                String addressSavedImage = saveImage();
+                if (addressSavedImage ==null)
+                    Toast.makeText(CameraActivity.this, "Не удалось сохранить фото", Toast.LENGTH_LONG).show();
+                else {
+                    Intent intent = new Intent();
+                    intent.putExtra(EXTRA_CAMERA_DATA, addressSavedImage);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onPictureTaken(byte[] paramArrayOfByte, Camera paramCamera)
+    {
+        // сохраняем полученные jpg в папке /sdcard/CameraExample/
+        // имя файла - System.currentTimeMillis()
+
+        Bitmap  bitmap = BitmapFactory.decodeByteArray(paramArrayOfByte, 0, paramArrayOfByte.length);
+
+        bitmapImage = getResizedBitmap(bitmap, optimalImageSize, optimalImageSize);
+
+        saveBtn.setVisibility(View.VISIBLE);
+        shotBtn.setImageResource(R.drawable.ic_action_repeat);
+
+        preview.setVisibility(View.GONE);
+        resultView.setVisibility(View.VISIBLE);
+        resultView.setImageBitmap(bitmapImage);
+
+//        paramCamera.startPreview();
+    }
+
+    private String saveImage() {
+        try
+        {
+            String root = Environment.getExternalStorageDirectory().toString();
+            File saveDir = new File(root + "/productcard_images/");
+
+
+            if (!saveDir.exists())
+            {
+                saveDir.mkdirs();
             }
+            String fileName = String.format(root+"/productcard_images/%d.jpg", System.currentTimeMillis());
+            FileOutputStream os = new FileOutputStream(fileName);
 
-            mCamera.setParameters(parameters);
-            mCamera.setPreviewDisplay(surfaceHolder);
-
-            mCamera.startPreview();
-
-        } catch (IOException e) {
+            bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            os.flush();
+            os.close();
+            return fileName;
         }
+        catch (Exception e)
+        {
+        }
+        // после того, как снимок сделан, показ превью отключается. необходимо включить его
+       return null;
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-        if (mCamera != null) {
-            mCamera.stopPreview();
-            mCamera.release();
-            mCamera = null;
+    public void onAutoFocus(boolean paramBoolean, Camera paramCamera)
+    {
+        if (paramBoolean)
+        {
+            // если удалось сфокусироваться, делаем снимок
+            paramCamera.takePicture(null, null, null, this);
         }
     }
 
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-        Display display = ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        if(display.getRotation() == Surface.ROTATION_0) {
-            mCamera.setDisplayOrientation(90);
-        } else if(display.getRotation() == Surface.ROTATION_270) {
-            mCamera.setDisplayOrientation(180);
-        }
-
-        mCamera.startPreview();
-    }
-
-    private void captureImage() {
-        mCamera.takePicture(null, null, this);
-    }
-
-    private void setupImageCapture() {
-        mCameraImage.setVisibility(View.INVISIBLE);
-        mCameraPreview.setVisibility(View.VISIBLE);
-        if (mCamera==null)
-            mCamera = Camera.open(0);
-        mCamera.startPreview();
-        mCaptureImageButton.setOnClickListener(mCaptureImageButtonClickListener);
-    }
-
-    private void setupImageDisplay() {
-        Bitmap bitmap = BitmapFactory.decodeByteArray(mCameraData, 0, mCameraData.length);
-        mCameraImage.setVisibility(View.VISIBLE);
-
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
         Matrix matrix = new Matrix();
-        int rotate = 0;
-        if (orientation==0)
-            rotate = 90;
-        else if (orientation==90)
-            rotate = 180;
-        else if (orientation==180)
-            rotate = 270;
-        matrix.postRotate(rotate);
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
 
-        Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
+    }
 
-        bitmapImage = rotatedBitmap;
-        mCameraImage.setImageBitmap(bitmapImage);
-        mCamera.stopPreview();
-      //  mCameraPreview.setVisibility(View.INVISIBLE);
+    @Override
+    public void onPreviewFrame(byte[] paramArrayOfByte, Camera paramCamera)
+    {
+        // здесь можно обрабатывать изображение, показываемое в preview
 
-        saveButton.setVisibility(View.VISIBLE);
-
-        mCaptureImageButton.setOnClickListener(mRecaptureImageButtonClickListener);
     }
 }

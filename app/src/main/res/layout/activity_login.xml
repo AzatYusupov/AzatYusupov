@@ -1,98 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
-    <LinearLayout
-        android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context=".activity.LoginActivity">
+    <include
+        layout="@layout/toolbar_login"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="10dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:focusableInTouchMode="true"
-        android:descendantFocusability="beforeDescendants"
-        >
-
-        <ImageView
-            android:src="@drawable/logo"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginBottom="50dp"
-            android:layout_gravity="center_horizontal"
-            />
-
-        <!--Email Label-->
-        <android.support.design.widget.TextInputLayout
+        android:layout_height="match_parent"
+        />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="100dp"
+        android:fitsSystemWindows="true">
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText
-                android:id="@+id/input_email"
+            android:paddingTop="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:focusableInTouchMode="true"
+            >
+            <!--Email Label-->
+            <android.support.design.widget.TextInputLayout
+                android:theme="@style/TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:hint="Email"/>
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp">
+                <EditText
+                    android:id="@+id/input_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:hint="Email"/>
+            </android.support.design.widget.TextInputLayout>
 
-        <!--Password Label-->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText
-                android:id="@+id/input_password"
+            <!--Password Label-->
+            <android.support.design.widget.TextInputLayout
+                android:theme="@style/TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                android:hint="Пароль"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp">
+                <EditText
+                    android:id="@+id/input_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    android:hint="Пароль"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+            <!--Forgot Password Text-->
+            <TextView
+                android:id="@+id/text_forgot_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif"
+                android:textColor="@android:color/black"
+                android:text="Забыли?"
                 />
-        </android.support.design.widget.TextInputLayout>
 
-        <!--Forgot Password Text-->
-        <TextView
-            android:id="@+id/text_forgot_password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:textSize="18sp"
-            android:text="Забыли?"
-            />
+            <!--Login Button-->
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btn_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:layout_marginLeft="35dp"
+                android:layout_marginRight="35dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="24dp"
+                android:textAllCaps="false"
+                android:textSize="20sp"
+                android:textColor="@android:color/white"
+                android:elevation="8dp"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:background="@drawable/save_button_bg"
+                android:text="Вход"
+                />
 
-        <!--Login Button-->
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btn_login"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:layout_marginLeft="35dp"
-            android:layout_marginRight="35dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginBottom="24dp"
-            android:textAllCaps="false"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:textColor="@android:color/white"
-            android:elevation="8dp"
-            android:background="@drawable/login_button"
-            android:text="Войти"
-            />
-
-        <!--Registration Text-->
-        <TextView
-            android:id="@+id/text_registration"
-            android:layout_marginTop="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:text="Зарегистрироваться"
-            />
-    </LinearLayout>
-</ScrollView>
+            <!--Registration Text-->
+            <TextView
+                android:id="@+id/text_registration"
+                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:textColor="@android:color/black"
+                android:text="Зарегистрироваться"
+                />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

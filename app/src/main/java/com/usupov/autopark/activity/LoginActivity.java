@@ -1,24 +1,30 @@
 package com.usupov.autopark.activity;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.usupov.autopark.R;
+import com.usupov.autopark.http.Config;
 
 import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends Activity {
     private static final int REQUEST_SIGNUP = 0;
 
     @InjectView(R.id.input_email) EditText emailText;
@@ -30,6 +36,12 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+//        getActionBar().hide();
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_login);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -51,6 +63,12 @@ public class LoginActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_SIGNUP);
             }
         });
+
+        initInternetConnection(true);
+    }
+
+    private void initInternetConnection(boolean b) {
+
     }
 
     @Override
@@ -91,12 +109,15 @@ public class LoginActivity extends AppCompatActivity {
                 new Runnable() {
                     @Override
                     public void run() {
-
-                        if (email.equals("azat.1990@mail.ru") && password.equals("123456"))
-                            onLoginSuccess();
-                        else
+                        String serverToken = Config.getUrlSignIn();
+                        if (serverToken==null)
                             onLoginFailed();
-
+                        else {
+                            SharedPreferences sharedPreferences = getSharedPreferences(Config.APP_NAME, MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString(Config.TOKEN, serverToken);
+                            onLoginSuccess();
+                        }
                         progressDialog.dismiss();
                     }
                 }, 1000);
@@ -106,7 +127,7 @@ public class LoginActivity extends AppCompatActivity {
         finish();
 
         loginButton.setEnabled(true);
-        startActivity(new Intent(getBaseContext(), MainActivity.class));
+        startActivity(new Intent(this, PartListActivity.class));
     }
 
     public void onLoginFailed() {

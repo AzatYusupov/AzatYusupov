@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:paddingBottom="8dp"
+        android:paddingBottom="0dp"
         android:id="@+id/item_user_part_home_view">
         <LinearLayout
             android:orientation="horizontal"
@@ -66,7 +66,7 @@
                     android:text="Подходит для:"
                     />
                 <TextView
-                    android:textSize="15sp"
+                    android:textSize="14sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/item_user_part_suit"
@@ -133,8 +133,8 @@
                 </LinearLayout>
             </LinearLayout>
             <ImageView
-                android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:layout_gravity="right"
                 android:layout_weight="1"
                 android:id="@+id/item_user_part_image"

@@ -102,7 +102,7 @@ public class PartsInActivity extends AppCompatActivity {
                 map.put("comment", comment);
                 HttpHandler handler = new HttpHandler();
                 boolean result;
-                result = handler.postWithMultipleFiles(url, map, photoList);
+                result = handler.postWithMultipleFiles(url, map, photoList, getBaseContext());
                 if (result) {
                     Toast.makeText(PartsInActivity.this, getString(R.string.part_added),Toast.LENGTH_LONG).show();
                     setResult(RESULT_OK);
@@ -139,7 +139,7 @@ public class PartsInActivity extends AppCompatActivity {
                 }
                 Bundle extras = data.getExtras();
 
-                final String imagePath = extras.getString(CameraActivity.EXTRA_CAMERA_DATA);
+                final String imagePath = extras.getString(CameraActivityOld.EXTRA_CAMERA_DATA);
                 if (imagePath != null && !imagePath.equals("")) {
                     RelativeLayout layout = (RelativeLayout) findViewById(R.id.photoCarField);
 //                    layout.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
@@ -151,7 +151,7 @@ public class PartsInActivity extends AppCompatActivity {
 //                    bmOptions.inJustDecodeBounds = true;
 //                    BitmapFactory.decodeFile(imagePath, bmOptions);
 
-                    int targetH = dpToPx(200);//mCameraImageView.getWidth();
+                    int targetH = dpToPx(150);//mCameraImageView.getWidth();
                     int targetW = dpToPx(1);
 
 

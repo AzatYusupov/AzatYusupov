@@ -44,7 +44,7 @@ public class PartListActivity extends AppCompatActivity {
 
     }
     private void initUserPartList() {
-        userPartList = Part.getUserPartList();
+        userPartList = Part.getUserPartList(this);
         UserPartListAdapter adapter = new UserPartListAdapter(this, userPartList);
         rvUserPartList.setAdapter(adapter);
     }
@@ -61,9 +61,9 @@ public class PartListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                List<CarModel> carList = Car.getCarList();
+                List<CarModel> carList = Car.getCarList(getBaseContext());
                 if (carList==null || carList.size() != 1) {
-                    startActivity(new Intent(PartListActivity.this, MainActivity.class));
+                    startActivity(new Intent(PartListActivity.this, CarListActivity.class));
                     finish();
                 }
                 else {
@@ -77,14 +77,16 @@ public class PartListActivity extends AppCompatActivity {
             }
         });
     }
+
     private  void ifCarListEmpty() {
-        List<CarModel> carList = Car.getCarList();
-        Part.getUserPartList();
+        List<CarModel> carList = Car.getCarList(getBaseContext());
+        Part.getUserPartList(this);
         if (carList == null || carList.isEmpty()) {
-            startActivity(new Intent(PartListActivity.this, MainActivity.class));
+            startActivity(new Intent(PartListActivity.this, CarListActivity.class));
             finish();
         }
     }
+
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_part_list);
         toolbar.setTitle("Лента");

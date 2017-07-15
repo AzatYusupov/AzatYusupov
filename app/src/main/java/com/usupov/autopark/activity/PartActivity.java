@@ -133,7 +133,7 @@ public class PartActivity extends AppCompatActivity {
                 else
                     editTextArticle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_close, 0);
                 String article = editTextArticle.getText()+"".toUpperCase();
-                final List<PartModel> startsWithParts = Part.searchStartWith(carId, article);
+                final List<PartModel> startsWithParts = Part.searchStartWith(carId, article, getBaseContext());
                 if (startsWithParts != null && startsWithParts.size() > 0) {
                     linearLayoutCatalog.setVisibility(View.GONE);
                     listViewParts.setVisibility(View.VISIBLE);
@@ -199,7 +199,7 @@ public class PartActivity extends AppCompatActivity {
     private String getJSONStringCategory (int carId) {
         String url = Config.getUrlCar()+carId+"/"+Config.getpathCategory();
         HttpHandler handler = new HttpHandler();
-        String result = handler.ReadHttpResponse(url);
+        String result = handler.ReadHttpResponse(url, this);
         return result;
     }
 
@@ -248,7 +248,7 @@ public class PartActivity extends AppCompatActivity {
                     ArrayList<String> text = data
                             .getStringArrayListExtra("all_results");
                     EditText edt = (EditText) findViewById(R.id.edittext_article_number);
-                    String edt_text = SpeachRecogn.vinSpeach(text).toUpperCase();
+                    String edt_text = SpeachRecogn.vinSpeach(text, this).toUpperCase();
                     edt_text = SpeachRecogn.partToNormal(edt_text);
                     if (edt_text.length() > 12)
                         edt_text = edt_text.substring(0, 12);

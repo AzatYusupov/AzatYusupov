@@ -20,7 +20,6 @@ import com.google.gson.Gson;
 import com.usupov.autopark.R;
 import com.usupov.autopark.http.Config;
 import com.usupov.autopark.http.HttpHandler;
-import com.usupov.autopark.model.CarFoundModel;
 import com.usupov.autopark.model.CarModel;
 
 import org.apache.http.HttpStatus;
@@ -92,7 +91,7 @@ public class CarFoundActivity extends AppCompatActivity {
                 }
                 Bundle extras = data.getExtras();
 
-                imagePath = extras.getString(CameraActivity.EXTRA_CAMERA_DATA);
+                imagePath = extras.getString(CameraActivityOld.EXTRA_CAMERA_DATA);
                 if (imagePath != null && !imagePath.equals("")) {
                     RelativeLayout layout = (RelativeLayout) findViewById(R.id.photoCarField);
                     layout.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
@@ -137,7 +136,7 @@ public class CarFoundActivity extends AppCompatActivity {
     }
 
     private void startImageCapture() {
-        startActivityForResult(new Intent(CarFoundActivity.this, CameraActivity.class), TAKE_PICTURE_REQUEST_B);
+        startActivityForResult(new Intent(CarFoundActivity.this, CameraActivityOld.class), TAKE_PICTURE_REQUEST_B);
     }
 
     private void setCarInforms() {
@@ -179,7 +178,7 @@ public class CarFoundActivity extends AppCompatActivity {
                 pairs.put("yearId", car.getYearId()+"");
 
                 try {
-                    int result = handler.postWithOneFile(url, pairs, imagePath);
+                    int result = handler.postWithOneFile(url, pairs, imagePath, getBaseContext());
                     imagePath = null;
                     if (result== HttpStatus.SC_OK) {
                         Toast.makeText(CarFoundActivity.this, getString(R.string.car_success_added), Toast.LENGTH_LONG).show();

@@ -21,7 +21,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -32,19 +31,25 @@ public class SignupActivity extends AppCompatActivity {
     @InjectView(R.id.toolbar_signup) Toolbar toolbar;
     @InjectView(R.id.next_text) TextView textNext;
     @InjectView(R.id.input_name) EditText nameText;
-    @InjectView(R.id.input_lastname) EditText lastnameText;
-    @InjectView(R.id.input_phone) EditText phoneText;
+//    @InjectView(R.id.input_lastname) EditText lastnameText;
+//    @InjectView(R.id.input_phone) EditText phoneText;
     @InjectView(R.id.input_email) EditText emailText;
     @InjectView(R.id.input_password) EditText passwordText;
     @InjectView(R.id.input_repassword) EditText repasswordText;
+    @InjectView(R.id.input_company) EditText companyText;
+    @InjectView(R.id.input_inn) EditText innText;
+    @InjectView(R.id.input_address) EditText addressText;
     @InjectView(R.id.btn_register) Button registerButton;
 
     private static String name;
-    private static String lastname;
-    private static String phone;
+//    private static String lastname;
+//    private static String phone;
     private static String email;
     private static String password;
     private static String repassword;
+    private static String company;
+    private static String inn;
+    private static String address;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,24 +84,31 @@ public class SignupActivity extends AppCompatActivity {
         List<NameValuePair> pairs = new ArrayList<>();
 
         pairs.add(new BasicNameValuePair("name", name));
-        pairs.add(new BasicNameValuePair("lastname", lastname));
-        pairs.add(new BasicNameValuePair("phone", phone));
+//        pairs.add(new BasicNameValuePair("lastname", lastname));
+//        pairs.add(new BasicNameValuePair("phone", phone));
         pairs.add(new BasicNameValuePair("email", email));
         pairs.add(new BasicNameValuePair("password", password));
+        pairs.add(new BasicNameValuePair("company", company));
+        pairs.add(new BasicNameValuePair("inn", inn));
+        pairs.add(new BasicNameValuePair("address", address));
+
 
         HttpHandler handler = new HttpHandler();
-        int status = handler.doSimplePost(Config.getUrlSignup(), pairs);
-        System.out.println(Config.getUrlSignup());
-        System.out.println(name+" "+lastname+" "+phone+" "+email+" "+password);
-        System.out.println("STATUSSSSSSSSSSSSSSSSSSSSSWWWWWWW="+status);
+        int status = handler.doSimplePost(Config.getUrlSignup(), pairs, this);
+//        System.out.println(Config.getUrlSignup());
+//        System.out.println(name+" "+lastname+" "+phone+" "+email+" "+password);
+//        System.out.println("STATUSSSSSSSSSSSSSSSSSSSSSWWWWWWW="+status);
         progressDialog.dismiss();
         switch (status) {
             case HttpStatus.SC_OK :
                 setResult(RESULT_OK);
                 finish();
-                startActivity(new Intent(this,  SignupSuccessActivity.class));
+                Intent intent = new Intent(this,  SignupSuccessActivity.class);
+                intent.putExtra("name", name);
+                startActivity(intent);
                 break;
             case HttpStatus.SC_CONFLICT :
+                emailText.setError("Пользователь с таким электронном почтом уже существует");
                 onIncorrectData("Пользователь с таким электронном почтом уже существует");
                 break;
             default:
@@ -117,11 +129,14 @@ public class SignupActivity extends AppCompatActivity {
         boolean valid = true;
 
         name = nameText.getText().toString();
-        lastname = lastnameText.getText().toString();
-        phone = phoneText.getText().toString();
+//        lastname = lastnameText.getText().toString();
+//        phone = phoneText.getText().toString();
         email = emailText.getText().toString();
         password = passwordText.getText().toString();
         repassword = repasswordText.getText().toString();
+        company = companyText.getText().toString();
+        inn = innText.getText().toString();
+        address = addressText.getText().toString();
 
         if (name.isEmpty() || name.length() < 3) {
             nameText.setError("не менее 3 символов");
@@ -130,12 +145,12 @@ public class SignupActivity extends AppCompatActivity {
         else
             nameText.setError(null);
 
-        if (lastname.isEmpty() || lastname.length() < 3) {
-            lastnameText.setError("не менее 3 символов");
-            valid = false;
-        }
-        else
-            lastnameText.setError(null);
+//        if (lastname.isEmpty() || lastname.length() < 3) {
+//            lastnameText.setError("не менее 3 символов");
+//            valid = false;
+//        }
+//        else
+//            lastnameText.setError(null);
 
         if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             emailText.setError("Введите действительный адрес электронной почты");
@@ -158,6 +173,26 @@ public class SignupActivity extends AppCompatActivity {
         else
             repasswordText.setError(null);
 
+        if (company.isEmpty() || company.length() < 3) {
+            companyText.setError("не менее 3 символов");
+            valid = false;
+        }
+        else
+            companyText.setError(null);
+
+        if (inn.isEmpty() || inn.length() < 3) {
+            innText.setError("не менее 3 символов");
+            valid = false;
+        }
+        else
+            innText.setError(null);
+
+        if (address.isEmpty() || address.length() < 3) {
+            addressText.setError("не менее 3 символов");
+            valid = false;
+        }
+        else
+            addressText.setError(null);
         return valid;
     }
 

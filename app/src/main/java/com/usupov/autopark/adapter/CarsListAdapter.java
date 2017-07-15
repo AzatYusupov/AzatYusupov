@@ -1,7 +1,6 @@
 package com.usupov.autopark.adapter;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,7 +20,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.usupov.autopark.R;
-import com.usupov.autopark.activity.MainActivity;
+import com.usupov.autopark.activity.CarListActivity;
 import com.usupov.autopark.activity.PartActivity;
 import com.usupov.autopark.http.Config;
 import com.usupov.autopark.http.HttpHandler;
@@ -86,13 +85,13 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
                                             public void onClick(DialogInterface dialog, int which) {
                                                 int carId = carList.get(position).getId();
                                                 System.out.println("Deleted car id = "+carId);
-                                                boolean result = handler.deleteQuery(urlCarDelete+carId);
+                                                boolean result = handler.deleteQuery(urlCarDelete+carId, context);
                                                 String message = carList.get(position).getFullName()+" ";
                                                 if (result) {
                                                     carList.remove(position);
-                                                    for (int i = 0; i < MainActivity.carList.size(); i++) {
-                                                        if (MainActivity.carList.get(i).getId()==carId) {
-                                                            MainActivity.carList.remove(i);
+                                                    for (int i = 0; i < CarListActivity.carList.size(); i++) {
+                                                        if (CarListActivity.carList.get(i).getId()==carId) {
+                                                            CarListActivity.carList.remove(i);
                                                             break;
                                                         }
                                                     }
@@ -102,7 +101,7 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
 //                                                    System.out.println("Removed id : "+position);
 
                                                     if (carList.isEmpty()) {
-                                                        MainActivity.tryEmpty();
+                                                        CarListActivity.tryEmpty();
                                                     }
                                                 }
                                                 else

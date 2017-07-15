@@ -1,5 +1,7 @@
 package com.usupov.autopark.jsonHelper;
 
+import android.content.Context;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.usupov.autopark.http.Config;
@@ -19,11 +21,11 @@ import java.util.List;
 
 public class Car {
 
-    public static List<CarModel> getCarList() {
+    public static List<CarModel> getCarList(Context context) {
 
         HttpHandler handler = new HttpHandler();
         String url = Config.getUrlCars();
-        String jsonStr = handler.ReadHttpResponse(url);
+        String jsonStr = handler.ReadHttpResponse(url, context);
         if (jsonStr == null)
             return null;
         List<CarModel> carList = new ArrayList<>();
@@ -57,19 +59,19 @@ public class Car {
         }
         return null;
     }
-    public static CarModel getCarWithVin(String vin) {
+    public static CarModel getCarWithVin(String vin, Context context) {
 
         HttpHandler handler = new HttpHandler();
         final String urlVin = Config.getUrlVin();
         String url = urlVin+"/"+vin;
-        String jSonString = handler.ReadHttpResponse(url);
+        String jSonString = handler.ReadHttpResponse(url, context);
 
         return fromJsonToCarModel(jSonString);
     }
-    public static CarModel getCarByCatalog(int brandId, int modelId, int yearId) {
+    public static CarModel getCarByCatalog(int brandId, int modelId, int yearId, Context context) {
         HttpHandler handler = new HttpHandler();
         final String url = Config.getUrlGetByCatalog(brandId, modelId, yearId);
-        String jsonString = handler.ReadHttpResponse(url);
+        String jsonString = handler.ReadHttpResponse(url, context);
 
         return fromJsonToCarModel(jsonString);
     }

@@ -1,47 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
-    <LinearLayout
-        android:orientation="vertical"
+    android:layout_height="wrap_content">
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="10dp"
+        android:layout_height="?attr/actionBarSize"
+        android:textSize="28sp"
+        android:textColor="@color/colorWhite"
+        android:gravity="center_vertical"
+        android:background="@color/colorPrimary"
         android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:focusableInTouchMode="true"
-        android:descendantFocusability="beforeDescendants"
-        >
-
-        <ImageView
-            android:src="@drawable/logo"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginBottom="50dp"
-            android:layout_gravity="center_horizontal"
-            />
-
-        <TextView
+        android:text="@string/app_name"
+        />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:gravity="center"
-            android:text="Поздравляем! Вы успешьно зарегистрировались! Теперь можете войти с логином и паролом"
-            />
+            android:paddingTop="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:focusableInTouchMode="true"
+            android:descendantFocusability="beforeDescendants"
+            >
 
-        <TextView
-            android:id="@+id/text_login"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:layout_marginTop="30dp"
-            android:textSize="32sp"
-            android:textColor="@android:color/black"
-            android:text="Войти"
-            />
+            <TextView
+                android:id="@+id/text_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:textSize="22sp"
+                android:layout_marginTop="30dp"
+                android:textStyle="bold"
+                android:typeface="serif"
+                android:textColor="@android:color/black"
+                android:text="Привет, "
+                />
 
-    </LinearLayout>
-</ScrollView>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:layout_marginTop="30dp"
+                android:textSize="18sp"
+                android:typeface="serif"
+                android:textColor="@android:color/black"
+                android:text="Добро пожаловать в Product card!"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:textSize="18sp"
+                android:layout_marginTop="30dp"
+                android:typeface="serif"
+                android:textColor="@android:color/black"
+                android:text="Мы экономим ваше время и увеличиваем продажи. Сервис голосового добавления б/у автозапчастей поможет:"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:textSize="18sp"
+                android:layout_marginTop="0dp"
+                android:typeface="serif"
+                android:textColor="@android:color/black"
+                android:text="- быстро оцифровать товары на складе;"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:textSize="18sp"
+                android:layout_marginTop="0dp"
+                android:typeface="serif"
+                android:textColor="@android:color/black"
+                android:text="- наполнить витрину собственного интернет-магазина;"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:textSize="18sp"
+                android:layout_marginTop="0dp"
+                android:typeface="serif"
+                android:textColor="@android:color/black"
+                android:text="- отправить CSV файл с товарами на сайт Auto.ru."
+                />
+
+            <TextView
+                android:id="@+id/text_feedback"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:textSize="17sp"
+                android:layout_marginTop="50dp"
+                android:textColor="@android:color/black"
+                android:typeface="serif"
+                android:text="Мы всегда на связи и стремимся сделать наш сервис максимально удобным, поэтому мы смело оставляем контакты нашего директора ceo@productcard.ru (Алёна Колпашникова)"
+                />
+
+
+            <!--<View-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="2dp"-->
+                <!--/>-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/black"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:textSize="14sp"
+                android:layout_marginTop="10dp"
+                android:textColor="@android:color/black"
+                android:typeface="serif"
+                android:text="Данное сообщение сформировано автоматически и не требует ответа!"
+                />
+
+            <TextView
+                android:id="@+id/text_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="30dp"
+                android:textSize="32sp"
+                android:typeface="serif"
+                android:textColor="@android:color/black"
+                android:text="Войти"
+                />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

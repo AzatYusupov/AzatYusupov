@@ -1,5 +1,7 @@
 package com.usupov.autopark.service;
 
+import android.content.Context;
+
 import com.usupov.autopark.http.Config;
 import com.usupov.autopark.http.HttpHandler;
 
@@ -162,7 +164,7 @@ public class SpeachRecogn {
         }
         return str;
     }
-    public static String vinSpeach(ArrayList<String> text) {
+    public static String vinSpeach(ArrayList<String> text, Context context) {
 
 
 
@@ -178,7 +180,7 @@ public class SpeachRecogn {
                 data.put("vin", variant);
             else
                 data.put("vin", variant+"\n");
-            int result = handler.postWithOneFile(url, data, null);
+            int result = handler.postWithOneFile(url, data, null, context);
             if (result== HttpStatus.SC_OK) {
                 System.out.println("variant="+variant+" has been sent to the server");
             }
