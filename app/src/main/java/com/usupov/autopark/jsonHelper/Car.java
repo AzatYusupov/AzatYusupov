@@ -2,11 +2,11 @@ package com.usupov.autopark.jsonHelper;
 
 import android.content.Context;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.usupov.autopark.http.Config;
+import com.usupov.autopark.config.CarRestURIConstants;
 import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.model.CarModel;
+import com.usupov.autopark.model.CustomHttpResponse;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,8 +24,10 @@ public class Car {
     public static List<CarModel> getCarList(Context context) {
 
         HttpHandler handler = new HttpHandler();
-        String url = Config.getUrlCars();
-        String jsonStr = handler.ReadHttpResponse(url, context);
+        String url = CarRestURIConstants.GET_ALL;
+        CustomHttpResponse customHttpResponse = handler.doHttpGet(url, context);
+        System.out.println(customHttpResponse.getStatusCode()+" 88888888888885555555555555");
+        String jsonStr = customHttpResponse.getBodyString();
         if (jsonStr == null)
             return null;
         List<CarModel> carList = new ArrayList<>();
@@ -59,19 +61,18 @@ public class Car {
         }
         return null;
     }
-    public static CarModel getCarWithVin(String vin, Context context) {
+    public static CarModel getCarByVin(String vin, Context context) {
 
         HttpHandler handler = new HttpHandler();
-        final String urlVin = Config.getUrlVin();
-        String url = urlVin+"/"+vin;
-        String jSonString = handler.ReadHttpResponse(url, context);
+        String url = String.format(CarRestURIConstants.GET_BY_VIN, vin);
+        String jSonString = handler.doHttpGet(url, context).getBodyString();
 
         return fromJsonToCarModel(jSonString);
     }
     public static CarModel getCarByCatalog(int brandId, int modelId, int yearId, Context context) {
         HttpHandler handler = new HttpHandler();
-        final String url = Config.getUrlGetByCatalog(brandId, modelId, yearId);
-        String jsonString = handler.ReadHttpResponse(url, context);
+        String url = String.format(CarRestURIConstants.GET_BY_CATALOG, brandId, modelId, yearId);
+        String jsonString = handler.doHttpGet(url, context).getBodyString();
 
         return fromJsonToCarModel(jsonString);
     }

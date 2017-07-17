@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.usupov.autopark.R;
-import com.usupov.autopark.http.Config;
+import com.usupov.autopark.config.CarRestURIConstants;
 import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.model.CarModel;
 
@@ -168,7 +168,7 @@ public class CarFoundActivity extends AppCompatActivity {
         btnSave.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = Config.getUrlCarCreat();
+                String url = CarRestURIConstants.CREATE;
                 HttpHandler handler = new HttpHandler();
                 HashMap<String, String> pairs = new HashMap<>();
                 if (car.getVin()!= null && car.getVin().length() > 0)
@@ -178,9 +178,9 @@ public class CarFoundActivity extends AppCompatActivity {
                 pairs.put("yearId", car.getYearId()+"");
 
                 try {
-                    int result = handler.postWithOneFile(url, pairs, imagePath, getBaseContext());
+                    int resultCode = handler.postWithOneFile(url, pairs, imagePath, getApplicationContext(), false).getStatusCode();
                     imagePath = null;
-                    if (result== HttpStatus.SC_OK) {
+                    if (resultCode== HttpStatus.SC_OK) {
                         Toast.makeText(CarFoundActivity.this, getString(R.string.car_success_added), Toast.LENGTH_LONG).show();
                         setResult(RESULT_OK);
                         finish();

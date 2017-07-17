@@ -3,13 +3,9 @@ package com.usupov.autopark.activity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.StrictMode;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,9 +13,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.usupov.autopark.R;
-import com.usupov.autopark.http.Config;
+import com.usupov.autopark.config.UserURIConstants;
+import com.usupov.autopark.http.HttpHandler;
 
-import java.util.concurrent.TimeUnit;
+import org.apache.http.HttpStatus;
+
+import java.util.HashMap;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -38,6 +37,14 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
 //        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 //        getActionBar().hide();
+
+        String token = HttpHandler.getLocalServerToken(getApplicationContext());
+        if (token != null) {
+            finish();
+            startActivity(new Intent(this, PartListActivity.class));
+            return;
+        }
+
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -88,7 +95,7 @@ public class LoginActivity extends Activity {
     public void login() {
 
         if (!validate()) {
-            onLoginFailed();
+            onLoginFailed("Заполните поля авторизации");
             return;
         }
 
@@ -109,30 +116,38 @@ public class LoginActivity extends Activity {
                 new Runnable() {
                     @Override
                     public void run() {
-                        String serverToken = Config.getUrlSignIn();
-                        if (serverToken==null)
-                            onLoginFailed();
-                        else {
-                            SharedPreferences sharedPreferences = getSharedPreferences(Config.APP_NAME, MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString(Config.TOKEN, serverToken);
+
+                        HttpHandler handler = new HttpHandler();
+                        HashMap<String, String> pairs = new HashMap<>();
+                        pairs.put("email", email);
+                        pairs.put("password", password);
+
+                        int response = handler.postWithOneFile(UserURIConstants.SIGN_IN, pairs, null, getApplicationContext(), true).getStatusCode();
+
+
+                        if (response == HttpStatus.SC_NOT_FOUND)
+                            onLoginFailed("Email или пароль не правильно");
+                        else if (response != HttpStatus.SC_OK)
+                            onLoginFailed(getString(R.string.no_internet_connection));
+                        else
                             onLoginSuccess();
-                        }
+
                         progressDialog.dismiss();
                     }
                 }, 1000);
     }
 
     public void onLoginSuccess() {
-        finish();
 
-        loginButton.setEnabled(true);
+
+        finish();
         startActivity(new Intent(this, PartListActivity.class));
+//        loginButton.setEnabled(true);
     }
 
-    public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Ошибка входа", Toast.LENGTH_SHORT).show();
+    public void onLoginFailed(String message) {
 
+        Toast.makeText(getBaseContext(), message, Toast.LENGTH_LONG).show();
         loginButton.setEnabled(true);
     }
 

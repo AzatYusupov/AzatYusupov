@@ -20,9 +20,11 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.usupov.autopark.R;
-import com.usupov.autopark.http.Config;
+import com.usupov.autopark.config.PartRestURIConstants;
 import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.model.PartModel;
+
+import org.apache.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,7 +95,8 @@ public class PartsInActivity extends AppCompatActivity {
                 }
                 String store = ((EditText)findViewById(R.id.part_in_store)).getText().toString();
                 String comment = ((EditText)findViewById(R.id.part_in_comment)).getText().toString();
-                String url = Config.getUrlCar()+part.getCarId()+"/"+Config.getpathCategory()+"/"+part.getCategoryId()+"/create";
+                String url = String.format(PartRestURIConstants.CREATE, part.getCarId(), part.getCategoryId());
+
                 HashMap<String, String> map = new HashMap<>();
                 map.put("partId", part.getId()+"");
                 map.put("brand", brand);
@@ -101,15 +104,16 @@ public class PartsInActivity extends AppCompatActivity {
                 map.put("store", store);
                 map.put("comment", comment);
                 HttpHandler handler = new HttpHandler();
-                boolean result;
-                result = handler.postWithMultipleFiles(url, map, photoList, getBaseContext());
-                if (result) {
+                int result = handler.postWithMultipleFiles(url, map, photoList, getApplicationContext(), false).getStatusCode();
+                if (result== HttpStatus.SC_OK) {
                     Toast.makeText(PartsInActivity.this, getString(R.string.part_added),Toast.LENGTH_LONG).show();
                     setResult(RESULT_OK);
                     finish();
                 }
-                else
-                    Toast.makeText(PartsInActivity.this, getString(R.string.part_not_added),Toast.LENGTH_LONG).show();
+                else {
+                    Toast.makeText(PartsInActivity.this, result+"", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(PartsInActivity.this, getString(R.string.part_not_added), Toast.LENGTH_LONG).show();
+                }
 
             }
         });

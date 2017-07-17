@@ -2,6 +2,8 @@ package com.usupov.autopark.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Build;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -13,15 +15,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.usupov.autopark.R;
-import com.usupov.autopark.http.Config;
+import com.usupov.autopark.config.UserURIConstants;
 import com.usupov.autopark.http.HttpHandler;
 
 import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -81,41 +80,41 @@ public class SignupActivity extends AppCompatActivity {
         progressDialog.setMessage("Регистрация...");
         progressDialog.show();
 
-        List<NameValuePair> pairs = new ArrayList<>();
+        final HashMap<String, String> pairs = new HashMap<>();
 
-        pairs.add(new BasicNameValuePair("name", name));
+        pairs.put("name", name);
 //        pairs.add(new BasicNameValuePair("lastname", lastname));
 //        pairs.add(new BasicNameValuePair("phone", phone));
-        pairs.add(new BasicNameValuePair("email", email));
-        pairs.add(new BasicNameValuePair("password", password));
-        pairs.add(new BasicNameValuePair("company", company));
-        pairs.add(new BasicNameValuePair("inn", inn));
-        pairs.add(new BasicNameValuePair("address", address));
+        pairs.put("email", email);
+        pairs.put("password", password);
+        pairs.put("company", company);
+        pairs.put("inn", inn);
+        pairs.put("address", address);
 
 
-        HttpHandler handler = new HttpHandler();
-        int status = handler.doSimplePost(Config.getUrlSignup(), pairs, this);
-//        System.out.println(Config.getUrlSignup());
-//        System.out.println(name+" "+lastname+" "+phone+" "+email+" "+password);
-//        System.out.println("STATUSSSSSSSSSSSSSSSSSSSSSWWWWWWW="+status);
-        progressDialog.dismiss();
-        switch (status) {
-            case HttpStatus.SC_OK :
-                setResult(RESULT_OK);
-                finish();
-                Intent intent = new Intent(this,  SignupSuccessActivity.class);
-                intent.putExtra("name", name);
-                startActivity(intent);
-                break;
-            case HttpStatus.SC_CONFLICT :
-                emailText.setError("Пользователь с таким электронном почтом уже существует");
-                onIncorrectData("Пользователь с таким электронном почтом уже существует");
-                break;
-            default:
-                onIncorrectData(getString(R.string.no_internet_connection));
-                break;
-        }
+        new android.os.Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                HttpHandler handler = new HttpHandler();
+                int status = handler.postWithOneFile(UserURIConstants.SIGN_UP, pairs, null, getApplicationContext(), true).getStatusCode();
 
+                switch (status) {
+                    case HttpStatus.SC_OK :
+                        setResult(RESULT_OK);
+                        finish();
+                        startActivity(new Intent(SignupActivity.this,  PartListActivity.class));
+                        break;
+                    case HttpStatus.SC_CONFLICT :
+                        emailText.setError("Пользователь с таким электронном почтом уже существует");
+                        onIncorrectData("Пользователь с таким электронном почтом уже существует");
+                        break;
+                    default:
+                        onIncorrectData(getString(R.string.no_internet_connection));
+                        break;
+                }
+                progressDialog.dismiss();
+            }
+        }, 1000);
 
     }
 

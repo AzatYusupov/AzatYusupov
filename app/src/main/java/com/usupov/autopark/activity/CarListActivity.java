@@ -106,7 +106,7 @@ public class CarListActivity extends AppCompatActivity implements NavigationView
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            carList = Car.getCarList(getBaseContext());
+            carList = Car.getCarList(getApplicationContext());
             if (carList==null)
                 return false;
             return true;

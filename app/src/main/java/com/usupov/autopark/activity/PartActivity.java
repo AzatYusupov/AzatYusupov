@@ -25,7 +25,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.usupov.autopark.R;
-import com.usupov.autopark.http.Config;
+import com.usupov.autopark.config.CategoryRestURIConstants;
 import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.jsonHelper.Part;
 import com.usupov.autopark.model.CarCategory;
@@ -133,7 +133,7 @@ public class PartActivity extends AppCompatActivity {
                 else
                     editTextArticle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_close, 0);
                 String article = editTextArticle.getText()+"".toUpperCase();
-                final List<PartModel> startsWithParts = Part.searchStartWith(carId, article, getBaseContext());
+                final List<PartModel> startsWithParts = Part.searchStartWith(carId, article, getApplicationContext());
                 if (startsWithParts != null && startsWithParts.size() > 0) {
                     linearLayoutCatalog.setVisibility(View.GONE);
                     listViewParts.setVisibility(View.VISIBLE);
@@ -197,9 +197,9 @@ public class PartActivity extends AppCompatActivity {
         });
     }
     private String getJSONStringCategory (int carId) {
-        String url = Config.getUrlCar()+carId+"/"+Config.getpathCategory();
+        String url = String.format(CategoryRestURIConstants.GET_TREE, carId);
         HttpHandler handler = new HttpHandler();
-        String result = handler.ReadHttpResponse(url, this);
+        String result = handler.doHttpGet(url, this).getBodyString();
         return result;
     }
 

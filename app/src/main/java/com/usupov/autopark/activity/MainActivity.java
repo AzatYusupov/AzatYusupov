@@ -1,6 +1,8 @@
 package com.usupov.autopark.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.graphics.Typeface;
 import android.icu.util.TimeUnit;
 import android.os.Build;
@@ -16,6 +18,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.usupov.autopark.R;
+import com.usupov.autopark.config.LocalConstants;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +30,23 @@ public class MainActivity extends AppCompatActivity {
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+//        Check if a new version installing remove Shared
+        try {
+
+            PackageInfo pInfo = getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0);
+            SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(LocalConstants.APP_NAME, 0);
+            System.out.println(pInfo.versionCode+" VVVVVVVVVVVVVVVVVVVVVVVVVVV");
+            if (sharedPreferences.getInt("VERSION_CODE", 0) != pInfo.versionCode) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.clear();
+//                this is a new version comment
+                editor.putInt("VERSION_CODE", pInfo.versionCode);
+                editor.commit();
+            }
+        }
+        catch (Exception e) {}
+
 
 //        TextView textView = (TextView) findViewById(R.id.text_main);
 //        textView.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/RobotoCondensed-Regular.ttf"));
@@ -40,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
 
-                startActivity(new Intent(MainActivity.this, PartListActivity.class));
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 finish();
             }
         }, 3000);

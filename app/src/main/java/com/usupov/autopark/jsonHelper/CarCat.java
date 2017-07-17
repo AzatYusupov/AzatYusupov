@@ -2,7 +2,7 @@ package com.usupov.autopark.jsonHelper;
 
 import android.content.Context;
 
-import com.usupov.autopark.http.Config;
+import com.usupov.autopark.config.CatalogRestURIConstants;
 import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.model.CatalogBrand;
 import com.usupov.autopark.model.CatalogModel;
@@ -23,9 +23,8 @@ public class CarCat {
 		
         try {
 			
-            String jsonString = handler.ReadHttpResponse(Config.getUrlBrands(), context);
-            System.out.printf("JSOOOOOOOOOOOON");
-            System.out.println(jsonString);
+            String jsonString = handler.doHttpGet(CatalogRestURIConstants.BRAND_GET_ALL, context).getBodyString();
+
             JSONArray jsonArray = new JSONArray(jsonString);
             List<CatalogBrand> brandList = new ArrayList<>();
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -47,12 +46,12 @@ public class CarCat {
     }
     public static List<CatalogModel> getModels ( int brandId, Context context){
 
-        String url = Config.getUrlBrands() + "/" + brandId + "/" + Config.getPathModel();
+        String url = String.format(CatalogRestURIConstants.MODEL_GET_ALL, brandId);
         HttpHandler handler = new HttpHandler();
 
         try {
 
-            String jsonString = handler.ReadHttpResponse(url, context);
+            String jsonString = handler.doHttpGet(url, context).getBodyString();
             JSONArray jsonArray = new JSONArray(jsonString);
             List<CatalogModel> modelList = new ArrayList<>();
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -73,12 +72,12 @@ public class CarCat {
 
     public static List<CatalogYear> getYears ( int brandId, int modelId, Context context){
 
-        String url = Config.getUrlBrands() + "/" + brandId + "/" + Config.getPathModel() + "/" + modelId + "/" + Config.getPathYears();
+        String url = String.format(CatalogRestURIConstants.YEAR_GET_ALL, brandId, modelId);
         HttpHandler handler = new HttpHandler();
 
         try {
             List<CatalogYear> yearList = new ArrayList<>();
-            String jsonString = handler.ReadHttpResponse(url, context);
+            String jsonString = handler.doHttpGet(url, context).getBodyString();
             JSONArray jsonArray = new JSONArray(jsonString);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);

@@ -2,7 +2,7 @@ package com.usupov.autopark.service;
 
 import android.content.Context;
 
-import com.usupov.autopark.http.Config;
+import com.usupov.autopark.config.ApiURIConstants;
 import com.usupov.autopark.http.HttpHandler;
 
 import org.apache.http.HttpStatus;
@@ -10,7 +10,6 @@ import org.apache.http.HttpStatus;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.TreeMap;
 
 /**
  * Created by Azat on 04.03.2017.
@@ -173,14 +172,14 @@ public class SpeachRecogn {
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++");
         for (int i = 0; i < text.size(); i++) {
             String variant = text.get(i).trim();
-            String url = Config.urlServer+"log/vin";
+            String url = ApiURIConstants.API + "log/vin";
             HttpHandler handler = new HttpHandler();
             HashMap<String, String> data = new HashMap<>();
             if (i != text.size()-1)
                 data.put("vin", variant);
             else
                 data.put("vin", variant+"\n");
-            int result = handler.postWithOneFile(url, data, null, context);
+            int result = handler.postWithOneFile(url, data, null, context.getApplicationContext(), false).getStatusCode();
             if (result== HttpStatus.SC_OK) {
                 System.out.println("variant="+variant+" has been sent to the server");
             }

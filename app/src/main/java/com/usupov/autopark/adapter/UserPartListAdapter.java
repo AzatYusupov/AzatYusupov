@@ -10,13 +10,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.usupov.autopark.R;
+import com.usupov.autopark.http.Headers;
 import com.usupov.autopark.model.UserPartModel;
 
 import java.util.List;
 
-/**
- * Created by Azat on 06.07.2017.
- */
 
 public class UserPartListAdapter extends RecyclerView.Adapter<UserPartListAdapter.MyViewHolder> {
 
@@ -52,7 +50,7 @@ public class UserPartListAdapter extends RecyclerView.Adapter<UserPartListAdapte
         holder.comment.setText(userPart.getComment());
         holder.place.setText(userPart.getStore());
 
-        Glide.with(context).load(userPart.getImageUrl()).into(holder.imageView);
+        Glide.with(context).load(Headers.getUrlWithHeaders(userPart.getImageUrl(), context.getApplicationContext())).into(holder.imageView);
     }
 
     @Override

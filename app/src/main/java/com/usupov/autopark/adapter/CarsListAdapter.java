@@ -22,9 +22,12 @@ import com.bumptech.glide.Glide;
 import com.usupov.autopark.R;
 import com.usupov.autopark.activity.CarListActivity;
 import com.usupov.autopark.activity.PartActivity;
-import com.usupov.autopark.http.Config;
+import com.usupov.autopark.config.CarRestURIConstants;
+import com.usupov.autopark.http.Headers;
 import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.model.CarModel;
+
+import org.apache.http.HttpStatus;
 
 import java.util.List;
 
@@ -60,7 +63,7 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     private void showPopupMenu(View v, final int position) {
         final HttpHandler handler = new HttpHandler();
-        final String urlCarDelete = Config.getUrlCarDelete();
+        final String urlCarDelete = CarRestURIConstants.DELETE;
 
         PopupMenu popupMenu = new PopupMenu(context, v);
         popupMenu.inflate(R.menu.menu_car_main);
@@ -85,9 +88,10 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
                                             public void onClick(DialogInterface dialog, int which) {
                                                 int carId = carList.get(position).getId();
                                                 System.out.println("Deleted car id = "+carId);
-                                                boolean result = handler.deleteQuery(urlCarDelete+carId, context);
+                                                int resultCode = handler.deleteQuery(String.format(urlCarDelete, carId), context.getApplicationContext()).getStatusCode();
                                                 String message = carList.get(position).getFullName()+" ";
-                                                if (result) {
+
+                                                if (resultCode== HttpStatus.SC_OK) {
                                                     carList.remove(position);
                                                     for (int i = 0; i < CarListActivity.carList.size(); i++) {
                                                         if (CarListActivity.carList.get(i).getId()==carId) {
@@ -150,7 +154,7 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
         holder.progress.setProgress(carListItem.getPercent());
 
         // loading album cover using Glide library
-        Glide.with(context).load(carListItem.getImageUrl()).into(holder.thumbnail);
+        Glide.with(context).load(Headers.getUrlWithHeaders(carListItem.getImageUrl(), context.getApplicationContext())).into(holder.thumbnail);
 
         holder.overflow.setOnClickListener(new View.OnClickListener() {
             @TargetApi(Build.VERSION_CODES.HONEYCOMB)

@@ -3,15 +3,15 @@ package com.usupov.autopark.http;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
+import com.usupov.autopark.config.LocalConstants;
+import com.usupov.autopark.config.PartRestURIConstants;
+import com.usupov.autopark.model.CustomHttpResponse;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -30,48 +30,79 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 
+
 public class HttpHandler {
 
-    private static final String TAG = HttpHandler.class.getSimpleName();
 
     public HttpHandler() {
     }
 
-    public String getServerToken(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(Config.APP_NAME, Context.MODE_PRIVATE);
+    public static String getLocalServerToken(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(LocalConstants.APP_NAME, Context.MODE_PRIVATE);
 
-        if (!sharedPreferences.contains(Config.TOKEN))
+        if (!sharedPreferences.contains(LocalConstants.TOKEN_KEY)) {
+            System.out.println("NNNNNNNNNNNNNNNNNNNNNNNNNNNNN45112");
             return null;
-        String serverToken = sharedPreferences.getString(Config.TOKEN, null);
+        }
+        String serverToken = sharedPreferences.getString(LocalConstants.TOKEN_KEY, "AAAAA");
+        System.out.println("HHHHHHHHHHHHHHHHHH "+serverToken);
         return serverToken;
     }
 
-    public String ReadHttpResponse(String url, Context context){
+    private void saverAutToken(Context context, String token) {
 
-        String serverToken = getServerToken(context);
-//        if (serverToken==null)
-//            return null;
+        SharedPreferences sharedPreferences = context.getSharedPreferences(LocalConstants.APP_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(LocalConstants.TOKEN_KEY, token);
+        editor.commit();
+    }
+
+    public static boolean removeAutToken(Context context) {
+
+        try {
+            SharedPreferences sharedPreferences = context.getSharedPreferences(LocalConstants.APP_NAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove(LocalConstants.TOKEN_KEY);
+            editor.commit();
+            return true;
+        }
+        catch (Exception e){}
+        return false;
+    }
+
+
+    public CustomHttpResponse doHttpGet(String url, Context context){
+
+        CustomHttpResponse customHttpResponse = new CustomHttpResponse(-1);
+
+        String serverToken = getLocalServerToken(context);
+        System.out.println("GGGGGGGGGGGGGGGG");
+        System.out.println(url);
+        System.out.println(serverToken);
+        if (serverToken==null) {
+            customHttpResponse.setStatusCode(HttpStatus.SC_UNAUTHORIZED);
+            System.out.println("444444444444444444444444444");
+            return customHttpResponse;
+        }
 
         HttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(url);
-        request.setHeader(Config.TOKEN, serverToken);
+        request.setHeader(LocalConstants.TOKEN_HEADER_KEY, serverToken);
 
         try {
             HttpResponse response = client.execute(request);
             StatusLine sl = response.getStatusLine();
             int sc = sl.getStatusCode();
 
-            if (sc==HttpStatus.SC_OK)
-                return getResponseString(response);
-            else
-                Log.e( "log_tag","I didn't  get the response!");
+            customHttpResponse.setStatusCode(sc);
 
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
+            if (sc==HttpStatus.SC_OK)
+                customHttpResponse.setBodyString(getResponseString(response));
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return customHttpResponse;
     }
 
     private String getResponseString(HttpResponse response) {
@@ -91,28 +122,47 @@ public class HttpHandler {
         }
     }
 
-    public boolean deleteQuery(String url, Context context) {
-        String serverToken = getServerToken(context);
+    public CustomHttpResponse deleteQuery(String url, Context context) {
+
+        CustomHttpResponse customHttpResponse = new CustomHttpResponse(-1);
+
+        String serverToken = getLocalServerToken(context);
+        if (serverToken==null) {
+            customHttpResponse.setStatusCode(HttpStatus.SC_UNAUTHORIZED);
+            return customHttpResponse;
+        }
+
         HttpClient client = new DefaultHttpClient();
         HttpDelete request = new HttpDelete(url);
-        request.setHeader(Config.TOKEN, serverToken);
+        request.setHeader(LocalConstants.TOKEN_HEADER_KEY, serverToken);
+
         try {
             HttpResponse response = client.execute(request);
             StatusLine sl = response.getStatusLine();
+
             int sc = sl.getStatusCode();
+            customHttpResponse.setStatusCode(sc);
             if (sc==HttpStatus.SC_OK)
-                return true;
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
+                customHttpResponse.setBodyString(getResponseString(response));
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return false;
+
+        return customHttpResponse;
     }
 
-    public boolean postWithMultipleFiles(String urlTo, HashMap<String, String> params, List<String> filePaths, Context context) {
+    public CustomHttpResponse postWithMultipleFiles(String urlTo, HashMap<String, String> params, List<String> filePaths, Context context, boolean isAuthorithing) {
+
+        CustomHttpResponse customHttpResponse = new CustomHttpResponse(-1);
+
+        String serverToken = getLocalServerToken(context);
+        if (!isAuthorithing && serverToken==null) {
+            customHttpResponse.setStatusCode(HttpStatus.SC_UNAUTHORIZED);
+            return customHttpResponse;
+        }
+
         try {
-            String serverToken = getServerToken(context);
 
             MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
             entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
@@ -124,27 +174,21 @@ public class HttpHandler {
             }
 
             HttpPost post = new HttpPost(urlTo);
-//            post.setHeader("Accept-Charset","utf-8");
-//            post.addHeader("User-Agent", "Test");
-//            post.addHeader("Content-type", "multipart/form-data");
-//            post.addHeader("Accept", "image/jpg");
 
             HttpEntity entity = entityBuilder.build();
             post.setEntity(entity);
-            post.setHeader(Config.TOKEN, serverToken);
-//            System.out.println("--------------------------");
-//            for (String key : params.keySet()) {
-//                System.out.println(key + " " + params.get(key));
-//            }
+            post.setHeader(LocalConstants.TOKEN_HEADER_KEY, serverToken);
 
             HttpClient client = new DefaultHttpClient();
             HttpResponse response = client.execute(post);
-            if (response.getStatusLine().getStatusCode()== HttpStatus.SC_OK) {
+            int sc = response.getStatusLine().getStatusCode();
+            customHttpResponse.setStatusCode(sc);
+            if (sc==HttpStatus.SC_OK) {
                 String responseText = getResponseString(response);
                 try {
                     long userPartId = Long.parseLong(responseText);
                     if (filePaths != null && filePaths.size() > 0) {
-                        String url = Config.getUrlUserPart() +"/"+ userPartId + "/add_image";
+                        String url = String.format(PartRestURIConstants.ADDIMAGE, userPartId);
 
                         for (int i = 0; i < filePaths.size(); i++) {
                             post = new HttpPost(url);
@@ -154,57 +198,39 @@ public class HttpHandler {
                             entityBuilder.addTextBody("cnt", i+"");
                             entity = entityBuilder.build();
                             post.setEntity(entity);
+                            post.setHeader(LocalConstants.TOKEN_HEADER_KEY, serverToken);
                             response = client.execute(post);
-//                            System.out.println(response.getStatusLine().getStatusCode()+" codeeeeeeeeeeeeeeeeeee");
+
+                            sc = response.getStatusLine().getStatusCode();
+                            customHttpResponse.setStatusCode(sc);
+                            if (sc!=HttpStatus.SC_OK) {
+                                customHttpResponse.setBodyString(getResponseString(response));
+                                break;
+                            }
                         }
                     }
                 }
                 catch (Exception e){}
-                return true;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+
+        return customHttpResponse;
     }
 
-    public int doSimplePost(String urlTo, List<NameValuePair> pairs, Context context) {
+    public CustomHttpResponse postWithOneFile(String urlTo, HashMap<String, String> params, String filePath, Context context, boolean isAuthorithing) {
 
-        HashMap<String, String> map = new HashMap<>();
-        for (NameValuePair pair : pairs) {
-            map.put(pair.getName(), pair.getValue());
+
+        CustomHttpResponse customHttpResponse = new CustomHttpResponse(-1);
+
+        String serverToken = getLocalServerToken(context);
+        if (!isAuthorithing && serverToken==null) {
+            customHttpResponse.setStatusCode(HttpStatus.SC_UNAUTHORIZED);
+            return customHttpResponse;
         }
 
-        return postWithOneFile(urlTo, map, null, context);
-
-////        HttpClient client = new DefaultHttpClient();
-////        HttpPost post = new HttpPost(urlTo);
-////
-//////        System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUU+ "+urlTo);
-////        try {
-////            ContentType contentType = ContentType.create(
-////                    HTTP.PLAIN_TEXT_TYPE, HTTP.UTF_8);
-////
-////            post.setHeader("Accept-Charset","utf-8");
-////            post.setEntity(new UrlEncodedFormEntity(pairs));
-////
-////            HttpResponse response = client.execute(post);
-////
-////            return response.getStatusLine().getStatusCode();
-////
-////        } catch (Exception e) {
-////
-//////            System.out.println("*********************************");
-////            e.printStackTrace();
-//
-//        }
-//        return 0;
-    }
-
-    public int postWithOneFile(String urlTo, HashMap<String, String> params, String filePath, Context context) {
-
         try {
-            String serverToken = getServerToken(context);
 
             MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
             entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
@@ -223,30 +249,34 @@ public class HttpHandler {
             HttpPost post = new HttpPost(urlTo);
             HttpEntity entity = entityBuilder.build();
             post.setEntity(entity);
-            post.setHeader(Config.TOKEN, serverToken);
-//            post.setHeader("Accept-Charset","utf-8");
+
+            if (!isAuthorithing)
+                post.setHeader(LocalConstants.TOKEN_HEADER_KEY, serverToken);
 
             HttpClient client = new DefaultHttpClient();
             HttpResponse response = client.execute(post);
 
-            return response.getStatusLine().getStatusCode();
+            int sc = response.getStatusLine().getStatusCode();
+            customHttpResponse.setStatusCode(sc);
+
+            if (sc==HttpStatus.SC_OK) {
+                String responseText = getResponseString(response);
+                customHttpResponse.setBodyString(responseText);
+
+                if (isAuthorithing) {
+                    saverAutToken(context, responseText);
+                }
+            }
         }
+
         catch (Exception e) {
-            return 0;
+            e.printStackTrace();
         }
+
+        return customHttpResponse;
     }
 
-    private static String convertInputStreamToString(InputStream inputStream)
-            throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(
-                new InputStreamReader(inputStream));
-        String line = "";
-        String result = "";
-        while ((line = bufferedReader.readLine()) != null)
-            result += line;
 
-        inputStream.close();
-        return result;
-    }
+
 }
 
