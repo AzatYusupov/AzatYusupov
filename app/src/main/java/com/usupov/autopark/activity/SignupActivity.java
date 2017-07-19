@@ -2,8 +2,7 @@ package com.usupov.autopark.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Build;
-import android.os.Handler;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -30,12 +29,21 @@ public class SignupActivity extends AppCompatActivity {
     @InjectView(R.id.toolbar_signup) Toolbar toolbar;
     @InjectView(R.id.next_text) TextView textNext;
     @InjectView(R.id.input_name) EditText nameText;
+    @InjectView(R.id.nameLayout) TextInputLayout nameLayout;
+    @InjectView(R.id.nameHint) TextView nameHint;
+    @InjectView(R.id.nameView) View nameView;
 //    @InjectView(R.id.input_lastname) EditText lastnameText;
 //    @InjectView(R.id.input_phone) EditText phoneText;
     @InjectView(R.id.input_email) EditText emailText;
+    @InjectView(R.id.emailLayout) TextInputLayout emailLayout;
+    @InjectView(R.id.passwordHint) TextView passwordHint;
     @InjectView(R.id.input_password) EditText passwordText;
+    @InjectView(R.id.passwordLayout) TextInputLayout passwordLayout;
+    @InjectView(R.id.passwordView) View passwordView;
     @InjectView(R.id.input_repassword) EditText repasswordText;
+    @InjectView(R.id.repasswordlayout) TextInputLayout repasswordlayout;
     @InjectView(R.id.input_company) EditText companyText;
+    @InjectView(R.id.companyLayout) TextInputLayout companyLayout;
     @InjectView(R.id.input_inn) EditText innText;
     @InjectView(R.id.input_address) EditText addressText;
     @InjectView(R.id.btn_register) Button registerButton;
@@ -58,17 +66,50 @@ public class SignupActivity extends AppCompatActivity {
 
         initToolbar();
 
+        nameText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    nameHint.setVisibility(View.VISIBLE);
+                    nameView.setVisibility(View.VISIBLE);
+                    nameLayout.setErrorEnabled(false);
+                }
+                else {
+                    nameHint.setVisibility(View.GONE);
+                    nameView.setVisibility(View.GONE);
+                    nameLayout.setErrorEnabled(true);
+                }
+            }
+        });
+
+        passwordText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    passwordHint.setVisibility(View.VISIBLE);
+                    passwordView.setVisibility(View.VISIBLE);
+                    passwordLayout.setErrorEnabled(false);
+                }
+                else {
+                    passwordHint.setVisibility(View.GONE);
+                    passwordView.setVisibility(View.GONE);
+                    passwordLayout.setErrorEnabled(true);
+                }
+            }
+        });
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 register();
             }
         });
+
+
     }
 
     public void register() {
         if (!validate()) {
-            onIncorrectData("Ошибки в полях");
+//            onIncorrectData(getString(R.string.error_in_fields));
             return;
         }
 
@@ -77,7 +118,7 @@ public class SignupActivity extends AppCompatActivity {
         final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this,
                 R.style.Theme_AppCompat_DayNight);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Регистрация...");
+        progressDialog.setMessage(getString(R.string.registering));
         progressDialog.show();
 
         final HashMap<String, String> pairs = new HashMap<>();
@@ -105,8 +146,8 @@ public class SignupActivity extends AppCompatActivity {
                         startActivity(new Intent(SignupActivity.this,  PartListActivity.class));
                         break;
                     case HttpStatus.SC_CONFLICT :
-                        emailText.setError("Пользователь с таким электронном почтом уже существует");
-                        onIncorrectData("Пользователь с таким электронном почтом уже существует");
+                        emailLayout.setError(getString(R.string.error_email_exist));
+//                        onIncorrectData(getString(R.string.error_email_exist));
                         break;
                     default:
                         onIncorrectData(getString(R.string.no_internet_connection));
@@ -137,61 +178,84 @@ public class SignupActivity extends AppCompatActivity {
         inn = innText.getText().toString();
         address = addressText.getText().toString();
 
-        if (name.isEmpty() || name.length() < 3) {
-            nameText.setError("не менее 3 символов");
+        if (name.isEmpty()) {
+            nameLayout.setError(getString(R.string.error_name_empty));
+            nameHint.setVisibility(View.GONE);
+            nameView.setVisibility(View.GONE);
+            valid = false;
+        }
+        else if (name.length() < 3) {
+            nameLayout.setError(getString(R.string.error_name));
+            nameHint.setVisibility(View.GONE);
+            nameView.setVisibility(View.GONE);
             valid = false;
         }
         else
-            nameText.setError(null);
+            nameLayout.setError(null);
 
-//        if (lastname.isEmpty() || lastname.length() < 3) {
-//            lastnameText.setError("не менее 3 символов");
+        if (email.isEmpty()) {
+            emailLayout.setError(getString(R.string.error_email_empty));
+            valid = false;
+        }
+        else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailLayout.setError(getString(R.string.error_email));
+            valid = false;
+        }
+        else
+            emailLayout.setError(null);
+
+        if (password.isEmpty()) {
+            passwordHint.setVisibility(View.GONE);
+            passwordView.setVisibility(View.GONE);
+            passwordLayout.setError(getString(R.string.error_password_empty));
+            valid = false;
+        }
+        else if (password.length() < 4 || password.length() > 12) {
+            passwordHint.setVisibility(View.GONE);
+            passwordView.setVisibility(View.GONE);
+            passwordLayout.setError(getString(R.string.error_password));
+            valid = false;
+        }
+        else
+            passwordLayout.setError(null);
+
+        if (repassword.isEmpty()) {
+            if (!password.isEmpty()) {
+                repasswordlayout.setError(getString(R.string.error_password_empty));
+                valid = false;
+            }
+        }
+        else if (!repassword.equals(password)) {
+            repasswordlayout.setError(getString(R.string.error_passwords_not_coincide));
+            valid = false;
+        }
+        else
+            repasswordlayout.setError(null);
+
+        if (company.isEmpty()) {
+            companyLayout.setError(getString(R.string.error_company_empty));
+            valid = false;
+        }
+        else if (company.length() < 2) {
+            companyLayout.setError(getString(R.string.error_company));
+            valid = false;
+        }
+        else
+            companyLayout.setError(null);
+
+//        if (inn.isEmpty() || inn.length() < 3) {
+//            innText.setError("не менее 3 символов");
 //            valid = false;
 //        }
 //        else
-//            lastnameText.setError(null);
-
-        if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailText.setError("Введите действительный адрес электронной почты");
-            valid = false;
-        }
-        else
-            emailText.setError(null);
-
-        if (password.isEmpty() || password.length() < 4 || password.length() > 12) {
-            passwordText.setError("Введите от 4 до 12 буквенно-цифровых символов");
-            valid = false;
-        }
-        else
-            passwordText.setError(null);
-
-        if (repassword.isEmpty() || !repassword.equals(password)) {
-            repasswordText.setError("паролы не совпадают");
-            valid = false;
-        }
-        else
-            repasswordText.setError(null);
-
-        if (company.isEmpty() || company.length() < 3) {
-            companyText.setError("не менее 3 символов");
-            valid = false;
-        }
-        else
-            companyText.setError(null);
-
-        if (inn.isEmpty() || inn.length() < 3) {
-            innText.setError("не менее 3 символов");
-            valid = false;
-        }
-        else
-            innText.setError(null);
-
-        if (address.isEmpty() || address.length() < 3) {
-            addressText.setError("не менее 3 символов");
-            valid = false;
-        }
-        else
-            addressText.setError(null);
+//            innText.setError(null);
+//
+//        if (address.isEmpty() || address.length() < 3) {
+//            addressText.setError("не менее 3 символов");
+//            valid = false;
+//        }
+//        else
+//            addressText.setError(null);
         return valid;
     }
 

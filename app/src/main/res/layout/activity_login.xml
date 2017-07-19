@@ -2,46 +2,57 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical"
+    android:focusableInTouchMode="true"
+
+    android:descendantFocusability="beforeDescendants"
     tools:context=".activity.LoginActivity">
     <include
         layout="@layout/toolbar_login"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         />
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="100dp"
-        android:fitsSystemWindows="true">
+        android:layout_height="wrap_content">
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:focusableInTouchMode="true"
-            >
-            <!--Email Label-->
-            <android.support.design.widget.TextInputLayout
-                android:theme="@style/TextInputLayout"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp">
+            <TextView
+                android:id="@+id/textErrorOrPasswordError"
+                android:layout_marginTop="30dp"
+                android:textColor="@android:color/holo_red_light"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                />
+            <!--Email Label-->
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/inputLayoutEmail"
+                android:theme="@style/TextInputLayout"
+                app:errorEnabled="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="8dp">
                 <EditText
                     android:id="@+id/input_email"
+                    android:inputType="textEmailAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"
+                    android:maxLength="255"
+                    android:imeOptions="flagNoFullscreen"
                     android:hint="Email"/>
             </android.support.design.widget.TextInputLayout>
 
             <!--Password Label-->
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/inputLayoutPassword"
                 android:theme="@style/TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -54,6 +65,8 @@
                     android:inputType="textPassword"
                     android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
                     android:hint="Пароль"
+                    android:imeOptions="flagNoFullscreen"
+                    android:maxLength="255"
                     />
             </android.support.design.widget.TextInputLayout>
 
@@ -78,7 +91,6 @@
                 android:layout_marginLeft="35dp"
                 android:layout_marginRight="35dp"
                 android:layout_marginTop="50dp"
-                android:layout_marginBottom="24dp"
                 android:textAllCaps="false"
                 android:textSize="20sp"
                 android:textColor="@android:color/white"
@@ -92,12 +104,12 @@
             <!--Registration Text-->
             <TextView
                 android:id="@+id/text_registration"
-                android:layout_marginTop="20dp"
-                android:layout_width="wrap_content"
+                android:layout_marginTop="40dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:gravity="center"
                 android:textSize="18sp"
+                android:layout_marginBottom="15dp"
                 android:fontFamily="sans-serif"
                 android:textStyle="normal"
                 android:textColor="@android:color/black"

@@ -88,11 +88,10 @@
         <activity
             android:name=".activity.RecognizerSampleActivity"
             android:label="Yandex Speech" />
-        <activity android:name=".fragment.SelectBrandFragment" />
+        <!--<activity android:name=".fragment.SelectBrandFragment" />-->
         <activity android:name=".activity.LoginActivity">
             <!--<intent-filter>-->
                 <!--<action android:name="android.intent.action.MAIN" />-->
-
                 <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
@@ -124,10 +123,10 @@
         </activity>
         <activity android:name=".activity.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
         </activity>
     </application>
 
