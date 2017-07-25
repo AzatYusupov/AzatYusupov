@@ -89,7 +89,7 @@
                         android:id="@+id/selectedBranName"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="не выбран"
+                        android:text="не выбрана"
                         android:gravity="right|center"
                         android:layout_marginRight="10dp"
                         android:textStyle="normal|bold"

@@ -34,7 +34,7 @@
                 >
                 <EditText
                     android:id="@+id/input_name"
-                    android:inputType="textPersonName"
+                    android:inputType="textCapSentences"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLength="255"
@@ -196,7 +196,6 @@
                 android:background="@drawable/save_button_bg"
                 android:text="Зарегистрироваться"
                 />
-
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

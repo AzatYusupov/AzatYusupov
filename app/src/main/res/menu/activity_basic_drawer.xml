@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_car_add"
+            android:icon="@drawable/ic_action_menu_car"
+            android:title="Добавить автомобиль"/>
+        <item
+            android:id="@+id/nav_part_add"
+            android:icon="@drawable/ic_action_menu_part"
+            android:title="Добавить запчасть"
+            />
+    </group>
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_parts"
+            android:icon="@drawable/ic_action_menu_part_list"
+            android:title="Лента"/>
+        <item
+            android:id="@+id/nav_car_list"
+            android:icon="@drawable/save_button_bg"
+            android:title="Гараж"
+            />
+    </group>
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/backspace"
+            android:title="Настройки"/>
+    </group>
+
+</menu>

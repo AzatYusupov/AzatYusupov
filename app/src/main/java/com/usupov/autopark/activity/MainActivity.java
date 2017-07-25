@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
             PackageInfo pInfo = getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0);
             SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(LocalConstants.APP_NAME, 0);
-            System.out.println(pInfo.versionCode+" VVVVVVVVVVVVVVVVVVVVVVVVVVV");
+
             if (sharedPreferences.getInt("VERSION_CODE", 0) != pInfo.versionCode) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.clear();

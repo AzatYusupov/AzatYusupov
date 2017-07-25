@@ -102,6 +102,7 @@
     <string name="error_email">Укажите действительный адрес электронной почты</string>
     <string name="error_email_empty">Укажите email</string>
 
+
     <string name="error_password_empty">Укажите пароль</string>
 
     <string name="error_email_or_password">Ваш логин и пароль не совпадают, проверьте правильность введенных данных</string>
@@ -111,6 +112,7 @@
 
     <!--Registration-->
     <string name="registering">Регистрация...</string>
+    <string name="error_fill_register">Вы заполнили не все поля</string>
 
     <string name="hint_name">3 и более символа</string>
     <string name="error_name_empty">Укажите имя</string>
@@ -123,4 +125,10 @@
     <string name="error_passwords_not_coincide">Пароли не совпадают</string>
     <string name="error_company_empty">Укажите компания</string>
     <string name="error_company">Название компании должно быть не короче 2-ух символов</string>
+    <string name="text_greeting">Для того чтобы начать использовать сервис, нужно добавить первый автомобиль.</string>
+    <string name="title_activity_basic">BasicActivity</string>
+
+    <!--Reset Passwor-->
+    <string name="error_email_check">Проверьте введенный email</string>
+    <string name="email_sent_success">Вам отправлено письмо с восстановлением пароля</string>
 </resources>

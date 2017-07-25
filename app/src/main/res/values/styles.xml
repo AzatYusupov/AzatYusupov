@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="AppTheme" parent="AppTheme.Base"></style>
 
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -48,12 +49,12 @@
 
     <!--Floating label text style-->
     <!--<style name="MyHintText" parent="TextAppearance.AppCompat.Small">-->
-        <!--<item name="android:textColor">@color/colorAccent</item>-->
+    <!--<item name="android:textColor">@color/colorAccent</item>-->
     <!--</style>-->
 
     <!--&lt;!&ndash;Input field style&ndash;&gt;-->
     <!--<style name="MyEditText" parent="Theme.AppCompat.Light">-->
-        <!--<item name="colorControlNormal">@color/indigo</item>-->
-        <!--<item name="colorControlActivated">@color/pink</item>-->
+    <!--<item name="colorControlNormal">@color/indigo</item>-->
+    <!--<item name="colorControlActivated">@color/pink</item>-->
     <!--</style>-->
 </resources>

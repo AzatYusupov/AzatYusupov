@@ -50,7 +50,8 @@ public class HttpHandler {
     }
 
     private void saverAutToken(Context context, String token) {
-
+        if (token==null || token.isEmpty())
+            return;
         SharedPreferences sharedPreferences = context.getSharedPreferences(LocalConstants.APP_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(LocalConstants.TOKEN_KEY, token);

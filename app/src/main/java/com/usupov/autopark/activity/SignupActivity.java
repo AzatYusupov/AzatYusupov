@@ -2,10 +2,13 @@ package com.usupov.autopark.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.StrictMode;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +20,7 @@ import com.usupov.autopark.R;
 import com.usupov.autopark.config.UserURIConstants;
 import com.usupov.autopark.http.HttpHandler;
 
+import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.http.HttpStatus;
 
 import java.util.HashMap;
@@ -64,6 +68,9 @@ public class SignupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
         ButterKnife.inject(this);
 
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         initToolbar();
 
         nameText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -81,6 +88,7 @@ public class SignupActivity extends AppCompatActivity {
                 }
             }
         });
+
 
         passwordText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -109,7 +117,7 @@ public class SignupActivity extends AppCompatActivity {
 
     public void register() {
         if (!validate()) {
-//            onIncorrectData(getString(R.string.error_in_fields));
+            onIncorrectData(getString(R.string.error_fill_register));
             return;
         }
 
@@ -143,10 +151,13 @@ public class SignupActivity extends AppCompatActivity {
                     case HttpStatus.SC_OK :
                         setResult(RESULT_OK);
                         finish();
-                        startActivity(new Intent(SignupActivity.this,  PartListActivity.class));
+                        Intent intent = new Intent(SignupActivity.this,  CarListActivity.class);
+                        intent.putExtra("name", name);
+                        startActivity(intent);
                         break;
                     case HttpStatus.SC_CONFLICT :
                         emailLayout.setError(getString(R.string.error_email_exist));
+                        registerButton.setEnabled(true);
 //                        onIncorrectData(getString(R.string.error_email_exist));
                         break;
                     default:
@@ -168,15 +179,15 @@ public class SignupActivity extends AppCompatActivity {
     public boolean validate() {
         boolean valid = true;
 
-        name = nameText.getText().toString();
+        name = nameText.getText().toString().trim();
 //        lastname = lastnameText.getText().toString();
 //        phone = phoneText.getText().toString();
-        email = emailText.getText().toString();
-        password = passwordText.getText().toString();
-        repassword = repasswordText.getText().toString();
-        company = companyText.getText().toString();
-        inn = innText.getText().toString();
-        address = addressText.getText().toString();
+        email = emailText.getText().toString().trim();
+        password = passwordText.getText().toString().trim();
+        repassword = repasswordText.getText().toString().trim();
+        company = companyText.getText().toString().trim();
+        inn = innText.getText().toString().trim();
+        address = addressText.getText().toString().trim();
 
         if (name.isEmpty()) {
             nameLayout.setError(getString(R.string.error_name_empty));
@@ -197,7 +208,7 @@ public class SignupActivity extends AppCompatActivity {
             emailLayout.setError(getString(R.string.error_email_empty));
             valid = false;
         }
-        else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        else if (!EmailValidator.getInstance().isValid(email)) {
             emailLayout.setError(getString(R.string.error_email));
             valid = false;
         }

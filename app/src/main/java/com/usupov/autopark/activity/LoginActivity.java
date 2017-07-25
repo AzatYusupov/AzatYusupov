@@ -3,6 +3,7 @@ package com.usupov.autopark.activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.StrictMode;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -68,8 +69,8 @@ public class LoginActivity extends AppCompatActivity {
         }
 
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_login);
 
@@ -117,6 +118,13 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+
+        forgotPasswordLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, ResetPasswordActivity.class));
+            }
+        });
     }
 
     private void keyboardHide(View v) {
@@ -157,10 +165,8 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage(getString(R.string.authoring));
         progressDialog.show();
-
-        final String email = emailText.getText().toString();
-        final String password = passwordText.getText().toString();
-
+        final String email = emailText.getText().toString().trim();
+        final String password = passwordText.getText().toString().trim();
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
@@ -173,7 +179,6 @@ public class LoginActivity extends AppCompatActivity {
                         pairs.put("password", password);
 
                         int response = handler.postWithOneFile(UserURIConstants.SIGN_IN, pairs, null, getApplicationContext(), true).getStatusCode();
-
                         if (response == HttpStatus.SC_NOT_FOUND) {
                             onLoginFailed(getString(R.string.error_email_or_password), false);
                         }
@@ -188,7 +193,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onLoginSuccess() {
-
 
         finish();
         startActivity(new Intent(this, PartListActivity.class));
@@ -206,8 +210,8 @@ public class LoginActivity extends AppCompatActivity {
     public boolean validate() {
         boolean valid = true;
 
-        String email = emailText.getText().toString();
-        String password = passwordText.getText().toString();
+        String email = emailText.getText().toString().trim();
+        String password = passwordText.getText().toString().trim();
 
         if (email.isEmpty()) {
             inputLayoutEmail.setError(getString(R.string.error_email_empty));

@@ -35,10 +35,11 @@ public class PartListActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        ifCarListEmpty();
-
         initToolbar();
         initFabUserPart();
+
+        ifCarListEmpty();
+
         initEmptyView();
         initRecyclerView();
         initUserPartList();

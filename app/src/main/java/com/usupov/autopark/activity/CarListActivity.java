@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,18 +58,44 @@ public class CarListActivity extends AppCompatActivity implements NavigationView
 
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-
         StrictMode.setThreadPolicy(policy);
-        carList = null;
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_list);
-
+        carList = null;
         pbMain = (ProgressBar) findViewById(R.id.pbMain);
 
         initToolbar();
+
+
+        if (getIntent().hasExtra("name")) {
+            initFirstIn();
+            return;
+        }
+
+        initInternetConnection(true);
+
         initEmptyView();
         initRecyclerview();
-        initInternetConnection(true);
+    }
+
+    private void initFirstIn() {
+
+        LinearLayout layoutCarList = (LinearLayout) findViewById(R.id.layout_car_list);
+
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+        params.gravity = Gravity.CENTER;
+        layoutCarList.setLayoutParams(params);
+
+        inflate = getLayoutInflater();
+        View greetingView = inflate.inflate(R.layout.greeting, layoutCarList, true);
+
+        TextView greetingName = (TextView) greetingView.findViewById(R.id.greeting_name);
+        String name = getIntent().getStringExtra("name");
+        greetingName.setText("Привет, "+name+"!");
+//        layoutCarList.setVerticalGravity(Gravity.CENTER_VERTICAL);
+
+        initFabNewCar();
     }
 
     @Override
@@ -269,7 +296,10 @@ public class CarListActivity extends AppCompatActivity implements NavigationView
             case requestCodeCarNew :
                 if (resultCode==RESULT_OK) {
                     finish();
-                    startActivity(getIntent());
+                    Intent intent = getIntent();
+                    if (intent.hasExtra("name"))
+                        intent.removeExtra("name");
+                    startActivity(intent);
                 }
                 else {
                 }
