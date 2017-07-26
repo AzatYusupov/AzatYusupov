@@ -1,17 +1,20 @@
 package com.usupov.autopark.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -34,7 +37,7 @@ import com.usupov.autopark.service.SpeachRecogn;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CarNewActivity extends AppCompatActivity {
+public class CarNewActivity extends BasicActivity {
 
     protected static final int RESULT_SPEECH = 1;
     protected static final int REQUEST_ADD = 2;
@@ -54,7 +57,13 @@ public class CarNewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_car_new);
+
+        LayoutInflater inflater = (LayoutInflater) this
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View contentView = inflater.inflate(R.layout.activity_car_new, null, false);
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerLayout.addView(contentView, 0);
+//        setContentView(R.layout.activity_car_new);
 
         newCarFindBtn = (Button) findViewById(R.id.new_car_find_btn);
 

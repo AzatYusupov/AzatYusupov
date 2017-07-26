@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -17,33 +18,32 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </include>
-        <android.support.v4.widget.NestedScrollView
-            android:fitsSystemWindows="true"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:clipToPadding="false"
             android:background="@color/windowBackground"
             >
             <LinearLayout
                 android:id="@+id/layout_car_list"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:descendantFocusability="blocksDescendants"
                 android:orientation="vertical"
                 >
-                <ProgressBar
-                    android:id="@+id/pbUerPart"
-                    android:visibility="gone"
-                    android:layout_gravity="center"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                <!--<ProgressBar-->
+                    <!--android:id="@+id/pbUerPart"-->
+                    <!--android:visibility="gone"-->
+                    <!--android:layout_gravity="center"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content" />-->
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/list_user_part"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     />
             </LinearLayout>
-        </android.support.v4.widget.NestedScrollView>
+        </ScrollView>
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton

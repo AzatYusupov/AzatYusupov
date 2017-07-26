@@ -53,8 +53,6 @@ public class SignupActivity extends AppCompatActivity {
     @InjectView(R.id.btn_register) Button registerButton;
 
     private static String name;
-//    private static String lastname;
-//    private static String phone;
     private static String email;
     private static String password;
     private static String repassword;
@@ -132,8 +130,6 @@ public class SignupActivity extends AppCompatActivity {
         final HashMap<String, String> pairs = new HashMap<>();
 
         pairs.put("name", name);
-//        pairs.add(new BasicNameValuePair("lastname", lastname));
-//        pairs.add(new BasicNameValuePair("phone", phone));
         pairs.put("email", email);
         pairs.put("password", password);
         pairs.put("company", company);

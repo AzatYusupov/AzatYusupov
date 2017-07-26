@@ -1,33 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="all" android:id="@+id/first_submenu">
         <item
             android:id="@+id/nav_car_add"
-            android:icon="@drawable/ic_action_menu_car"
+            android:icon="@drawable/ic_stat_menu_car"
             android:title="Добавить автомобиль"/>
         <item
             android:id="@+id/nav_part_add"
-            android:icon="@drawable/ic_action_menu_part"
+            android:icon="@drawable/ic_stat_menu_part"
             android:title="Добавить запчасть"
             />
     </group>
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="all" android:id="@+id/second_submenu">
         <item
             android:id="@+id/nav_parts"
-            android:icon="@drawable/ic_action_menu_part_list"
+            android:icon="@drawable/ic_stat_bell"
             android:title="Лента"/>
         <item
             android:id="@+id/nav_car_list"
-            android:icon="@drawable/save_button_bg"
+            android:icon="@drawable/ic_stat_menu_car"
             android:title="Гараж"
             />
     </group>
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="all" android:id="@+id/third_submenu">
         <item
             android:id="@+id/nav_settings"
-            android:icon="@drawable/backspace"
+            android:icon="@drawable/ic_stat_menu_settings"
             android:title="Настройки"/>
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_stat_menu_logout"
+            android:title="Выход"/>
     </group>
 
 </menu>

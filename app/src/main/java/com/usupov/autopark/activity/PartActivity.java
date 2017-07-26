@@ -5,7 +5,8 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.os.StrictMode;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -27,8 +28,10 @@ import com.google.gson.Gson;
 import com.usupov.autopark.R;
 import com.usupov.autopark.config.CategoryRestURIConstants;
 import com.usupov.autopark.http.HttpHandler;
+import com.usupov.autopark.jsonHelper.Car;
 import com.usupov.autopark.jsonHelper.Part;
 import com.usupov.autopark.model.CarCategory;
+import com.usupov.autopark.model.CarModel;
 import com.usupov.autopark.model.PartModel;
 import com.usupov.autopark.service.SpeachRecogn;
 
@@ -38,7 +41,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PartActivity extends AppCompatActivity {
+public class PartActivity extends BasicActivity {
 
     static final int REQ_CODE_SPEECH_INPUT = 100;
     private static EditText numberPart;
@@ -58,13 +61,37 @@ public class PartActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_part);
 
+
+
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View contenView = inflater.inflate(R.layout.activity_part, null, false);
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerLayout.addView(contenView);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+//        setContentView(R.layout.activity_part);
+        if (!getIntent().hasExtra("carName")) {
+            List<CarModel> carList = Car.getCarList(getApplicationContext());
+            if (carList == null || carList.size() != 1) {
+                startActivity(new Intent(PartActivity.this, CarListActivity.class));
+                finish();
+            }
+            else {
+                CarModel car = carList.get(0);
+                carName = car.getFullName();
+                carId = car.getId();
+            }
+        }
+        else {
+            carName = getIntent().getExtras().getString("carName");
+            carId = getIntent().getExtras().getInt("carId");
+        }
         context = this;
         initTollbar();
 
-        carName = getIntent().getExtras().getString("carName");
-        carId = getIntent().getExtras().getInt("carId");
         initArticleEdittext();
         initVoiceBtn();
         linearLayoutCatalog = (LinearLayout) findViewById(R.id.lvMain);
