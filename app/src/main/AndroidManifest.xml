@@ -107,9 +107,11 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".activity.PartListActivity"
+        <activity
+            android:name=".activity.PartListActivity"
             android:label="Лента"
             android:theme="@style/AppTheme">
+
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
 
@@ -138,14 +140,17 @@
             android:label="@string/title_activity_basic"
             android:theme="@style/AppTheme">
 
-             <!--<intent-filter>-->
-             <!--<action android:name="android.intent.action.MAIN" />-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
 
 
-             <!--<category android:name="android.intent.category.LAUNCHER" />-->
-             <!--</intent-filter>-->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".activity.ResetPasswordActivity"></activity>
+        <activity android:name=".activity.ResetPasswordActivity" />
+        <activity android:name=".activity.UpdateActivity" android:label="Личные данные">
+
+        </activity>
     </application>
 
 </manifest>

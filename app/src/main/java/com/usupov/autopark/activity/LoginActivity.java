@@ -55,6 +55,8 @@ public class LoginActivity extends AppCompatActivity {
     @InjectView(R.id.textErrorOrPasswordError)
     TextView textErrorOrPasswordError;
 
+    private boolean isEmpty;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -154,7 +156,10 @@ public class LoginActivity extends AppCompatActivity {
 
         if (!validate()) {
             textErrorOrPasswordError.setText("");
-            onLoginFailed(getString(R.string.error_fill_authoring), true);
+            if (isEmpty)
+                onLoginFailed(getString(R.string.error_fill_authoring), true);
+            else
+                onLoginFailed(getString(R.string.error_check_input_data), true);
             return;
         }
 
@@ -180,6 +185,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         int response = handler.postWithOneFile(UserURIConstants.SIGN_IN, pairs, null, getApplicationContext(), true).getStatusCode();
                         if (response == HttpStatus.SC_NOT_FOUND) {
+                            onLoginFailed(getString(R.string.error_check_input_data), true);
                             onLoginFailed(getString(R.string.error_email_or_password), false);
                         }
                         else if (response != HttpStatus.SC_OK)
@@ -209,11 +215,13 @@ public class LoginActivity extends AppCompatActivity {
 
     public boolean validate() {
         boolean valid = true;
+        isEmpty = false;
 
         String email = emailText.getText().toString().trim();
         String password = passwordText.getText().toString().trim();
 
         if (email.isEmpty()) {
+            isEmpty = true;
             inputLayoutEmail.setError(getString(R.string.error_email_empty));
             valid = false;
         }
@@ -225,6 +233,7 @@ public class LoginActivity extends AppCompatActivity {
             inputLayoutEmail.setError(null);
 
         if (password.isEmpty()) {
+            isEmpty = true;
             inputLayoutPassword.setError(getString(R.string.error_password_empty));
             valid = false;
         }

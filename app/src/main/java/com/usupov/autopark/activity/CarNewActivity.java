@@ -10,7 +10,6 @@ import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -26,8 +25,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.usupov.autopark.R;
-import com.usupov.autopark.jsonHelper.Car;
-import com.usupov.autopark.jsonHelper.CarCat;
+import com.usupov.autopark.json.Car;
+import com.usupov.autopark.json.CarCat;
 import com.usupov.autopark.model.CarModel;
 import com.usupov.autopark.model.CatalogBrand;
 import com.usupov.autopark.model.CatalogModel;

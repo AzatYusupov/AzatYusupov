@@ -7,7 +7,7 @@ android {
         applicationId "com.usupov.autopark"
         minSdkVersion 16
         targetSdkVersion 19
-        versionCode 6
+        versionCode 7
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
@@ -102,6 +102,8 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.5.3'
     compile 'com.jakewharton:butterknife:6.1.0'
     compile group: 'commons-validator', name: 'commons-validator', version: '1.4.0'
+    compile group: 'javax.inject', name: 'javax.inject', version: '1'
+    compile 'com.android.support:support-annotations:24.2.0'
 
     testCompile 'junit:junit:4.12'
 }

@@ -101,6 +101,7 @@
     <!--Login-->
     <string name="error_email">Укажите действительный адрес электронной почты</string>
     <string name="error_email_empty">Укажите email</string>
+    <string name="error_email_bolun">Проверьте корректность email</string>
 
 
     <string name="error_password_empty">Укажите пароль</string>
@@ -109,6 +110,7 @@
 
     <string name="authoring">Аутентификация...</string>
     <string name="error_fill_authoring">Заполните поля авторизации</string>
+    <string name="error_check_input_data">Проверьте введенные данные</string>
 
     <!--Registration-->
     <string name="registering">Регистрация...</string>
@@ -131,4 +133,7 @@
     <!--Reset Passwor-->
     <string name="error_email_check">Проверьте введенный email</string>
     <string name="email_sent_success">Вам отправлено письмо с восстановлением пароля</string>
+
+    <!--Update User Info-->
+    <string name="data_successful_saved">Данные успешно сохранены</string>
 </resources>

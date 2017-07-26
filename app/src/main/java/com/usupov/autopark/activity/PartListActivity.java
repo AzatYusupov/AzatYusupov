@@ -5,19 +5,17 @@ import android.content.Intent;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import com.usupov.autopark.R;
 import com.usupov.autopark.adapter.UserPartListAdapter;
-import com.usupov.autopark.jsonHelper.Car;
-import com.usupov.autopark.jsonHelper.Part;
+import com.usupov.autopark.json.Car;
+import com.usupov.autopark.json.Part;
 import com.usupov.autopark.model.CarModel;
 import com.usupov.autopark.model.UserPartModel;
 
@@ -49,6 +47,8 @@ public class PartListActivity extends BasicActivity {
         initEmptyView();
         initRecyclerView();
         initUserPartList();
+
+
     }
 
     private void initEmptyView() {

@@ -25,14 +25,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.usupov.autopark.R;
 import com.usupov.autopark.adapter.CarsListAdapter;
-import com.usupov.autopark.jsonHelper.Car;
+import com.usupov.autopark.json.Car;
 import com.usupov.autopark.model.CarModel;
 
 import java.util.ArrayList;

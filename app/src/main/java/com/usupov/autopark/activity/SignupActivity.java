@@ -36,8 +36,6 @@ public class SignupActivity extends AppCompatActivity {
     @InjectView(R.id.nameLayout) TextInputLayout nameLayout;
     @InjectView(R.id.nameHint) TextView nameHint;
     @InjectView(R.id.nameView) View nameView;
-//    @InjectView(R.id.input_lastname) EditText lastnameText;
-//    @InjectView(R.id.input_phone) EditText phoneText;
     @InjectView(R.id.input_email) EditText emailText;
     @InjectView(R.id.emailLayout) TextInputLayout emailLayout;
     @InjectView(R.id.passwordHint) TextView passwordHint;
@@ -115,7 +113,10 @@ public class SignupActivity extends AppCompatActivity {
 
     public void register() {
         if (!validate()) {
-            onIncorrectData(getString(R.string.error_fill_register));
+            if (!EmailValidator.getInstance().isValid(email))
+                onIncorrectData(getString(R.string.error_email_bolun));
+            else
+                onIncorrectData(getString(R.string.error_fill_register));
             return;
         }
 
@@ -250,19 +251,6 @@ public class SignupActivity extends AppCompatActivity {
         else
             companyLayout.setError(null);
 
-//        if (inn.isEmpty() || inn.length() < 3) {
-//            innText.setError("не менее 3 символов");
-//            valid = false;
-//        }
-//        else
-//            innText.setError(null);
-//
-//        if (address.isEmpty() || address.length() < 3) {
-//            addressText.setError("не менее 3 символов");
-//            valid = false;
-//        }
-//        else
-//            addressText.setError(null);
         return valid;
     }
 

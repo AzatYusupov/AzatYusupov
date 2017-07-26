@@ -41,11 +41,9 @@ public class HttpHandler {
         SharedPreferences sharedPreferences = context.getSharedPreferences(LocalConstants.APP_NAME, Context.MODE_PRIVATE);
 
         if (!sharedPreferences.contains(LocalConstants.TOKEN_KEY)) {
-            System.out.println("NNNNNNNNNNNNNNNNNNNNNNNNNNNNN45112");
             return null;
         }
         String serverToken = sharedPreferences.getString(LocalConstants.TOKEN_KEY, "AAAAA");
-        System.out.println("HHHHHHHHHHHHHHHHHH "+serverToken);
         return serverToken;
     }
 

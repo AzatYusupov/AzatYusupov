@@ -1,4 +1,4 @@
-package com.usupov.autopark.jsonHelper;
+package com.usupov.autopark.json;
 
 import android.content.Context;
 

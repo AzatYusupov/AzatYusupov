@@ -1,4 +1,4 @@
-package com.usupov.autopark.jsonHelper;
+package com.usupov.autopark.json;
 
 import android.content.Context;
 
@@ -15,9 +15,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Azat on 08.05.2017.
- */
 
 public class Car {
 
@@ -26,7 +23,6 @@ public class Car {
         HttpHandler handler = new HttpHandler();
         String url = CarRestURIConstants.GET_ALL;
         CustomHttpResponse customHttpResponse = handler.doHttpGet(url, context);
-        System.out.println(customHttpResponse.getStatusCode()+" 88888888888885555555555555");
         String jsonStr = customHttpResponse.getBodyString();
         if (jsonStr == null)
             return null;
@@ -40,17 +36,6 @@ public class Car {
                 Gson gson = new Gson();
                 CarModel carModel = gson.fromJson(carObject.toString(), CarModel.class);
 
-//                carModel.setId(carObject.getInt("id"));
-//
-//                carModel.setBrandId(carObject.getInt("brandId"));
-//                carModel.setModelId(carObject.getInt("modelId"));
-//                carModel.setYearId(carObject.getInt("yearId"));
-//
-//                carModel.setBrandName(carObject.getString("brandName"));
-//                carModel.setModelName(carObject.getString("modelName"));
-//                carModel.setYearName(carObject.getString("yearName"));
-//
-//                carModel.setVin(carObject.getString("vin"));
                 carModel.setFullName();
 
                 carList.add(carModel);
