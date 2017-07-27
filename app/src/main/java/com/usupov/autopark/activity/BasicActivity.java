@@ -2,6 +2,7 @@ package com.usupov.autopark.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.usupov.autopark.R;
@@ -88,35 +88,44 @@ public class BasicActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
 
-        if (id == R.id.nav_car_add) {
+        final int id = item.getItemId();
 
-            startActivity(new Intent(this, CarNewActivity.class));
-        }
-        else if (id == R.id.nav_part_add) {
 
-            startActivity(new Intent(this, PartActivity.class));
-        }
-        else if (id == R.id.nav_parts) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (id == R.id.nav_car_add) {
 
-            startActivity(new Intent(this, PartListActivity.class));
-        }
-        else if (id == R.id.nav_car_list) {
+                    startActivity(new Intent(BasicActivity.this, CarNewActivity.class));
+                }
+                else if (id == R.id.nav_part_add) {
 
-            startActivity(new Intent(this, CarListActivity.class));
-        }
-        else if (id == R.id.nav_settings) {
+                    startActivity(new Intent(BasicActivity.this, PartActivity.class));
+                }
+                else if (id == R.id.nav_parts) {
 
-        }
-        else if (id == R.id.nav_logout) {
-            HttpHandler.removeAutToken(getApplicationContext());
-            startActivity(new Intent(this, LoginActivity.class));
-        }
+                    startActivity(new Intent(BasicActivity.this, PartListActivity.class));
+                }
+                else if (id == R.id.nav_car_list) {
+
+                    startActivity(new Intent(BasicActivity.this, CarListActivity.class));
+                }
+                else if (id == R.id.nav_settings) {
+
+                }
+                else if (id == R.id.nav_logout) {
+                    HttpHandler.removeAutToken(getApplicationContext());
+                    startActivity(new Intent(BasicActivity.this, LoginActivity.class));
+                }
+                finish();
+            }
+        }, 300);
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        finishAffinity();
+
         return true;
     }
 }

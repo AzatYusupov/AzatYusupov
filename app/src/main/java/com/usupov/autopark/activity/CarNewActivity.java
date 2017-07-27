@@ -1,22 +1,21 @@
 package com.usupov.autopark.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -41,7 +40,7 @@ public class CarNewActivity extends BasicActivity {
     protected static final int RESULT_SPEECH = 1;
     protected static final int REQUEST_ADD = 2;
     TextView tvVinError;
-    private KeyboardView mKeyboardView;
+//    private KeyboardView mKeyboardView;
     private EditText vinEditText;
     private Button newCarFindBtn;
 
@@ -68,10 +67,10 @@ public class CarNewActivity extends BasicActivity {
 
         initToolbar();
 
-        initVinKeyboard();
+//        initVinKeyboard();
 
         tvVinError = (TextView) findViewById(R.id.tvVinError);
-        tvVinError.setTextColor(Color.RED);
+        tvVinError.setTextColor(getResources().getColor(R.color.colorAccent));
 
         initVoiceBtn();
         initVinEdittext();
@@ -95,19 +94,20 @@ public class CarNewActivity extends BasicActivity {
     /**
      * Initial toolbar
      */
-    public void initVinKeyboard() {
-        Keyboard vinKeyboard = new Keyboard(this, R.xml.keyboard_vin);
-        mKeyboardView = (KeyboardView) findViewById(R.id.keyboardview);
-        mKeyboardView.setKeyboard(vinKeyboard);
-
-        mKeyboardView.setOnKeyboardActionListener(mOnKeyboardActionListener);
-    }
-    public void openKeyboard(View v)
-    {
-        if( v!=null)((InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(v.getWindowToken(), 0);
-        mKeyboardView.setVisibility(View.VISIBLE);
-        mKeyboardView.setEnabled(true);
-    }
+//    public void initVinKeyboard() {
+//        Keyboard vinKeyboard = new Keyboard(this, R.xml.keyboard_vin);
+//        mKeyboardView = (KeyboardView) findViewById(R.id.keyboardview);
+//        mKeyboardView.setKeyboard(vinKeyboard);
+//
+//        mKeyboardView.setOnKeyboardActionListener(mOnKeyboardActionListener);
+//    }
+//    public void openKeyboard(View v)
+//    {
+//        if( v!=null)((InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(v.getWindowToken(), 0);
+//        mKeyboardView.setVisibility(View.VISIBLE);
+//        mKeyboardView.setEnabled(true);
+//    }
+    /*
     private KeyboardView.OnKeyboardActionListener mOnKeyboardActionListener = new KeyboardView.OnKeyboardActionListener() {
         @Override
         public void onPress(int primaryCode) {
@@ -163,17 +163,19 @@ public class CarNewActivity extends BasicActivity {
         public void swipeUp() {
         }
     };
+    */
     public void initVinEdittext() {
         vinEditText = (EditText)findViewById(R.id.edittext_vin_number);
+        vinEditText.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
         vinEditText.setBackgroundResource(R.drawable.vin_right_border);
 
-        vinEditText.setOnClickListener(new View.OnClickListener() {
-//            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-            @Override
-            public void onClick(View v) {
-                openKeyboard(vinEditText);
-            }
-        });
+//        vinEditText.setOnClickListener(new View.OnClickListener() {
+////            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+//            @Override
+//            public void onClick(View v) {
+//                openKeyboard(vinEditText);
+//            }
+//        });
         vinEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -255,10 +257,10 @@ public class CarNewActivity extends BasicActivity {
                         }
                         return true;
                     }
-                    else {
-                        openKeyboard(vinEditText);
-                        return true;
-                    }
+//                    else {
+//                        openKeyboard(vinEditText);
+//                        return true;
+//                    }
                 }
                 return false;
             }

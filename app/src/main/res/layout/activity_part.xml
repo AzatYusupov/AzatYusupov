@@ -33,7 +33,7 @@
             android:digits="0123456789 QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
+            android:inputType="textCapCharacters|textNoSuggestions"
             android:ems="@android:integer/config_longAnimTime"
             android:id="@+id/edittext_article_number"
             android:padding="10dp"
@@ -44,6 +44,7 @@
             android:layout_marginBottom="5dp"
             android:elevation="6dp"
             android:hint="Артикул детали"
+            android:textCursorDrawable="@drawable/primarycolor_cursor"
             android:background="@color/colorWhite"
             android:drawableRight="@drawable/ic_keyboard_voice_black"
             />

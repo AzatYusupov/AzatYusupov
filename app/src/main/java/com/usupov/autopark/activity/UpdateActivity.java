@@ -114,7 +114,7 @@ public class UpdateActivity extends BasicActivity {
         btnUpdate.setEnabled(false);
 
         final ProgressDialog progressDialog = new ProgressDialog(UpdateActivity.this,
-                R.style.Theme_AppCompat_DayNight);
+                R.style.AppCompatAlertDialogStyle);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("...");
         progressDialog.show();

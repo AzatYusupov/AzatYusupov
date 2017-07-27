@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.StrictMode;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -165,11 +167,12 @@ public class LoginActivity extends AppCompatActivity {
 
         loginButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
-                R.style.Theme_AppCompat_DayNight);
+        final ProgressDialog progressDialog = new ProgressDialog(this,
+                R.style.AppCompatAlertDialogStyle);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage(getString(R.string.authoring));
         progressDialog.show();
+
         final String email = emailText.getText().toString().trim();
         final String password = passwordText.getText().toString().trim();
 

@@ -9,6 +9,7 @@ import android.os.StrictMode;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -132,15 +133,7 @@ public class PartActivity extends BasicActivity {
     }
     public void initArticleEdittext() {
         editTextArticle = (EditText)findViewById(R.id.edittext_article_number);
-//        editTextArticle.setBackgroundResource(R.drawable.vin_right_border);
-//
-//        editTextArticle.setOnClickListener(new View.OnClickListener() {
-//            //            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-//            @Override
-//            public void onClick(View v) {
-//                openKeyboard(vinEditText);
-//            }
-//        });
+        editTextArticle.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
         editTextArticle.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -160,7 +153,7 @@ public class PartActivity extends BasicActivity {
                 else
                     editTextArticle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_close, 0);
                 String article = editTextArticle.getText()+"".toUpperCase();
-                final List<PartModel> startsWithParts = Part.searchStartWith(carId, article, getApplicationContext());
+                final List<PartModel> startsWithParts = Part.searchStartWith(carId, article.trim(), getApplicationContext());
                 if (startsWithParts != null && startsWithParts.size() > 0) {
                     linearLayoutCatalog.setVisibility(View.GONE);
                     listViewParts.setVisibility(View.VISIBLE);

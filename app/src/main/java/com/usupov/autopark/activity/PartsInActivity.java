@@ -53,10 +53,9 @@ public class PartsInActivity extends AppCompatActivity {
         findViewById(R.id.btn_photo_part_in).setOnClickListener(mCaptureImageButtonClickListener);
         linLayoutPhotoParts = (LinearLayout)findViewById(R.id.layout_parts_in);
 
-        if (android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-        }
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         initBtnSavePartIn();
 
     }

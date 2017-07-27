@@ -14,6 +14,8 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
         android:background="@color/windowBackground"
         >
        <include
@@ -21,48 +23,57 @@
             layout="@layout/toolbar_car_new"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text"
-            android:ems="@android:integer/config_longAnimTime"
-            android:id="@+id/edittext_vin_number"
-            android:padding="10dp"
-            android:maxLength="17"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="5dp"
-            android:elevation="6dp"
-            android:hint="VIN номер"
-            android:background="@color/colorWhite"
-            android:drawableRight="@drawable/ic_keyboard_voice_black"
-            />
-        <TextView
-            android:id="@+id/tvVinError"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="20dp"
-            />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textColor="@android:color/black"
-            android:gravity="center_horizontal"
-            android:background="@color/windowBackground"
-            android:text="Искать по оригинальному каталогу" />
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapCharacters|textNoSuggestions"
+                    android:ems="@android:integer/config_longAnimTime"
+                    android:id="@+id/edittext_vin_number"
+                    android:padding="10dp"
+                    android:layout_marginTop="40dp"
+                    android:maxLength="17"
+                    android:imeOptions="flagNoFullscreen"
+                    android:elevation="6dp"
+                    android:hint="VIN номер"
+                    android:textCursorDrawable="@drawable/primarycolor_cursor"
+                    android:digits="QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm0123456789"
+                    android:drawableRight="@drawable/ic_keyboard_voice_black"
+                    />
+                <TextView
+                    android:id="@+id/tvVinError"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="20dp"
+                    />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:fontFamily="sans-serif"
+                android:textSize="18sp"
+                android:background="@color/windowBackground"
+                android:text="Искать по оригинальному каталогу" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/colorWhite"
-                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
                 android:elevation="8dp"
                 android:orientation="vertical">
 
@@ -162,41 +173,43 @@
 
                 </LinearLayout>
             </LinearLayout>
+            <Button
+                android:bufferType="editable"
+                android:clickable="true"
+                android:visibility="gone"
+                android:textStyle="bold"
+                android:background="@drawable/button_border"
+                android:textColor="@color/textColorPrimary"
+                android:text="@string/find"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:id="@+id/new_car_find_btn"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <ProgressBar
+                android:visibility="gone"
+                android:id="@+id/progress_select_catalog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+            </LinearLayout>
         </ScrollView>
-        <Button
-            android:bufferType="editable"
-            android:clickable="true"
-            android:visibility="gone"
-            android:textStyle="bold"
-            android:background="@drawable/button_border"
-            android:textColor="@color/textColorPrimary"
-            android:text="@string/find"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:id="@+id/new_car_find_btn"
-            android:layout_gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        <ProgressBar
-            android:visibility="gone"
-            android:id="@+id/progress_select_catalog"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-
     </LinearLayout>
-    <android.inputmethodservice.KeyboardView
-        android:id="@+id/keyboardview"
-        android:padding="5dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:focusable="true"
-        android:keyPreviewLayout="@layout/preview_key"
-        android:focusableInTouchMode="true"
-        android:layout_centerVertical="true"
-        android:visibility="gone"
-        />
+
+    <!--<android.inputmethodservice.KeyboardView-->
+        <!--android:id="@+id/keyboardview"-->
+        <!--android:padding="5dp"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:focusable="true"-->
+        <!--android:keyPreviewLayout="@layout/preview_key"-->
+        <!--android:focusableInTouchMode="true"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:visibility="gone"-->
+        <!--/>-->
 </RelativeLayout>
