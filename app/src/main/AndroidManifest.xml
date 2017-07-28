@@ -85,7 +85,6 @@
         <activity
             android:name=".activity.RecognizerSampleActivity"
             android:label="Yandex Speech" />
-        <!-- <activity android:name=".fragment.SelectBrandFragment" /> -->
         <activity android:name=".activity.LoginActivity">
 
             <!-- <intent-filter> -->

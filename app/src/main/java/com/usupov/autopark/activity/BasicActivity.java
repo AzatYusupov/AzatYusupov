@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -25,26 +27,30 @@ import com.usupov.autopark.model.UserModel;
 public class BasicActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    public static int CarNewActivityId = 1;
+    public static int PartListActivityId = 2;
+    public static int UpdateActivityId = 3;
+    public static int CarListActivityId = 4;
+    public static int PartActivityId = 5;
+    public static int selectedActivityId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_basic);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
+        initToolbar();
+        initAccountDetails();
+
+    }
+
+    private void initAccountDetails() {
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         View headerView = navigationView.getHeaderView(0);
         ImageView accountImage = (ImageView) headerView.findViewById(R.id.image_account);
@@ -74,6 +80,16 @@ public class BasicActivity extends AppCompatActivity
         });
     }
 
+    private void initToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+    }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -87,28 +103,31 @@ public class BasicActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
 
         final int id = item.getItemId();
 
+//        Class fragmentClass = null;
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+
+        if (item.isChecked())
+            return true;
+        item.setChecked(true);
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (id == R.id.nav_car_add) {
-
                     startActivity(new Intent(BasicActivity.this, CarNewActivity.class));
                 }
                 else if (id == R.id.nav_part_add) {
-
                     startActivity(new Intent(BasicActivity.this, PartActivity.class));
                 }
                 else if (id == R.id.nav_parts) {
-
                     startActivity(new Intent(BasicActivity.this, PartListActivity.class));
                 }
                 else if (id == R.id.nav_car_list) {
-
                     startActivity(new Intent(BasicActivity.this, CarListActivity.class));
                 }
                 else if (id == R.id.nav_settings) {
@@ -118,14 +137,22 @@ public class BasicActivity extends AppCompatActivity
                     HttpHandler.removeAutToken(getApplicationContext());
                     startActivity(new Intent(BasicActivity.this, LoginActivity.class));
                 }
-                finish();
             }
         }, 300);
 
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-
+//        Fragment fragment = null;
+//        try {
+//            fragment = (Fragment) fragmentClass.newInstance();
+//        } catch (InstantiationException e) {
+//            e.printStackTrace();
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        }
+//
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+        if (id != R.id.nav_settings)
+            finish();
         return true;
     }
 }

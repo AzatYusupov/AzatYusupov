@@ -136,7 +136,7 @@ public class CarFoundActivity extends AppCompatActivity {
     }
 
     private void startImageCapture() {
-        startActivityForResult(new Intent(CarFoundActivity.this, CameraActivityOld.class), TAKE_PICTURE_REQUEST_B);
+        startActivityForResult(new Intent(CarFoundActivity.this, CameraActivity.class), TAKE_PICTURE_REQUEST_B);
     }
 
     private void setCarInforms() {
@@ -186,7 +186,7 @@ public class CarFoundActivity extends AppCompatActivity {
                         finish();
                     }
                     else
-                        Toast.makeText(CarFoundActivity.this, getString(R.string.car_not_added), Toast.LENGTH_LONG).show();
+                        Toast.makeText(CarFoundActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
                 }
                 catch (Exception e) {
                     e.printStackTrace();

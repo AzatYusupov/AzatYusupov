@@ -14,12 +14,14 @@ public class CarCategory {
     int percent;
     private ArrayList<CarCategory>chilren;
     private boolean isFirstClick;
+    int cntClicks;
     public CarCategory(String name, int id, int percent) {
         this.name = name;
         this.id = id;
         this.percent = percent;
         this.chilren = new ArrayList<>();
         this.isRealised = false;
+        this.cntClicks = 0;
     }
     public boolean isRealised() {
         return isRealised;
@@ -38,10 +40,14 @@ public class CarCategory {
     }
     public void click() {
         isFirstClick = !isFirstClick;
+        cntClicks++;
     }
     public void setName(String name) {
         this.name = name;
         this.isFirstClick = false;
+    }
+    public int getCntClicks() {
+        return cntClicks;
     }
     public int getPercent() {
         return this.percent;

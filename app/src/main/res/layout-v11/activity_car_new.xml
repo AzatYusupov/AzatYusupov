@@ -174,17 +174,17 @@
                 </LinearLayout>
             </LinearLayout>
             <Button
-                android:bufferType="editable"
-                android:clickable="true"
                 android:visibility="gone"
-                android:textStyle="bold"
-                android:background="@drawable/button_border"
+                android:fontFamily="sans-serif"
+                android:background="@drawable/save_button_bg"
                 android:textColor="@color/textColorPrimary"
                 android:text="@string/find"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="50dp"
                 android:layout_marginRight="50dp"
+                android:textAllCaps="false"
+                android:textSize="18sp"
                 android:id="@+id/new_car_find_btn"
                 android:layout_gravity="center"
                 android:layout_width="match_parent"

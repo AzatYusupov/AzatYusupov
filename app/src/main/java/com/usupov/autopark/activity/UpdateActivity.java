@@ -103,6 +103,8 @@ public class UpdateActivity extends BasicActivity {
                 update();
             }
         });
+
+//        BasicActivity.selectedActivityId = BasicActivity.UpdateActivityId;
     }
 
     public void update() {

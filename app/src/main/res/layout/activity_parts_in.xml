@@ -158,6 +158,9 @@
                 <Button
                     android:layout_width="match_parent"
                     android:layout_marginLeft="50dp"
+                    android:textAllCaps="false"
+                    android:padding="12dp"
+                    android:fontFamily="sans-serif"
                     android:layout_marginRight="50dp"
                     android:layout_marginTop="10dp"
                     android:layout_height="wrap_content"
@@ -165,6 +168,8 @@
                     android:layout_gravity="bottom|center"
                     android:id="@+id/save_part_in"
                     android:text="Сохранить"
+                    android:textStyle="normal"
+                    android:textSize="18sp"
                     android:textColor="@color/colorWhite"
                     />
                 </LinearLayout>

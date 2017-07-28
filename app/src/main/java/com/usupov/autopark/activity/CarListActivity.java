@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -80,6 +81,9 @@ public class CarListActivity extends BasicActivity{
 
         initEmptyView();
         initRecyclerview();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(R.id.nav_car_list);
     }
 
     private void initFirstIn() {
@@ -255,27 +259,28 @@ public class CarListActivity extends BasicActivity{
         fabNewCar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(v.getContext(), CarNewActivity.class), requestCodeCarNew);
+                startActivity(new Intent(v.getContext(), CarNewActivity.class));
+                finish();
             }
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case requestCodeCarNew :
-                if (resultCode==RESULT_OK) {
-                    finish();
-                    Intent intent = getIntent();
-                    if (intent.hasExtra("name"))
-                        intent.removeExtra("name");
-                    startActivity(intent);
-                }
-                else {
-                }
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        switch (requestCode) {
+//            case requestCodeCarNew :
+//                if (resultCode==RESULT_OK) {
+//                    finish();
+//                    Intent intent = getIntent();
+//                    if (intent.hasExtra("name"))
+//                        intent.removeExtra("name");
+//                    startActivity(intent);
+//                }
+//                else {
+//                }
+//        }
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

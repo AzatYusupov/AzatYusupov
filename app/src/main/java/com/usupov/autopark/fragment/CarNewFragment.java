@@ -1,21 +1,19 @@
-package com.usupov.autopark.activity;
+package com.usupov.autopark.fragment;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -24,6 +22,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.usupov.autopark.R;
+import com.usupov.autopark.activity.CarFoundActivity;
+import com.usupov.autopark.activity.RecognizerSampleActivity;
 import com.usupov.autopark.json.Car;
 import com.usupov.autopark.json.CarCat;
 import com.usupov.autopark.model.CarModel;
@@ -35,7 +35,8 @@ import com.usupov.autopark.service.SpeachRecogn;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CarNewActivity extends BasicActivity {
+
+public class CarNewFragment extends Fragment {
 
     protected static final int RESULT_SPEECH = 1;
     protected static final int REQUEST_ADD = 2;
@@ -50,42 +51,41 @@ public class CarNewActivity extends BasicActivity {
     private int selectedModelLisId = -1;
     private int selectedYearListId = -1;
 
+    View rootView;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
-        LayoutInflater inflater = (LayoutInflater) this
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View contentView = inflater.inflate(R.layout.activity_car_new, null, false);
-        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        drawerLayout.addView(contentView, 0);
+        newCarFindBtn = (Button)getActivity().findViewById(R.id.new_car_find_btn);
 
-        newCarFindBtn = (Button) findViewById(R.id.new_car_find_btn);
 
-        initToolbar();
-
-        tvVinError = (TextView) findViewById(R.id.tvVinError);
+        tvVinError = (TextView) getActivity().findViewById(R.id.tvVinError);
         tvVinError.setTextColor(getResources().getColor(R.color.colorAccent));
 
         initVoiceBtn();
         initVinEdittext();
         initCatalogSelect();
         newCarFindBtn.setOnClickListener(catalogFindBtnClick);
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setCheckedItem(R.id.nav_car_add);
-
     }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.activity_car_new, container, false);
+        return rootView;
+    }
+
     private View.OnClickListener catalogFindBtnClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            CarModel car = Car.getCarByCatalog(selectedBrand, selectedModel, selectedYear, getApplicationContext());
+            CarModel car = Car.getCarByCatalog(selectedBrand, selectedModel, selectedYear, getActivity().getApplicationContext());
             if (car==null)
-                Toast.makeText(CarNewActivity.this, getString(R.string.by_catalog_not_found), Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), getString(R.string.by_catalog_not_found), Toast.LENGTH_LONG).show();
             else {
-                Intent intent = new Intent(CarNewActivity.this, CarFoundActivity.class);
+                Intent intent = new Intent(getActivity(), CarFoundActivity.class);
                 Gson g = new Gson();
                 intent.putExtra("car", g.toJson(car));
                 startActivityForResult(intent, REQUEST_ADD);
@@ -94,7 +94,7 @@ public class CarNewActivity extends BasicActivity {
     };
 
     public void initVinEdittext() {
-        vinEditText = (EditText)findViewById(R.id.edittext_vin_number);
+        vinEditText = (EditText)getView().findViewById(R.id.edittext_vin_number);
         vinEditText.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
         vinEditText.setBackgroundResource(R.drawable.vin_right_border);
 
@@ -113,7 +113,7 @@ public class CarNewActivity extends BasicActivity {
             public void afterTextChanged(Editable s) {
                 if (vinEditText.getText().length()==17) {
                     String vin = vinEditText.getText()+"";
-                    CarModel car = Car.getCarByVin(vin, getApplicationContext());
+                    CarModel car = Car.getCarByVin(vin, getActivity().getApplicationContext());
                     if (car==null) {
                         tvVinError.setText(getString(R.string.error_vin));
                         vinEditText.setBackgroundResource(R.drawable.vin_error_border);
@@ -121,7 +121,7 @@ public class CarNewActivity extends BasicActivity {
                     else {
                         tvVinError.setText("");
                         vinEditText.setBackgroundResource(R.drawable.vin_right_border);
-                        Intent intent = new Intent(CarNewActivity.this, CarFoundActivity.class);
+                        Intent intent = new Intent(getActivity(), CarFoundActivity.class);
                         Gson g = new Gson();
                         intent.putExtra("car", g.toJson(car));
                         startActivityForResult(intent, REQUEST_ADD);
@@ -141,22 +141,10 @@ public class CarNewActivity extends BasicActivity {
             }
         });
     }
-    private void initToolbar() {
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_car_new);
-        toolbar.setNavigationIcon(R.drawable.ic_back_arrow);
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-    }
 
     private void initVoiceBtn() {
 
-        final EditText edt = (EditText) findViewById(R.id.edittext_vin_number);
+        final EditText edt = (EditText) getView().findViewById(R.id.edittext_vin_number);
         edt.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
@@ -171,7 +159,7 @@ public class CarNewActivity extends BasicActivity {
 
                     if(event.getRawX() >= (edt.getRight() - edt.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
                         if (edt.getText()==null || edt.getText().length()==0) {
-                            Intent intent = new Intent(CarNewActivity.this, RecognizerSampleActivity.class);
+                            Intent intent = new Intent(getActivity(), RecognizerSampleActivity.class);
                             startActivityForResult(intent, RESULT_SPEECH);
                         }
                         else {
@@ -179,60 +167,55 @@ public class CarNewActivity extends BasicActivity {
                         }
                         return true;
                     }
+//                    else {
+//                        openKeyboard(vinEditText);
+//                        return true;
+//                    }
                 }
                 return false;
             }
         });
 
     }
-//3VWBB61C4WM050210
+    //3VWBB61C4WM050210
 //45RT78WEDST12
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
             case RESULT_SPEECH: {
-                if (resultCode == RESULT_OK && null != data) {
+                if (resultCode == Activity.RESULT_OK && null != data) {
                     ArrayList<String> text = data
                             .getStringArrayListExtra("all_results");
-                    EditText edt = (EditText) findViewById(R.id.edittext_vin_number);
-                    String edt_text = SpeachRecogn.vinSpeach(text, this).toUpperCase();
+                    EditText edt = (EditText) getActivity().findViewById(R.id.edittext_vin_number);
+                    String edt_text = SpeachRecogn.vinSpeach(text, getActivity()).toUpperCase();
                     if (edt_text.length() > 17)
                         edt_text = edt_text.substring(0, 17);
                     edt.setText(edt_text);
                 }
                 break;
             }
-            case REQUEST_ADD: {
-                if (resultCode==RESULT_OK) {
-                    startActivity(new Intent(CarNewActivity.this, CarListActivity.class));
-                    finish();
-                }
-                break;
-            }
+
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
+
     private void initCatalogSelect() {
-        LinearLayout linearLayoutBrand = (LinearLayout) findViewById(R.id.brand);
+        LinearLayout linearLayoutBrand = (LinearLayout) rootView.findViewById(R.id.brand);
 
         linearLayoutBrand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                final List<CatalogBrand> brandList = CarCat.getBradList(getApplicationContext());
+                final List<CatalogBrand> brandList = CarCat.getBradList(getActivity().getApplicationContext());
                 if (brandList==null) {
-                    Toast.makeText(CarNewActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
                     return;
                 }
 
-                final AlertDialog.Builder builderBrand = new AlertDialog.Builder(CarNewActivity.this);
+                final AlertDialog.Builder builderBrand = new AlertDialog.Builder(getActivity());
                 builderBrand.setTitle(getString(R.string.select_brand));
 
                 String[]brandNames = new String[brandList.size()];
@@ -244,15 +227,15 @@ public class CarNewActivity extends BasicActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         selectedBrand = brandList.get(which).getId();
                         String brandName =  brandList.get(which).getName();
-                        TextView tvBrandName = (TextView)findViewById(R.id.selectedBranName);
+                        TextView tvBrandName = (TextView)getView().findViewById(R.id.selectedBranName);
                         tvBrandName.setTextColor(Color.BLACK);
                         tvBrandName.setText(brandName);
 
-                        TextView tvModelName = (TextView)findViewById(R.id.selectedModelName);
+                        TextView tvModelName = (TextView)rootView.findViewById(R.id.selectedModelName);
                         tvModelName.setText(getString(R.string.select_model));
                         tvModelName.setTextColor(Color.GRAY);
 
-                        TextView tvYearName = (TextView)findViewById(R.id.selectedYear);
+                        TextView tvYearName = (TextView)rootView.findViewById(R.id.selectedYear);
                         tvYearName.setText(getString(R.string.select_year));
                         tvYearName.setTextColor(Color.GRAY);
 
@@ -272,18 +255,18 @@ public class CarNewActivity extends BasicActivity {
                 builderBrand.show();
             }
         });
-        LinearLayout linearLayoutModel = (LinearLayout) findViewById(R.id.model);
+        LinearLayout linearLayoutModel = (LinearLayout) rootView.findViewById(R.id.model);
         linearLayoutModel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (selectedBrand==-1)
                     return;
-                final List<CatalogModel> modelList = CarCat.getModels(selectedBrand, getApplicationContext());
+                final List<CatalogModel> modelList = CarCat.getModels(selectedBrand, getActivity().getApplicationContext());
                 if (modelList==null) {
-                    Toast.makeText(CarNewActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
                     return;
                 }
-                final AlertDialog.Builder builderModel = new AlertDialog.Builder(CarNewActivity.this);
+                final AlertDialog.Builder builderModel = new AlertDialog.Builder(getActivity());
                 builderModel.setTitle(getString(R.string.select_model));
 
                 String[]modelNames = new String[modelList.size()];
@@ -295,11 +278,11 @@ public class CarNewActivity extends BasicActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         selectedModel = modelList.get(which).getId();
                         String brandName =  modelList.get(which).getName();
-                        TextView tvBrandName = (TextView)findViewById(R.id.selectedModelName);
+                        TextView tvBrandName = (TextView)rootView.findViewById(R.id.selectedModelName);
                         tvBrandName.setTextColor(Color.BLACK);
                         tvBrandName.setText(brandName);
 
-                        TextView tvYearName = (TextView)findViewById(R.id.selectedYear);
+                        TextView tvYearName = (TextView)rootView.findViewById(R.id.selectedYear);
                         tvYearName.setText(getString(R.string.select_year));
                         tvYearName.setTextColor(Color.GRAY);
                         selectedYear =  -1;
@@ -317,19 +300,19 @@ public class CarNewActivity extends BasicActivity {
                 builderModel.show();
             }
         });
-        LinearLayout linearLayoutYear = (LinearLayout) findViewById(R.id.year);
+        LinearLayout linearLayoutYear = (LinearLayout) rootView.findViewById(R.id.year);
         linearLayoutYear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (selectedBrand==-1 || selectedModel==-1)
                     return;
-                final List<CatalogYear> yearList = CarCat.getYears(selectedBrand, selectedModel, getApplicationContext());
+                final List<CatalogYear> yearList = CarCat.getYears(selectedBrand, selectedModel, getActivity().getApplicationContext());
                 if (yearList==null) {
-                    Toast.makeText(CarNewActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
                     return;
                 }
 
-                final AlertDialog.Builder builderYear = new AlertDialog.Builder(CarNewActivity.this);
+                final AlertDialog.Builder builderYear = new AlertDialog.Builder(getActivity());
                 builderYear.setTitle(getString(R.string.select_year));
 
                 String[]yearNames = new String[yearList.size()];
@@ -341,7 +324,7 @@ public class CarNewActivity extends BasicActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         selectedYear = yearList.get(which).getId();
                         String yearName =  yearList.get(which).getName();
-                        TextView tvYearName = (TextView)findViewById(R.id.selectedYear);
+                        TextView tvYearName = (TextView)rootView.findViewById(R.id.selectedYear);
                         tvYearName.setTextColor(Color.BLACK);
                         tvYearName.setText(yearName);
                         selectedYearListId= which;

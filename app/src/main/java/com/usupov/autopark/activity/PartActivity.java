@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -33,6 +34,7 @@ import com.usupov.autopark.json.Car;
 import com.usupov.autopark.json.Part;
 import com.usupov.autopark.model.CarCategory;
 import com.usupov.autopark.model.CarModel;
+import com.usupov.autopark.model.CatetoryPartModel;
 import com.usupov.autopark.model.PartModel;
 import com.usupov.autopark.service.SpeachRecogn;
 
@@ -73,7 +75,6 @@ public class PartActivity extends BasicActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-//        setContentView(R.layout.activity_part);
         if (!getIntent().hasExtra("carName")) {
             List<CarModel> carList = Car.getCarList(getApplicationContext());
             if (carList == null || carList.size() != 1) {
@@ -105,7 +106,8 @@ public class PartActivity extends BasicActivity {
         mt = new MyTask();
         mt.execute();
 
-//        iniSpeak();
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(R.id.nav_part_add);
     }
     class MyTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -288,14 +290,14 @@ public class PartActivity extends BasicActivity {
     private void dfs(final CarCategory item, boolean first) {
         if (item.isRealised())
             return;
-        item.setRealised();
+
         if (!item.hasChildren()) {
 
         }
         else {
             final LayoutInflater inflater = getLayoutInflater();
             for (final CarCategory child : item.getChildren()) {
-                View childView = inflater.inflate(R.layout.row_part, item.getLinearLayout(), false);
+                final View childView = inflater.inflate(R.layout.row_part, item.getLinearLayout(), false);
                 TextView image = (TextView) childView.findViewById(R.id.partItemImage);
                 if (first) {
 //                    ImageView image = (ImageView)childView.findViewById(R.id.partItemImage);
@@ -317,15 +319,16 @@ public class PartActivity extends BasicActivity {
                 final LinearLayout linearLayoutChild = new LinearLayout(this);
                 child.setLinearLayout(linearLayoutChild);
 
-                LinearLayout.LayoutParams leftMarginParams = new LinearLayout.LayoutParams(
+                final LinearLayout.LayoutParams leftMarginParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 leftMarginParams.leftMargin = leftmargin;
                 child.getLinearLayout().setVisibility(View.GONE);
 
 
                 final ImageView arrowImage = (ImageView) childView.findViewById(R.id.partItemArrow);
-                if (child.hasChildren())
-                    arrowImage.setImageResource(R.drawable.ic_action_arrow_not_opened);
+//                if (child.hasChildren())
+                arrowImage.setImageResource(R.drawable.ic_action_arrow_not_opened);
+
 
                 childView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -333,36 +336,67 @@ public class PartActivity extends BasicActivity {
                         dfs(child, false);
                         child.click();
                         if (!child.hasChildren()) {
-                            Intent intent = new Intent(PartActivity.this, PartsInActivity.class);
-                            PartModel part = new PartModel();
-                            part.setCarId(carId);
-                            part.setCategoryId(child.getId());
-                            part.setTitle(child.getName());
-                            Gson g = new Gson();
-                            intent.putExtra("part", g.toJson(part, PartModel.class));
-                            intent.putExtra("car_full_name", carName);
-                            startActivityForResult(intent, RESULT_CODE_ADD_PART);
+
+                            if (child.isFirstClick()) {
+                                child.getLinearLayout().setVisibility(View.VISIBLE);
+                                if (child.getCntClicks()==1) {
+                                    List<CatetoryPartModel> partList = Part.getCategoryPartsList(carId, child.getId(), getApplicationContext());
+
+                                    final LinearLayout.LayoutParams leftMarginParams = new LinearLayout.LayoutParams(
+                                            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                    leftMarginParams.leftMargin = leftmargin ;
+
+                                    for (final CatetoryPartModel c : partList) {
+
+                                        View view = inflater.inflate(R.layout.row_part, child.getLinearLayout(), false);
+                                        TextView text = (TextView) view.findViewById(R.id.partItemName);
+                                        text.setText(c.getTitle());
+                                        TextView image = (TextView) view.findViewById(R.id.partItemImage);
+                                        image.setVisibility(View.INVISIBLE);
+                                        child.getLinearLayout().addView(view, leftMarginParams);
+
+                                        text.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                Intent intent = new Intent(PartActivity.this, PartsInActivity.class);
+                                                PartModel part = new PartModel();
+                                                part.setCarId(carId);
+                                                part.setCategoryId(child.getId());
+                                                part.setTitle(c.getTitle());
+                                                part.setId(c.getId());
+                                                Gson g = new Gson();
+                                                intent.putExtra("part", g.toJson(part, PartModel.class));
+                                                intent.putExtra("car_full_name", carName);
+                                                startActivityForResult(intent, RESULT_CODE_ADD_PART);
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                            else {
+                                child.getLinearLayout().setVisibility(View.GONE);
+                            }
                         }
                         if (child.isFirstClick()) {
                             child.getLinearLayout().setVisibility(View.VISIBLE);
-                            if (child.hasChildren()) {
+//                            if (child.hasChildren()) {
                                 //To do ic_action_arrow_opened
                                 arrowImage.setImageResource(R.drawable.ic_action_arrow_opened);
                                 text.setTypeface(null, Typeface.BOLD);
-                            }
+//                            }
                         }
                         else {
-                            if (child.hasChildren())
+//                            if (child.hasChildren())
                                 arrowImage.setImageResource(R.drawable.ic_action_arrow_not_opened);
                             child.getLinearLayout().setVisibility(View.GONE);
                             text.setTypeface(null, Typeface.NORMAL);
                         }
                     }
                 });
-
                 child.getLinearLayout().setOrientation(LinearLayout.VERTICAL);
                 item.getLinearLayout().addView(child.getLinearLayout(), leftMarginParams);
             }
         }
+        item.setRealised();
     }
 }
