@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,7 +30,7 @@ import org.apache.http.HttpStatus;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class PartsInActivity extends AppCompatActivity {
+public class PartFoundActivity extends AppCompatActivity {
 
     public static final int TAKE_PICTURE_REQUEST_B = 200;
     private Bitmap mCameraBitmap;
@@ -42,11 +43,13 @@ public class PartsInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_parts_in);
+        setContentView(R.layout.activity_part_found);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
         Gson g = new Gson();
         part = g.fromJson(getIntent().getExtras().getString("part"), PartModel.class);
         photoList = new ArrayList<>();
-        initTollbar();
+        initToolbar();
         TextView tViewPartInname = (TextView) findViewById(R.id.part_in_name);
         tViewPartInname.setText(part.getTitle());
 
@@ -59,7 +62,7 @@ public class PartsInActivity extends AppCompatActivity {
         initBtnSavePartIn();
 
     }
-    private void initTollbar() {
+    private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_car_found);
         toolbar.setTitle(getString(R.string.charactersitic) + " " + getIntent().getStringExtra("car_full_name"));
         toolbar.setNavigationIcon(R.drawable.ic_back_arrow);
@@ -80,7 +83,7 @@ public class PartsInActivity extends AppCompatActivity {
                 if (brand != null)
                     brand = brand.trim();
                 if (brand==null || brand.length()==0) {
-                    Toast.makeText(PartsInActivity.this, "Введите производител", Toast.LENGTH_LONG).show();
+                    Toast.makeText(PartFoundActivity.this, "Введите производител", Toast.LENGTH_LONG).show();
                     return;
                 }
 
@@ -89,7 +92,7 @@ public class PartsInActivity extends AppCompatActivity {
                 if (status!= null)
                     status = status.trim();
                 if (status==null || status.length()==0) {
-                    Toast.makeText(PartsInActivity.this, "Введите состоянию", Toast.LENGTH_LONG).show();
+                    Toast.makeText(PartFoundActivity.this, "Введите состоянию", Toast.LENGTH_LONG).show();
                     return;
                 }
                 String store = ((EditText)findViewById(R.id.part_in_store)).getText().toString();
@@ -105,13 +108,12 @@ public class PartsInActivity extends AppCompatActivity {
                 HttpHandler handler = new HttpHandler();
                 int result = handler.postWithMultipleFiles(url, map, photoList, getApplicationContext(), false).getStatusCode();
                 if (result== HttpStatus.SC_OK) {
-                    Toast.makeText(PartsInActivity.this, getString(R.string.part_added),Toast.LENGTH_LONG).show();
+                    Toast.makeText(PartFoundActivity.this, getString(R.string.part_added),Toast.LENGTH_LONG).show();
                     setResult(RESULT_OK);
                     finish();
                 }
                 else {
-                    Toast.makeText(PartsInActivity.this, result+"", Toast.LENGTH_LONG).show();
-//                    Toast.makeText(PartsInActivity.this, getString(R.string.part_not_added), Toast.LENGTH_LONG).show();
+                    Toast.makeText(PartFoundActivity.this, result+"", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -124,7 +126,7 @@ public class PartsInActivity extends AppCompatActivity {
         }
     };
     private void startImageCapture() {
-        startActivityForResult(new Intent(PartsInActivity.this, CameraActivity.class), TAKE_PICTURE_REQUEST_B);
+        startActivityForResult(new Intent(PartFoundActivity.this, CameraActivity.class), TAKE_PICTURE_REQUEST_B);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -166,7 +168,6 @@ public class PartsInActivity extends AppCompatActivity {
 //                        targetW = 1;//mCameraImageView.getWidth();
 //                        targetH = 300;
 //                    }
-//                    Toast.makeText(PartsInActivity.this, photoH+" "+photoW, Toast.LENGTH_LONG).show();
                     // Determine how much to scale down the image
 //                    int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
 
@@ -204,7 +205,6 @@ public class PartsInActivity extends AppCompatActivity {
                     });
                     linLayoutPhotoParts.addView(viev);
                     photoList.add(imagePath);
-//                    Toast.makeText(PartsInActivity.this, bitmap.getHeight()+" "+bitmap.getWidth(), Toast.LENGTH_LONG).show();
                 }
             } else {
                 mCameraBitmap = null;

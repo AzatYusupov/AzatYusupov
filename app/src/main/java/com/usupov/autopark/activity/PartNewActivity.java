@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -34,7 +33,7 @@ import com.usupov.autopark.json.Car;
 import com.usupov.autopark.json.Part;
 import com.usupov.autopark.model.CarCategory;
 import com.usupov.autopark.model.CarModel;
-import com.usupov.autopark.model.CatetoryPartModel;
+import com.usupov.autopark.model.CategoryPartModel;
 import com.usupov.autopark.model.PartModel;
 import com.usupov.autopark.service.SpeachRecogn;
 
@@ -44,7 +43,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PartActivity extends BasicActivity {
+public class PartNewActivity extends BasicActivity {
 
     static final int REQ_CODE_SPEECH_INPUT = 100;
     private static EditText numberPart;
@@ -65,36 +64,42 @@ public class PartActivity extends BasicActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
-        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View contenView = inflater.inflate(R.layout.activity_part, null, false);
+        LayoutInflater inflater = (LayoutInflater) this.
+                getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View contenView = inflater.inflate(R.layout.activity_part_new, null, false);
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerLayout.addView(contenView);
+        drawerLayout.addView(contenView, 0);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(R.id.nav_part_add);
+
         if (!getIntent().hasExtra("carName")) {
             List<CarModel> carList = Car.getCarList(getApplicationContext());
-            if (carList == null || carList.size() != 1) {
-                startActivity(new Intent(PartActivity.this, CarListActivity.class));
+            if (carList == null || carList.isEmpty()) {
+                startActivity(new Intent(PartNewActivity.this, CarListActivity.class));
                 finish();
             }
-            else {
+            else if (carList.size()==1) {
                 CarModel car = carList.get(0);
-                carName = car.getFullName();
+                car.setFullName();
                 carId = car.getId();
+                carName = car.getFullName();
+            }
+            else {
+                carName = "";
+                carId = 0;
             }
         }
         else {
             carName = getIntent().getExtras().getString("carName");
             carId = getIntent().getExtras().getInt("carId");
         }
-        context = this;
-        initTollbar();
+//        context = this;
 
-        initArticleEdittext();
+        initArticleEditText();
         initVoiceBtn();
         linearLayoutCatalog = (LinearLayout) findViewById(R.id.lvMain);
         listViewParts = (ListView) findViewById(R.id.lvParts);
@@ -106,8 +111,7 @@ public class PartActivity extends BasicActivity {
         mt = new MyTask();
         mt.execute();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setCheckedItem(R.id.nav_part_add);
+
     }
     class MyTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -125,7 +129,7 @@ public class PartActivity extends BasicActivity {
             super.onPostExecute(ok);
             pbPart.setVisibility(View.GONE);
             if (!ok) {
-                Toast.makeText(PartActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+                Toast.makeText(PartNewActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
                 return;
             }
             LinearLayout lvMain = (LinearLayout) findViewById(R.id.lvMain);
@@ -133,7 +137,7 @@ public class PartActivity extends BasicActivity {
             dfs(one0, true);
         }
     }
-    public void initArticleEdittext() {
+    public void initArticleEditText() {
         editTextArticle = (EditText)findViewById(R.id.edittext_article_number);
         editTextArticle.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
         editTextArticle.addTextChangedListener(new TextWatcher() {
@@ -169,11 +173,13 @@ public class PartActivity extends BasicActivity {
                         names[i] = artciles.get(i);
                     }
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(context,android.R.layout.simple_list_item_1, names);
+
                     listViewParts.setAdapter(adapter);
+
                     listViewParts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Intent intent = new Intent(PartActivity.this, PartsInActivity.class);
+                            Intent intent = new Intent(PartNewActivity.this, PartFoundActivity.class);
                             Gson g = new Gson();
                             intent.putExtra("part", g.toJson(startsWithParts.get(position), PartModel.class));
                             intent.putExtra("car_full_name", carName);
@@ -205,7 +211,7 @@ public class PartActivity extends BasicActivity {
 
                     if(event.getRawX() >= (edt.getRight() - edt.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
                         if (edt.getText()==null || edt.getText().length()==0) {
-                            Intent intent = new Intent(PartActivity.this, RecognizerSampleActivity.class);
+                            Intent intent = new Intent(PartNewActivity.this, RecognizerSampleActivity.class);
                             startActivityForResult(intent, RESULT_SPEECH);
                         }
                         else {
@@ -227,7 +233,7 @@ public class PartActivity extends BasicActivity {
 
     private void go(CarCategory parentCat, String result) {
         try {
-            if (result.equals("null"))
+            if (result==null)
                 return;
             JSONArray array = new JSONArray(result);
             if (array==null || array.length()==0)
@@ -246,19 +252,7 @@ public class PartActivity extends BasicActivity {
         }
     }
 
-    private void initTollbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_part);
-        toolbar.setNavigationIcon(R.drawable.ic_back_arrow);
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        toolbar.setTitle(getString(R.string.app_part));
 
-    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -340,13 +334,13 @@ public class PartActivity extends BasicActivity {
                             if (child.isFirstClick()) {
                                 child.getLinearLayout().setVisibility(View.VISIBLE);
                                 if (child.getCntClicks()==1) {
-                                    List<CatetoryPartModel> partList = Part.getCategoryPartsList(carId, child.getId(), getApplicationContext());
+                                    List<CategoryPartModel> partList = Part.getCategoryPartsList(carId, child.getId(), getApplicationContext());
 
                                     final LinearLayout.LayoutParams leftMarginParams = new LinearLayout.LayoutParams(
                                             ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                                     leftMarginParams.leftMargin = leftmargin ;
 
-                                    for (final CatetoryPartModel c : partList) {
+                                    for (final CategoryPartModel c : partList) {
 
                                         View view = inflater.inflate(R.layout.row_part, child.getLinearLayout(), false);
                                         TextView text = (TextView) view.findViewById(R.id.partItemName);
@@ -358,7 +352,7 @@ public class PartActivity extends BasicActivity {
                                         text.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                Intent intent = new Intent(PartActivity.this, PartsInActivity.class);
+                                                Intent intent = new Intent(PartNewActivity.this, PartFoundActivity.class);
                                                 PartModel part = new PartModel();
                                                 part.setCarId(carId);
                                                 part.setCategoryId(child.getId());

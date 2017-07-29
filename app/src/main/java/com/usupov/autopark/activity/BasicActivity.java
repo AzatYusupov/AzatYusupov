@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -14,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,13 +26,6 @@ import com.usupov.autopark.model.UserModel;
 public class BasicActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static int CarNewActivityId = 1;
-    public static int PartListActivityId = 2;
-    public static int UpdateActivityId = 3;
-    public static int CarListActivityId = 4;
-    public static int PartActivityId = 5;
-    public static int selectedActivityId;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +34,8 @@ public class BasicActivity extends AppCompatActivity
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
         initToolbar();
         initAccountDetails();
@@ -122,7 +116,7 @@ public class BasicActivity extends AppCompatActivity
                     startActivity(new Intent(BasicActivity.this, CarNewActivity.class));
                 }
                 else if (id == R.id.nav_part_add) {
-                    startActivity(new Intent(BasicActivity.this, PartActivity.class));
+                    startActivity(new Intent(BasicActivity.this, PartNewActivity.class));
                 }
                 else if (id == R.id.nav_parts) {
                     startActivity(new Intent(BasicActivity.this, PartListActivity.class));

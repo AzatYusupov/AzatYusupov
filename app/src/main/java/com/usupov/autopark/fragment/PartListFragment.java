@@ -14,7 +14,7 @@ import android.view.View;
 
 import com.usupov.autopark.R;
 import com.usupov.autopark.activity.CarListActivity;
-import com.usupov.autopark.activity.PartActivity;
+import com.usupov.autopark.activity.PartNewActivity;
 import com.usupov.autopark.adapter.UserPartListAdapter;
 import com.usupov.autopark.json.Car;
 import com.usupov.autopark.json.Part;
@@ -76,7 +76,7 @@ public class PartListFragment extends Fragment {
                     getActivity().finish();
                 }
                 else {
-                    Intent intent = new Intent(getActivity(), PartActivity.class);
+                    Intent intent = new Intent(getActivity(), PartNewActivity.class);
                     CarModel car = carList.get(0);
                     intent.putExtra("carName", car.getFullName());
                     intent.putExtra("carId", car.getId());

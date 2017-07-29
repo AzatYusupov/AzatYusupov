@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.usupov.autopark.R;
 import com.usupov.autopark.activity.CarListActivity;
-import com.usupov.autopark.activity.PartActivity;
+import com.usupov.autopark.activity.PartNewActivity;
 import com.usupov.autopark.config.CarRestURIConstants;
 import com.usupov.autopark.http.Headers;
 import com.usupov.autopark.http.HttpHandler;
@@ -169,7 +169,7 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
             public void onClick(View v) {
                 int carId = carList.get(position).getId();
                 String carName = carList.get(position).getFullName();
-                Intent intent = new Intent(context, PartActivity.class);
+                Intent intent = new Intent(context, PartNewActivity.class);
                 intent.putExtra("carId", carId);
                 intent.putExtra("carName", carName);
                 context.startActivity(intent);

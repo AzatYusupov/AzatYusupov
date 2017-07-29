@@ -77,6 +77,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback, 
 
         resultView = (ImageView) findViewById(R.id.image_result_view);
         resultView.setVisibility(View.GONE);
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
     }
 
     private void initToolbar() {

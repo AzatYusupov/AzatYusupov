@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -73,6 +74,7 @@ public class CarFoundActivity extends AppCompatActivity {
         findViewById(R.id.btnPhotoCar).setOnClickListener(mCaptureImageButtonClickListener);
 
         initbtnSave();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
     }
 
     @Override

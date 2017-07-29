@@ -12,7 +12,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 
 import com.usupov.autopark.R;
 import com.usupov.autopark.adapter.UserPartListAdapter;
@@ -27,6 +26,7 @@ public class PartListActivity extends BasicActivity {
 
     private RecyclerView rvUserPartList;
     private List<UserPartModel> userPartList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,15 +36,13 @@ public class PartListActivity extends BasicActivity {
         View contentView = inflater.inflate(R.layout.activity_part_list, null, false);
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.addView(contentView, 0);
-//        setContentView(R.layout.activity_part_list);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(R.id.nav_parts);
 
-
-        initToolbar();
         initFabUserPart();
 
         ifCarListEmpty();
@@ -53,8 +51,7 @@ public class PartListActivity extends BasicActivity {
         initRecyclerView();
         initUserPartList();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setCheckedItem(R.id.nav_parts);
+
 
     }
 
@@ -85,7 +82,7 @@ public class PartListActivity extends BasicActivity {
                     finish();
                 }
                 else {
-                    Intent intent = new Intent(PartListActivity.this, PartActivity.class);
+                    Intent intent = new Intent(PartListActivity.this, PartNewActivity.class);
                     CarModel car = carList.get(0);
                     intent.putExtra("carName", car.getFullName());
                     intent.putExtra("carId", car.getId());
@@ -105,8 +102,4 @@ public class PartListActivity extends BasicActivity {
         }
     }
 
-    private void initToolbar() {
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_part_list);
-//        toolbar.setTitle("Лента");
-    }
 }

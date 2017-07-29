@@ -3,9 +3,6 @@ package com.usupov.autopark.activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.StrictMode;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -129,6 +126,8 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(LoginActivity.this, ResetPasswordActivity.class));
             }
         });
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
     }
 
     private void keyboardHide(View v) {

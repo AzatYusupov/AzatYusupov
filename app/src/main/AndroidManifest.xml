@@ -51,7 +51,7 @@
             <!-- </intent-filter> -->
         </activity>
         <activity
-            android:name=".activity.PartsInActivity"
+            android:name=".activity.PartFoundActivity"
             android:label="@string/title_activity_part"
             android:theme="@style/AppTheme" />
         <activity
@@ -80,7 +80,7 @@
         </provider>
 
         <activity
-            android:name=".activity.PartActivity"
+            android:name=".activity.PartNewActivity"
             android:label="@string/app_part" />
         <activity
             android:name=".activity.RecognizerSampleActivity"
@@ -108,8 +108,7 @@
         </activity>
         <activity
             android:name=".activity.PartListActivity"
-            android:label="Лента"
-            android:theme="@style/AppTheme">
+            android:label="Лента">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -137,7 +136,7 @@
         <activity
             android:name=".activity.BasicActivity"
             android:label="@string/title_activity_basic"
-            android:theme="@style/AppTheme">
+            >
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->

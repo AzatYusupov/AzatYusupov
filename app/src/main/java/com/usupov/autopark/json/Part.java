@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.usupov.autopark.config.PartRestURIConstants;
 import com.usupov.autopark.http.HttpHandler;
-import com.usupov.autopark.model.CatetoryPartModel;
+import com.usupov.autopark.model.CategoryPartModel;
 import com.usupov.autopark.model.CustomHttpResponse;
 import com.usupov.autopark.model.PartModel;
 import com.usupov.autopark.model.UserPartModel;
@@ -61,13 +61,13 @@ public class Part {
         }
     }
 
-    public static List<CatetoryPartModel> getCategoryPartsList(long carId, long categoryId, Context context) {
+    public static List<CategoryPartModel> getCategoryPartsList(long carId, long categoryId, Context context) {
         String url = String.format(PartRestURIConstants.GET_ALL, carId, categoryId);
         HttpHandler handler = new HttpHandler();
         CustomHttpResponse result = handler.doHttpGet(url, context);
         if (result.getStatusCode() == HttpStatus.SC_OK) {
             Gson g = new Gson();
-            return g.fromJson(result.getBodyString(), new TypeToken<List<CatetoryPartModel>>(){}.getType());
+            return g.fromJson(result.getBodyString(), new TypeToken<List<CategoryPartModel>>(){}.getType());
         }
         return null;
     }

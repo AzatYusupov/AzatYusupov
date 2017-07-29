@@ -61,6 +61,8 @@ public class SignupActivity extends AppCompatActivity {
     private static String inn;
     private static String address;
 
+    private boolean isEmptyAtLeastOne;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,14 +114,15 @@ public class SignupActivity extends AppCompatActivity {
         });
 
 
+
     }
 
     public void register() {
         if (!validate()) {
-            if (!EmailValidator.getInstance().isValid(email))
-                onIncorrectData(getString(R.string.error_email_bolun));
-            else
+            if (isEmptyAtLeastOne)
                 onIncorrectData(getString(R.string.error_fill_register));
+            else
+                onIncorrectData(getString(R.string.error_check_input_data));
             return;
         }
 
@@ -160,7 +163,7 @@ public class SignupActivity extends AppCompatActivity {
                     case HttpStatus.SC_CONFLICT :
                         emailLayout.setError(getString(R.string.error_email_exist));
                         registerButton.setEnabled(true);
-//                        onIncorrectData(getString(R.string.error_email_exist));
+                        onIncorrectData(getString(R.string.error_email_exist));
                         break;
                     default:
                         onIncorrectData(getString(R.string.no_internet_connection));
@@ -180,6 +183,7 @@ public class SignupActivity extends AppCompatActivity {
 
     public boolean validate() {
         boolean valid = true;
+        isEmptyAtLeastOne = false;
 
         name = nameText.getText().toString().trim();
 //        lastname = lastnameText.getText().toString();
@@ -195,6 +199,7 @@ public class SignupActivity extends AppCompatActivity {
             nameLayout.setError(getString(R.string.error_name_empty));
             nameHint.setVisibility(View.GONE);
             nameView.setVisibility(View.GONE);
+            isEmptyAtLeastOne = true;
             valid = false;
         }
         else if (name.length() < 3) {
@@ -208,6 +213,7 @@ public class SignupActivity extends AppCompatActivity {
 
         if (email.isEmpty()) {
             emailLayout.setError(getString(R.string.error_email_empty));
+            isEmptyAtLeastOne = true;
             valid = false;
         }
         else if (!EmailValidator.getInstance().isValid(email)) {
@@ -221,6 +227,7 @@ public class SignupActivity extends AppCompatActivity {
             passwordHint.setVisibility(View.GONE);
             passwordView.setVisibility(View.GONE);
             passwordLayout.setError(getString(R.string.error_password_empty));
+            isEmptyAtLeastOne = true;
             valid = false;
         }
         else if (password.length() < 4 || password.length() > 12) {
@@ -235,6 +242,7 @@ public class SignupActivity extends AppCompatActivity {
         if (repassword.isEmpty()) {
             if (!password.isEmpty()) {
                 repasswordlayout.setError(getString(R.string.error_password_empty));
+                isEmptyAtLeastOne = true;
                 valid = false;
             }
         }
@@ -247,6 +255,7 @@ public class SignupActivity extends AppCompatActivity {
 
         if (company.isEmpty()) {
             companyLayout.setError(getString(R.string.error_company_empty));
+            isEmptyAtLeastOne = true;
             valid = false;
         }
         else if (company.length() < 2) {

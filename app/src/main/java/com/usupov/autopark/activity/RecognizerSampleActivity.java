@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 import com.usupov.autopark.R;
 
 import android.view.View;
+import android.view.WindowManager;
 
 /**
  * This file is a part of the samples for Yandex SpeechKit Mobile SDK.
@@ -31,6 +32,8 @@ public class RecognizerSampleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_yandex_speach);
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_yandex_spaech);
         setSupportActionBar(toolbar);

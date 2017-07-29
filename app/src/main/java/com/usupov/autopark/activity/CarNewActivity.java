@@ -6,10 +6,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -64,7 +62,6 @@ public class CarNewActivity extends BasicActivity {
 
         newCarFindBtn = (Button) findViewById(R.id.new_car_find_btn);
 
-        initToolbar();
 
         tvVinError = (TextView) findViewById(R.id.tvVinError);
         tvVinError.setTextColor(getResources().getColor(R.color.colorAccent));
@@ -138,18 +135,6 @@ public class CarNewActivity extends BasicActivity {
                     tvVinError.setText("");
                     vinEditText.setBackgroundResource(R.drawable.vin_right_border);
                 }
-            }
-        });
-    }
-    private void initToolbar() {
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_car_new);
-        toolbar.setNavigationIcon(R.drawable.ic_back_arrow);
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
             }
         });
     }

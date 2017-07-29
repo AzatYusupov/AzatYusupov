@@ -99,7 +99,7 @@
 
 
     <!--Login-->
-    <string name="error_email">Укажите действительный адрес электронной почты</string>
+    <string name="error_email">Проверьте правильность email</string>
     <string name="error_email_empty">Укажите email</string>
     <string name="error_email_bolun">Проверьте корректность email</string>
 

@@ -1,7 +1,7 @@
 package com.usupov.autopark.model;
 
 
-public class CatetoryPartModel {
+public class CategoryPartModel {
     protected long id;
     protected String title;
 
