@@ -37,21 +37,21 @@
 
         <ImageView
             android:id="@+id/change_camera"
-            android:layout_width="40dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/gallery"
             android:layout_weight="1"/>
 
         <ImageView
             android:id="@+id/capture_image_button"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/squarecamera__capture_photo_button"
             android:layout_weight="1"/>
 
         <LinearLayout
             android:id="@+id/flash"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
