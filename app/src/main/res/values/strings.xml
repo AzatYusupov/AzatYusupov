@@ -4,7 +4,8 @@
     <string name="charactersitic">Характеристики</string>
     <string name="app_name">Product card</string>
     <string name="app_car_new">Добавить автомобиль</string>
-    <string name="app_part">Узлы автомобиля</string>
+    <string name="app_part">Добавить деталь</string>
+    <string name="app_part_car">Узлы автомобиля</string>
 
     <string name="main_action_search">Поиск</string>
     <string name="main_drawer_open">Открыт</string>
@@ -93,8 +94,8 @@
     <string name="by_catalog_not_found">По таким каталогам автомобиль не найден</string>
 
     <!--Parts-->
-    <string name="part_added">Запчасть успешно добавлено!</string>
-    <string name="part_not_added">Запчасть не добавлено</string>
+    <string name="part_added">Запчасть добавлена</string>
+    <string name="part_not_added">Запчасть не добавлена</string>
     <string name="title_activity_login">Sign in</string>
 
 
@@ -136,4 +137,21 @@
 
     <!--Update User Info-->
     <string name="data_successful_saved">Данные успешно сохранены</string>
+
+    <!--Square camera-->
+    <string name="squarecamera__app_name">SquareCamera</string>
+    <string name="squarecamera__action_settings">Settings</string>
+    <string name="squarecamera__start_image_capture">Take New Picture!</string>
+    <string name="squarecamera__capture_image">Snap It!</string>
+    <string name="squarecamera__save_image">Save</string>
+    <string name="squarecamera__cancel">Cancel</string>
+    <string name="squarecamera__swap_camera">Swap</string>
+    <string name="squarecamera__flash">Flash</string>
+    <string name="squarecamera__auto_flash">Auto Flash</string>
+    <string name="squarecamera__no_flash">No Flash</string>
+    <string name="squarecamera__recapture_image">Retake Picture</string>
+    <string name="squarecamera__capturing_image">Taking New Picture</string>
+    <string name="squarecamera__done">Done</string>
+    <string name="squarecamera__request_write_storage_permission_text">Approval is needed to save your photo on your device</string>
+
 </resources>

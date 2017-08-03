@@ -12,6 +12,10 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -53,7 +57,13 @@
         <activity
             android:name=".activity.PartFoundActivity"
             android:label="@string/title_activity_part"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
         <activity
             android:name=".activity.CarFoundActivity"
             android:label="@string/app_car_new" />
@@ -117,7 +127,7 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".activity.CameraActivity">
+        <activity android:name=".activity.CameraActivitySquareOld">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -127,16 +137,15 @@
             <!-- </intent-filter> -->
         </activity>
         <activity android:name=".activity.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+             <intent-filter>
+             <action android:name="android.intent.action.MAIN" />
+             <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
         </activity>
         <activity
             android:name=".activity.BasicActivity"
-            android:label="@string/title_activity_basic"
-            >
+            android:label="@string/title_activity_basic">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -146,9 +155,12 @@
             <!-- </intent-filter> -->
         </activity>
         <activity android:name=".activity.ResetPasswordActivity" />
-        <activity android:name=".activity.UpdateActivity" android:label="Личные данные">
+        <activity
+            android:name=".activity.UpdateActivity"
+            android:label="Личные данные"></activity>
 
-        </activity>
+        <activity android:name=".squarecamera.CameraActivity"></activity>
+        <activity android:name=".squarecamera.RuntimePermissionActivity"></activity>
     </application>
 
 </manifest>

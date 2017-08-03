@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.StrictMode;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -15,7 +17,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,9 +25,12 @@ import com.usupov.autopark.R;
 import com.usupov.autopark.config.PartRestURIConstants;
 import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.model.PartModel;
+import com.usupov.autopark.service.ImageProcessService;
+import com.usupov.autopark.squarecamera.CameraActivity;
 
 import org.apache.http.HttpStatus;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -36,10 +40,9 @@ public class PartFoundActivity extends AppCompatActivity {
     private Bitmap mCameraBitmap;
     LinearLayout linLayoutPhotoParts;
     LayoutInflater inflater;
-    private static int carId;
-    private static int categoryId;
     private static ArrayList<String> photoList;
     private static PartModel part;
+    private final int PART_PICTURE_SIZE = 500;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +75,12 @@ public class PartFoundActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
     private void initBtnSavePartIn() {
         Button btnSave = (Button) findViewById(R.id.save_part_in);
@@ -142,51 +151,20 @@ public class PartFoundActivity extends AppCompatActivity {
                     mCameraBitmap.recycle();
                     mCameraBitmap = null;
                 }
-                Bundle extras = data.getExtras();
 
-                final String imagePath = extras.getString(CameraActivityOld.EXTRA_CAMERA_DATA);
+                Uri photoUri = data.getData();
+                System.out.println(photoUri.getPath());
+                final String imagePath = photoUri.getPath();
                 if (imagePath != null && !imagePath.equals("")) {
-                    RelativeLayout layout = (RelativeLayout) findViewById(R.id.photoCarField);
-//                    layout.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
 
-//                    layout.setVisibility(View.VISIBLE);
+                    Bitmap bitmap = null;
+                    try {
+                        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
-                    // Get the dimensions of the bitmap
-//                    BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-//                    bmOptions.inJustDecodeBounds = true;
-//                    BitmapFactory.decodeFile(imagePath, bmOptions);
-
-                    int targetH = dpToPx(150);//mCameraImageView.getWidth();
-                    int targetW = dpToPx(1);
-
-
-
-//                    int photoW = bmOptions.outWidth;
-//                    int photoH = bmOptions.outHeight;
-
-//                    if (photoH > photoW) {
-//                        targetW = 1;//mCameraImageView.getWidth();
-//                        targetH = 300;
-//                    }
-                    // Determine how much to scale down the image
-//                    int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-
-                    // Decode the image file into a Bitmap sized to fill the View
-//                    bmOptions.inJustDecodeBounds = false;
-//                    bmOptions.inSampleSize = scaleFactor;
-//                    bmOptions.inPurgeable = true;
-
-//                    Bitmap bitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
-                    Bitmap bitmap = resizeBitmap(imagePath, targetW, targetH);
-
-//                    ImageView mCameraImageView = (ImageView)findViewById(R.id.image_part_in);
-
-//                    mCameraImageView.setImageBitmap(bitmap);
-
-//                    ImageView closeCarPhoto = (ImageView) findViewById(R.id.closeCarPhoto);
-//                    closeCarPhoto.setVisibility(View.VISIBLE);
-
-//                    mCameraImageView.setVisibility(View.VISIBLE);
+                    bitmap = ImageProcessService.getResizedBitmap(bitmap, PART_PICTURE_SIZE, PART_PICTURE_SIZE);
 
                     inflater = getLayoutInflater();
                     View viev = inflater.inflate(R.layout.item_part_in, null, false);
@@ -211,10 +189,7 @@ public class PartFoundActivity extends AppCompatActivity {
             }
         }
     }
-    private int dpToPx(int dp) {
-        float density = getApplicationContext().getResources().getDisplayMetrics().density;
-        return Math.round((float)dp * density);
-    }
+
     public Bitmap resizeBitmap(String photoPath, int targetW, int targetH) {
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;

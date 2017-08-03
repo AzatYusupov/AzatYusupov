@@ -37,10 +37,10 @@
                 android:textColor="@android:color/black"
                 />
             <EditText
-                android:digits="0123456789 QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm"
+                android:digits="0123456789 -QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textCapCharacters|textNoSuggestions"
+                android:inputType="textCapCharacters|textNoSuggestions|textVisiblePassword"
                 android:ems="@android:integer/config_longAnimTime"
                 android:id="@+id/edittext_article_number"
                 android:padding="10dp"

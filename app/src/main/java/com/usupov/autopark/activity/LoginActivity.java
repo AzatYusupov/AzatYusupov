@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.StrictMode;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -55,6 +56,7 @@ public class LoginActivity extends AppCompatActivity {
     TextView textErrorOrPasswordError;
 
     private boolean isEmpty;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +66,11 @@ public class LoginActivity extends AppCompatActivity {
 
         String token = HttpHandler.getLocalServerToken(getApplicationContext());
         if (token != null) {
+            Intent intent = new Intent(this, PartListActivity.class);
+            Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
+                    android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+            startActivity(intent, bundle);
             finish();
-            startActivity(new Intent(this, PartListActivity.class));
             return;
         }
 
@@ -91,7 +96,9 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);
+                Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
+                        android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+                startActivityForResult(intent, REQUEST_SIGNUP, bundle);
             }
         });
 
@@ -166,7 +173,7 @@ public class LoginActivity extends AppCompatActivity {
 
         loginButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(this,
+        progressDialog = new ProgressDialog(this,
                 R.style.AppCompatAlertDialogStyle);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage(getString(R.string.authoring));
@@ -198,13 +205,19 @@ public class LoginActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                     }
                 }, 1000);
+
     }
 
     public void onLoginSuccess() {
 
+        textErrorOrPasswordError.setText(null);
+
+        Intent intent = new Intent(LoginActivity.this, PartListActivity.class);
+        Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
+                android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+        startActivity(intent, bundle);
+
         finish();
-        startActivity(new Intent(this, PartListActivity.class));
-//        loginButton.setEnabled(true);
     }
 
     public void onLoginFailed(String message, boolean toast) {

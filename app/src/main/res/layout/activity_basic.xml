@@ -10,13 +10,9 @@
 
     <include
         layout="@layout/app_bar_basic"
+        android:id="@+id/app_bar_basic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-    <FrameLayout
-        android:id="@+id/flContent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </FrameLayout>
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="match_parent"

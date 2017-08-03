@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.StrictMode;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -157,8 +158,10 @@ public class SignupActivity extends AppCompatActivity {
                         setResult(RESULT_OK);
                         finish();
                         Intent intent = new Intent(SignupActivity.this,  CarListActivity.class);
+                        Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
+                                android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
                         intent.putExtra("name", name);
-                        startActivity(intent);
+                        startActivity(intent, bundle);
                         break;
                     case HttpStatus.SC_CONFLICT :
                         emailLayout.setError(getString(R.string.error_email_exist));
@@ -186,8 +189,6 @@ public class SignupActivity extends AppCompatActivity {
         isEmptyAtLeastOne = false;
 
         name = nameText.getText().toString().trim();
-//        lastname = lastnameText.getText().toString();
-//        phone = phoneText.getText().toString();
         email = emailText.getText().toString().trim();
         password = passwordText.getText().toString().trim();
         repassword = repasswordText.getText().toString().trim();
@@ -286,4 +287,9 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
 }

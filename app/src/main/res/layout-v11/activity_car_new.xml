@@ -34,7 +34,7 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textCapCharacters|textNoSuggestions"
+                    android:inputType="textCapCharacters|textNoSuggestions|textVisiblePassword"
                     android:ems="@android:integer/config_longAnimTime"
                     android:id="@+id/edittext_vin_number"
                     android:padding="10dp"

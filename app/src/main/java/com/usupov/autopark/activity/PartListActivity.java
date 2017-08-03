@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -78,7 +79,9 @@ public class PartListActivity extends BasicActivity {
 
                 List<CarModel> carList = Car.getCarList(getApplicationContext());
                 if (carList==null || carList.size() != 1) {
-                    startActivity(new Intent(PartListActivity.this, CarListActivity.class));
+                    Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
+                            android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+                    startActivity(new Intent(PartListActivity.this, CarListActivity.class), bundle);
                     finish();
                 }
                 else {
@@ -86,7 +89,9 @@ public class PartListActivity extends BasicActivity {
                     CarModel car = carList.get(0);
                     intent.putExtra("carName", car.getFullName());
                     intent.putExtra("carId", car.getId());
-                    startActivity(intent);
+                    Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
+                            android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+                    startActivity(intent, bundle);
                     finish();
                 }
             }

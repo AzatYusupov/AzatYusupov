@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
@@ -85,7 +86,9 @@ public class CarNewActivity extends BasicActivity {
                 Intent intent = new Intent(CarNewActivity.this, CarFoundActivity.class);
                 Gson g = new Gson();
                 intent.putExtra("car", g.toJson(car));
-                startActivityForResult(intent, REQUEST_ADD);
+                Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
+                        android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+                startActivityForResult(intent, REQUEST_ADD, bundle);
             }
         }
     };
@@ -192,7 +195,10 @@ public class CarNewActivity extends BasicActivity {
             }
             case REQUEST_ADD: {
                 if (resultCode==RESULT_OK) {
-                    startActivity(new Intent(CarNewActivity.this, CarListActivity.class));
+                    Intent intent = new Intent(CarNewActivity.this, CarListActivity.class);
+                    Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
+                            android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+                    startActivity(intent, bundle);
                     finish();
                 }
                 break;

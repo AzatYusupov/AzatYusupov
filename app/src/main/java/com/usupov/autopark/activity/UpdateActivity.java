@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -138,8 +139,10 @@ public class UpdateActivity extends BasicActivity {
                     case HttpStatus.SC_OK :
                         setResult(RESULT_OK);
                         Toast.makeText(UpdateActivity.this, getString(R.string.data_successful_saved), Toast.LENGTH_LONG).show();
+                        Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
+                                android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
                         Intent intent = new Intent(UpdateActivity.this,  CarListActivity.class);
-                        startActivity(intent);
+                        startActivity(intent, bundle);
                         finish();
                         break;
                     default:

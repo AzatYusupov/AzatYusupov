@@ -5,11 +5,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <include
-        android:id="@+id/toolbar_camera"
-        layout="@layout/toolbar_camera"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+
     <FrameLayout
         android:id="@+id/frameImage"
         android:layout_width="match_parent"
@@ -17,11 +13,12 @@
         <ImageView
             android:id="@+id/image_result_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             />
-        <SurfaceView android:id="@+id/image_preview"
+        <SurfaceView
+            android:id="@+id/image_preview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
         </SurfaceView>
     </FrameLayout>
     <LinearLayout

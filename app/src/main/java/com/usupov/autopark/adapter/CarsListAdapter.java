@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -172,7 +174,9 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
                 Intent intent = new Intent(context, PartNewActivity.class);
                 intent.putExtra("carId", carId);
                 intent.putExtra("carName", carName);
-                context.startActivity(intent);
+                Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(context,
+                        android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+                context.startActivity(intent, bundle);
             }
         });
         /*holder.overflow.setOnClickListener(new View.OnClickListener() {

@@ -2,15 +2,24 @@ package com.usupov.autopark.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -54,32 +63,35 @@ public class PartNewActivity extends BasicActivity {
     private static int leftmargin = 20;
     private ProgressBar pbPart;
     private CarCategory one0;
-    Context context;
     String carName;
     MyTask mt;
     private LinearLayout linearLayoutCatalog;
     private  ListView listViewParts;
     private EditText editTextArticle;
+    private DrawerLayout drawerLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        LayoutInflater inflater = (LayoutInflater) this.
-                getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View contenView = inflater.inflate(R.layout.activity_part_new, null, false);
-        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerLayout.addView(contenView, 0);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setCheckedItem(R.id.nav_part_add);
-
         if (!getIntent().hasExtra("carName")) {
+            LayoutInflater inflater = (LayoutInflater) this.
+                    getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            View contenView = inflater.inflate(R.layout.activity_part_new, null, false);
+            drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawerLayout.addView(contenView, 0);
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            navigationView.setCheckedItem(R.id.nav_part_add);
+
             List<CarModel> carList = Car.getCarList(getApplicationContext());
             if (carList == null || carList.isEmpty()) {
-                startActivity(new Intent(PartNewActivity.this, CarListActivity.class));
+                Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
+                        android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+                startActivity(new Intent(PartNewActivity.this, CarListActivity.class), bundle);
                 finish();
             }
             else if (carList.size()==1) {
@@ -94,10 +106,11 @@ public class PartNewActivity extends BasicActivity {
             }
         }
         else {
+            setContentView(R.layout.activity_part_new);
             carName = getIntent().getExtras().getString("carName");
             carId = getIntent().getExtras().getInt("carId");
+            initToolbar();
         }
-//        context = this;
 
         initArticleEditText();
         initVoiceBtn();
@@ -140,6 +153,8 @@ public class PartNewActivity extends BasicActivity {
     public void initArticleEditText() {
         editTextArticle = (EditText)findViewById(R.id.edittext_article_number);
         editTextArticle.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+//        editTextArticle.setRawInputType(Configuration.KEYBOARD_12KEY);
+
         editTextArticle.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -172,7 +187,7 @@ public class PartNewActivity extends BasicActivity {
                     for (int i = 0; i < names.length; i++) {
                         names[i] = artciles.get(i);
                     }
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(context,android.R.layout.simple_list_item_1, names);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_list_item_1, names);
 
                     listViewParts.setAdapter(adapter);
 
@@ -183,7 +198,9 @@ public class PartNewActivity extends BasicActivity {
                             Gson g = new Gson();
                             intent.putExtra("part", g.toJson(startsWithParts.get(position), PartModel.class));
                             intent.putExtra("car_full_name", carName);
-                            startActivityForResult(intent, RESULT_CODE_ADD_PART);
+                            Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
+                                    android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+                            startActivityForResult(intent, RESULT_CODE_ADD_PART, bundle);
                         }
                     });
                 }
@@ -193,6 +210,26 @@ public class PartNewActivity extends BasicActivity {
                 }
             }
         });
+    }
+
+    private void initToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_part_new);
+        toolbar.setTitle(getString(R.string.app_part_car));
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_back_arrow);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                finish();
+            }
+        });
+    }
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
     private void initVoiceBtn() {
 

@@ -1,8 +1,7 @@
 package com.usupov.autopark.activity;
 
-/**
- * Created by Azat on 03.02.2017.
- */
+
+
 
 import java.io.File;
 import java.io.FileOutputStream;

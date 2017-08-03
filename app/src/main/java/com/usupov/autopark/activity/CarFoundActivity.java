@@ -1,11 +1,12 @@
 package com.usupov.autopark.activity;
 
+import java.io.IOException;
 import java.util.HashMap;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -22,6 +23,8 @@ import com.usupov.autopark.R;
 import com.usupov.autopark.config.CarRestURIConstants;
 import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.model.CarModel;
+import com.usupov.autopark.service.ImageProcessService;
+import com.usupov.autopark.squarecamera.CameraActivity;
 
 import org.apache.http.HttpStatus;
 
@@ -33,6 +36,7 @@ public class CarFoundActivity extends AppCompatActivity {
     private ImageView mCameraImageView;
     private Bitmap mCameraBitmap;
     private static String imagePath;
+    private final int CAR_IMAGE_SIZE = 800;
 
     private OnClickListener mCaptureImageButtonClickListener = new OnClickListener() {
         @Override
@@ -91,39 +95,22 @@ public class CarFoundActivity extends AppCompatActivity {
                     mCameraBitmap.recycle();
                     mCameraBitmap = null;
                 }
-                Bundle extras = data.getExtras();
 
-                imagePath = extras.getString(CameraActivityOld.EXTRA_CAMERA_DATA);
+                imagePath = data.getData().getPath();
                 if (imagePath != null && !imagePath.equals("")) {
                     RelativeLayout layout = (RelativeLayout) findViewById(R.id.photoCarField);
                     layout.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
 
                     layout.setVisibility(View.VISIBLE);
 
-                    // Get the dimensions of the bitmap
-                    BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                    bmOptions.inJustDecodeBounds = true;
-                    BitmapFactory.decodeFile(imagePath, bmOptions);
-
-                    int targetW = 400;//mCameraImageView.getWidth();
-                    int targetH = 1;
-
-                    int photoW = bmOptions.outWidth;
-                    int photoH = bmOptions.outHeight;
-
-                    if (photoH > photoW) {
-                        targetW = 1;//mCameraImageView.getWidth();
-                        targetH = 400;
+                    Bitmap bitmap = null;
+                    try {
+                        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    // Determine how much to scale down the image
-                    int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
 
-                    // Decode the image file into a Bitmap sized to fill the View
-                    bmOptions.inJustDecodeBounds = false;
-                    bmOptions.inSampleSize = scaleFactor;
-                    bmOptions.inPurgeable = true;
-
-                    Bitmap bitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
+                    bitmap = ImageProcessService.getResizedBitmap(bitmap, CAR_IMAGE_SIZE, CAR_IMAGE_SIZE);
                     mCameraImageView.setImageBitmap(bitmap);
 
                     ImageView closeCarPhoto = (ImageView) findViewById(R.id.closeCarPhoto);
@@ -164,6 +151,12 @@ public class CarFoundActivity extends AppCompatActivity {
             }
         });
     }
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
 
     private void initbtnSave() {
         Button btnSave = (Button) findViewById(R.id.btn_save_car);

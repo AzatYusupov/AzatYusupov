@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.usupov.autopark.R;
@@ -27,6 +29,7 @@ public class BasicActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
+    MenuItem selectedMenuItem = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +58,9 @@ public class BasicActivity extends AppCompatActivity
         final UserModel user = UserJson.getUser(getApplicationContext());
 
         if (user==null) {
-            startActivity(new Intent(BasicActivity.this, LoginActivity.class));
+            Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
+                    android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+            startActivity(new Intent(BasicActivity.this, LoginActivity.class), bundle);
             finishAffinity();
         }
         else {
@@ -68,7 +73,9 @@ public class BasicActivity extends AppCompatActivity
                 Intent intent = new Intent(BasicActivity.this, UpdateActivity.class);
                 Gson g = new Gson();
                 intent.putExtra("user", g.toJson(user, UserModel.class));
-                startActivity(intent);
+                Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
+                        android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+                startActivity(intent, bundle);
                 finishAffinity();
             }
         });
@@ -81,6 +88,64 @@ public class BasicActivity extends AppCompatActivity
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
+
+        drawer.setDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+
+                MenuItem item = selectedMenuItem;
+                if (item==null)
+                    return;
+                final int id = item.getItemId();
+                if (item.isChecked()) {
+                    return;
+                }
+
+                item.setChecked(true);
+
+                Class targetClass = null;
+                switch (id) {
+                    case  R.id.nav_car_add :
+                        targetClass = CarNewActivity.class; break;
+                    case R.id.nav_part_add :
+                        targetClass = PartNewActivity.class; break;
+                    case R.id.nav_parts :
+                        targetClass = PartListActivity.class; break;
+                    case R.id.nav_car_list :
+                        targetClass = CarListActivity.class; break;
+                    case R.id.nav_logout :
+                        HttpHandler.removeAutToken(getApplicationContext()); targetClass = LoginActivity.class; break;
+                    case R.id.nav_settings :
+                        break;
+                    default:
+                        break;
+                }
+
+                if (targetClass != null) {
+                    Intent intent = new Intent(BasicActivity.this, targetClass);
+                    Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
+                            android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+                    startActivity(intent, bundle);
+                    finish();
+                }
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
+
         toggle.syncState();
     }
 
@@ -98,55 +163,13 @@ public class BasicActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
-        final int id = item.getItemId();
 
-//        Class fragmentClass = null;
+        selectedMenuItem = item;
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
-        if (item.isChecked())
-            return true;
-        item.setChecked(true);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (id == R.id.nav_car_add) {
-                    startActivity(new Intent(BasicActivity.this, CarNewActivity.class));
-                }
-                else if (id == R.id.nav_part_add) {
-                    startActivity(new Intent(BasicActivity.this, PartNewActivity.class));
-                }
-                else if (id == R.id.nav_parts) {
-                    startActivity(new Intent(BasicActivity.this, PartListActivity.class));
-                }
-                else if (id == R.id.nav_car_list) {
-                    startActivity(new Intent(BasicActivity.this, CarListActivity.class));
-                }
-                else if (id == R.id.nav_settings) {
-
-                }
-                else if (id == R.id.nav_logout) {
-                    HttpHandler.removeAutToken(getApplicationContext());
-                    startActivity(new Intent(BasicActivity.this, LoginActivity.class));
-                }
-            }
-        }, 300);
-
-//        Fragment fragment = null;
-//        try {
-//            fragment = (Fragment) fragmentClass.newInstance();
-//        } catch (InstantiationException e) {
-//            e.printStackTrace();
-//        } catch (IllegalAccessException e) {
-//            e.printStackTrace();
-//        }
-//
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-        if (id != R.id.nav_settings)
-            finish();
-        return true;
+        return false;
     }
+
 }

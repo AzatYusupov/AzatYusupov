@@ -9,7 +9,7 @@
         <item
             android:id="@+id/nav_part_add"
             android:icon="@drawable/ic_stat_menu_part"
-            android:title="Добавить запчасть"
+            android:title="Добавить деталь"
             />
     </group>
     <group android:checkableBehavior="all" android:id="@+id/second_submenu">
