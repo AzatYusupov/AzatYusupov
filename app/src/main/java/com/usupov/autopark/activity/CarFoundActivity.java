@@ -2,16 +2,21 @@ package com.usupov.autopark.activity;
 
 import java.io.IOException;
 import java.util.HashMap;
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -41,10 +46,35 @@ public class CarFoundActivity extends AppCompatActivity {
     private OnClickListener mCaptureImageButtonClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            startImageCapture();
+
+            final AlertDialog.Builder dialogSelectTypeImage = new AlertDialog.Builder(CarFoundActivity.this);
+            dialogSelectTypeImage.setTitle("Фотография");
+
+            dialogSelectTypeImage.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+            String[] variants = {"Сделать снимок", "Загрузить из галереи"};
+            dialogSelectTypeImage.setSingleChoiceItems(variants, 4, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (which==0)
+                        startImageCapture();
+                    else
+                        startLoadFromGallery();
+                    dialog.dismiss();
+                }
+            });
+            dialogSelectTypeImage.show();
         }
     };
 
+    private void startLoadFromGallery() {
+        startActivityForResult(new Intent(CarFoundActivity.this, SelectImageActivity.class), TAKE_PICTURE_REQUEST_B);
+    }
     public void onClickClose(View v) {
 
         Toast toast = Toast.makeText(getApplicationContext(),

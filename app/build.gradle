@@ -105,5 +105,8 @@ dependencies {
     compile group: 'javax.inject', name: 'javax.inject', version: '1'
     compile 'com.android.support:support-annotations:24.2.0'
 
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
+
     testCompile 'junit:junit:4.12'
 }

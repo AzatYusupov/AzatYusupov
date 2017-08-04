@@ -58,11 +58,13 @@
             android:name=".activity.PartFoundActivity"
             android:label="@string/title_activity_part"
             android:theme="@style/AppTheme">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".activity.CarFoundActivity"
@@ -137,11 +139,11 @@
             <!-- </intent-filter> -->
         </activity>
         <activity android:name=".activity.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-             <intent-filter>
-             <action android:name="android.intent.action.MAIN" />
-             <category android:name="android.intent.category.LAUNCHER" />
-             </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".activity.BasicActivity"
@@ -157,10 +159,10 @@
         <activity android:name=".activity.ResetPasswordActivity" />
         <activity
             android:name=".activity.UpdateActivity"
-            android:label="Личные данные"></activity>
-
-        <activity android:name=".squarecamera.CameraActivity"></activity>
-        <activity android:name=".squarecamera.RuntimePermissionActivity"></activity>
+            android:label="Личные данные" />
+        <activity android:name=".squarecamera.CameraActivity" />
+        <activity android:name=".squarecamera.RuntimePermissionActivity" />
+        <activity android:name=".activity.SelectImageActivity"></activity>
     </application>
 
 </manifest>

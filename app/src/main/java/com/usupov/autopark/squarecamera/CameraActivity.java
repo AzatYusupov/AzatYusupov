@@ -8,6 +8,8 @@ import android.view.View;
 
 import com.usupov.autopark.R;
 
+import java.io.File;
+
 public class CameraActivity extends AppCompatActivity {
 
     public static final String TAG = CameraActivity.class.getSimpleName();
@@ -42,6 +44,7 @@ public class CameraActivity extends AppCompatActivity {
 
         finish();
     }
+
 
     public void onCancel(View view) {
         getSupportFragmentManager().popBackStack();

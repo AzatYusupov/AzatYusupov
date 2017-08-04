@@ -38,9 +38,7 @@
             android:layout_height="60dp"
             android:src="@drawable/check_circle_outline"
             android:layout_weight="1"
-
             android:layout_centerHorizontal="true"/>
-
         <!--android:background="@android:color/transparent"-->
     </LinearLayout>
 </RelativeLayout>

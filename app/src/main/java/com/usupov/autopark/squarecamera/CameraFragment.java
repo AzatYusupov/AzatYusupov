@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.usupov.autopark.R;
+import com.usupov.autopark.activity.SelectImageActivity;
 
 import java.io.IOException;
 import java.util.List;
@@ -52,6 +54,7 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback, 
     private ImageParameters mImageParameters;
 
     private CameraOrientationListener mOrientationListener;
+    public static final int SELECT_IMAGE_FROM_GALLERY = 123;
 
     public static Fragment newInstance() {
         return new CameraFragment();
@@ -135,15 +138,24 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback, 
         }
 
         final ImageView swapCameraBtn = (ImageView) view.findViewById(R.id.change_camera);
-//        swapCameraBtn.setOnClickListener(new View.OnClickListener() {
+        swapCameraBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCameraID == CameraInfo.CAMERA_FACING_FRONT) {
+                    mCameraID = getBackCameraID();
+                } else {
+                    mCameraID = getFrontCameraID();
+                }
+                restartPreview();
+            }
+        });
+//        final ImageView openGalleryBtn = (ImageView) view.findViewById(R.id.change_camera);
+//        openGalleryBtn.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                if (mCameraID == CameraInfo.CAMERA_FACING_FRONT) {
-//                    mCameraID = getBackCameraID();
-//                } else {
-//                    mCameraID = getFrontCameraID();
-//                }
-//                restartPreview();
+//                Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getActivity().getBaseContext(),
+//                        android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+//                getActivity().startActivityForResult(new Intent(getActivity(), SelectImageActivity.class), SELECT_IMAGE_FROM_GALLERY, bundle);
 //            }
 //        });
 
@@ -173,6 +185,8 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback, 
             }
         });
     }
+
+
 
     private void setupFlashMode() {
         View view = getView();

@@ -1,5 +1,6 @@
 package com.usupov.autopark.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -7,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -131,9 +133,33 @@ public class PartFoundActivity extends AppCompatActivity {
     private View.OnClickListener mCaptureImageButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            startImageCapture();
+            final AlertDialog.Builder dialogSelectTypeImage = new AlertDialog.Builder(PartFoundActivity.this);
+            dialogSelectTypeImage.setTitle("Фотография");
+
+            dialogSelectTypeImage.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+            String[] variants = {"Сделать снимок", "Загрузить из галереи"};
+            dialogSelectTypeImage.setSingleChoiceItems(variants, 4, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (which==0)
+                        startImageCapture();
+                    else
+                        startLoadFromGallery();
+                    dialog.dismiss();
+                }
+            });
+            dialogSelectTypeImage.show();
         }
     };
+    private void startLoadFromGallery() {
+        startActivityForResult(new Intent(PartFoundActivity.this, SelectImageActivity.class), TAKE_PICTURE_REQUEST_B);
+    }
     private void startImageCapture() {
         startActivityForResult(new Intent(PartFoundActivity.this, CameraActivity.class), TAKE_PICTURE_REQUEST_B);
     }
@@ -153,7 +179,7 @@ public class PartFoundActivity extends AppCompatActivity {
                 }
 
                 Uri photoUri = data.getData();
-                System.out.println(photoUri.getPath());
+
                 final String imagePath = photoUri.getPath();
                 if (imagePath != null && !imagePath.equals("")) {
 
@@ -171,7 +197,7 @@ public class PartFoundActivity extends AppCompatActivity {
                     final ImageView image = (ImageView) viev.findViewById(R.id.image_part_in);
                     final ImageView imageClose = (ImageView)viev.findViewById(R.id.image_part_in_close);
                     image.setImageBitmap(bitmap);
-                    imageClose.setImageResource(R.drawable.ysk_ic_close);
+                    imageClose.setImageResource(R.drawable.ic_action_close);
 
                     imageClose.setOnClickListener(new View.OnClickListener() {
                         @Override
