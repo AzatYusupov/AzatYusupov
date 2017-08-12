@@ -30,16 +30,11 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:weightSum="5">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:layout_marginRight="50dp"
-                    android:layout_weight="4"
-                    android:textColor="@color/colorPrimary"
-                    android:text="Рычаг подвески, передний левый"
-                    android:id="@+id/part_in_name"
-                    />
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rvPartFound"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                </android.support.v7.widget.RecyclerView>
                 <TextView
                     android:layout_weight="1"
                     android:text="XXXXXXXXX"
@@ -68,19 +63,19 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                <EditText
-                    android:inputType="text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:hint="Производитель*"
-                    android:textCursorDrawable="@drawable/primarycolor_cursor"
-                    android:imeOptions="flagNoFullscreen"
-                    android:id="@+id/part_in_manufacturer"
-                    android:background="@color/colorWhite"
-                    android:padding="15dp"
-                    />
+                <!--<EditText-->
+                    <!--android:inputType="text"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginLeft="10dp"-->
+                    <!--android:layout_marginRight="10dp"-->
+                    <!--android:hint="Производитель*"-->
+                    <!--android:textCursorDrawable="@drawable/primarycolor_cursor"-->
+                    <!--android:imeOptions="flagNoFullscreen"-->
+                    <!--android:id="@+id/part_in_manufacturer"-->
+                    <!--android:background="@color/colorWhite"-->
+                    <!--android:padding="15dp"-->
+                    <!--/>-->
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -123,14 +118,7 @@
                     android:padding="15dp"
                     android:layout_marginTop="1dp"
                     />
-                <!--
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Место на складе"
-                    android:layout_margin="10dp"
-                    android:layout_marginTop="20dp"/>
-                    -->
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -168,6 +156,7 @@
                     android:layout_marginLeft="50dp"
                     android:textAllCaps="false"
                     android:padding="12dp"
+                    android:layout_marginBottom="20dp"
                     android:fontFamily="sans-serif"
                     android:layout_marginRight="50dp"
                     android:layout_marginTop="10dp"

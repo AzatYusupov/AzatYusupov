@@ -1,8 +1,5 @@
 package com.usupov.autopark.activity;
 
-import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.StrictMode;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;

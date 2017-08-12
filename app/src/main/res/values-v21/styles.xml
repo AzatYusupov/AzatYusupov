@@ -92,4 +92,16 @@
         <item name="android:windowDisablePreview">true</item>
         <item name="android:windowIsFloating">true</item>
     </style>
+
+    <style name="AppTheme.PrimaryAccent">
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
+    <style name="EditText.PartArticle" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorHint">@android:color/darker_gray</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="colorControlNormal">@color/colorPrimary</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
+    </style>
 </resources>

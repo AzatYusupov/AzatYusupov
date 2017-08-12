@@ -3,10 +3,15 @@ package com.usupov.autopark.http;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
 
+import com.usupov.autopark.R;
 import com.usupov.autopark.config.LocalConstants;
 import com.usupov.autopark.config.PartRestURIConstants;
 import com.usupov.autopark.model.CustomHttpResponse;
+import com.usupov.autopark.service.ImageProcessService;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -24,9 +29,12 @@ import org.apache.http.protocol.HTTP;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -185,16 +193,44 @@ public class HttpHandler {
             if (sc==HttpStatus.SC_OK) {
                 String responseText = getResponseString(response);
                 try {
-                    long userPartId = Long.parseLong(responseText);
+                    String userPartId = responseText.trim();
+
                     if (filePaths != null && filePaths.size() > 0) {
-                        String url = String.format(PartRestURIConstants.ADDIMAGE, userPartId);
+                        String url = PartRestURIConstants.ADDIMAGE;
+                        System.out.println(url);
 
                         for (int i = 0; i < filePaths.size(); i++) {
+
+                            File saveImage = null;
+
                             post = new HttpPost(url);
                             entityBuilder = MultipartEntityBuilder.create();
                             entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-                            entityBuilder.addBinaryBody("file", new File(filePaths.get(i)));
+
+
+                            String filePath = filePaths.get(i);
+                            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+                            bitmap = ImageProcessService.getResizedBitmap(bitmap, 600, 600);
+                            File mediaStorageDir = new File(
+                                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                                    context.getString(R.string.app_name)
+                            );
+                            if (!mediaStorageDir.exists()) {
+                                if (!mediaStorageDir.mkdirs()) {
+                                    return null;
+                                }
+                            }
+                            String savePath =  mediaStorageDir.getPath() + File.separator + "temp.jpg";
+                            saveImage = new File(savePath);
+                            FileOutputStream os = new FileOutputStream(saveImage);
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                            os.close();
+                            entityBuilder.addBinaryBody("file", new File(savePath));
+
+
                             entityBuilder.addTextBody("cnt", i+"");
+                            entityBuilder.addTextBody("partId", userPartId);
+
                             entity = entityBuilder.build();
                             post.setEntity(entity);
                             post.setHeader(LocalConstants.TOKEN_HEADER_KEY, serverToken);
@@ -241,9 +277,31 @@ public class HttpHandler {
                 entityBuilder.addTextBody(key, params.get(key), contentType);
             }
 
+            File saveImage = null;
+            if (filePath != null && !filePath.isEmpty()) {
 
-            if (filePath != null && !filePath.isEmpty())
-                entityBuilder.addBinaryBody("file", new File(filePath));
+                Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+                bitmap = ImageProcessService.getResizedBitmap(bitmap, 600, 600);
+
+                File mediaStorageDir = new File(
+                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                        context.getString(R.string.app_name)
+                );
+
+                if (!mediaStorageDir.exists()) {
+                    if (!mediaStorageDir.mkdirs()) {
+                        return null;
+                    }
+                }
+
+                String savePath =  mediaStorageDir.getPath() + File.separator + "temp.jpg";
+                saveImage = new File(savePath);
+                FileOutputStream os = new FileOutputStream(saveImage);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                os.close();
+                entityBuilder.addBinaryBody("file", new File(savePath));
+
+            }
 
             HttpPost post = new HttpPost(urlTo);
             HttpEntity entity = entityBuilder.build();
@@ -258,6 +316,9 @@ public class HttpHandler {
             int sc = response.getStatusLine().getStatusCode();
             customHttpResponse.setStatusCode(sc);
 
+            if (saveImage != null)
+                saveImage.delete();
+
             if (sc==HttpStatus.SC_OK) {
                 String responseText = getResponseString(response);
                 customHttpResponse.setBodyString(responseText);
@@ -269,6 +330,7 @@ public class HttpHandler {
         }
 
         catch (Exception e) {
+            System.out.println("44444444444444445555555555555");
             e.printStackTrace();
         }
 

@@ -9,10 +9,14 @@ import android.view.View;
 import com.usupov.autopark.R;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class CameraActivity extends AppCompatActivity {
 
     public static final String TAG = CameraActivity.class.getSimpleName();
+
+    public static final String KEY_IMAGES = "images";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +38,13 @@ public class CameraActivity extends AppCompatActivity {
 
     public void returnPhotoUri(Uri uri) {
         Intent data = new Intent();
-        data.setData(uri);
-
+        ArrayList<String> imageList = new ArrayList<>();
+        imageList.add(uri.getPath());
+        data.putStringArrayListExtra(KEY_IMAGES, imageList);
         if (getParent() == null) {
             setResult(RESULT_OK, data);
         } else {
+
             getParent().setResult(RESULT_OK, data);
         }
 

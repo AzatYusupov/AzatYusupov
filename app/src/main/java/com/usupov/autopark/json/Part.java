@@ -8,7 +8,6 @@ import com.usupov.autopark.config.PartRestURIConstants;
 import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.model.CategoryPartModel;
 import com.usupov.autopark.model.CustomHttpResponse;
-import com.usupov.autopark.model.PartModel;
 import com.usupov.autopark.model.UserPartModel;
 
 import org.apache.http.HttpStatus;
@@ -21,17 +20,18 @@ import java.util.List;
 public class Part {
 
 
-    public static List<PartModel> searchStartWith(long carId, String statsWith, Context context) {
+    public static List<UserPartModel> searchStartWith(long carId, String statsWith, Context context) {
         HttpHandler handler = new HttpHandler();
         String url = String.format(PartRestURIConstants.SEARCH, carId, statsWith);
         try {
             String response = handler.doHttpGet(url, context).getBodyString();
             JSONArray partArray = new JSONArray(response);
-            List<PartModel> partList = new ArrayList<>();
+            List<UserPartModel> partList = new ArrayList<>();
             for (int i = 0; i < partArray.length(); i++) {
                 Gson g = new Gson();
-                PartModel part = g.fromJson(partArray.getJSONObject(i).toString(), PartModel.class);
-                part.setCarId(carId);
+                UserPartModel part = g.fromJson(partArray.getJSONObject(i).toString(), UserPartModel.class);
+                if (carId != 0)
+                    part.setCarId(carId);
                 partList.add(part);
             }
             return partList;
@@ -57,6 +57,8 @@ public class Part {
             return userPartList;
         }
         catch (Exception e) {
+            System.out.println("EEEEEEEEEE");
+            e.printStackTrace();
             return null;
         }
     }

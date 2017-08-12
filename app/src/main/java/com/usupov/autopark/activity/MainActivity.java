@@ -3,21 +3,14 @@ package com.usupov.autopark.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
-import android.graphics.Typeface;
-import android.icu.util.TimeUnit;
 import android.os.Build;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.StrictMode;
-import android.os.SystemClock;
-import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.WindowManager;
-import android.widget.TextView;
 
 import com.usupov.autopark.R;
 import com.usupov.autopark.config.LocalConstants;
@@ -62,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent, bundle);
                 finish();
             }
-        }, 3000);
+        }, 2000);
     }
 
 }

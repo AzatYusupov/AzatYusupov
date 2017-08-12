@@ -3,7 +3,8 @@ package com.usupov.autopark.model;
 public class PartModel extends CategoryPartModel {
 
     protected long categoryId;
-    protected String article;
+    protected String article, note;
+    String categoryName, parentCatName;
 
     protected long carId;
     protected String brand, status, store, comment;
@@ -58,4 +59,23 @@ public class PartModel extends CategoryPartModel {
         this.comment = comment;
     }
     public PartModel(){}
+
+    public String getNote() {
+        return this.note;
+    }
+    public String getCategoryName() {
+        return this.categoryName;
+    }
+    public String getParentCatName() {
+        return this.parentCatName;
+    }
+    public void setNote(String note) {
+        this.note = note;
+    }
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+    public void setParentCatName(String parentCatName) {
+        this.parentCatName = parentCatName;
+    }
 }

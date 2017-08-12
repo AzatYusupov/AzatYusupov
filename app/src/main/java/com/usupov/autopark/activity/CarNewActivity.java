@@ -1,9 +1,11 @@
 package com.usupov.autopark.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +36,7 @@ import com.usupov.autopark.service.SpeachRecogn;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class CarNewActivity extends BasicActivity {
 
@@ -41,6 +45,12 @@ public class CarNewActivity extends BasicActivity {
     TextView tvVinError;
     private EditText vinEditText;
     private Button newCarFindBtn;
+//    private ProgressBar progressBar;
+
+    private List<CatalogBrand> brandList;
+    private List<CatalogModel> modelList;
+    private List<CatalogYear> yearList;
+    private final int TASK_LOAD_BRAND = 1, TASK_LOAD_MODEL = 2, TASK_LOAD_YEAR = 3, TASK_LOAD_CAR_BY_VIN = 4;
 
     private int selectedBrand = -1;
     private int selectedModel = -1;
@@ -48,6 +58,11 @@ public class CarNewActivity extends BasicActivity {
     private int selectedBrandListId = -1;
     private int selectedModelLisId = -1;
     private int selectedYearListId = -1;
+
+    LoadCatalogTask loadCatalogTask;
+    ProgressDialog progressDialog;
+    private String vin;
+    private CarModel car;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +80,7 @@ public class CarNewActivity extends BasicActivity {
 
 
         tvVinError = (TextView) findViewById(R.id.tvVinError);
-        tvVinError.setTextColor(getResources().getColor(R.color.colorAccent));
+        tvVinError.setTextColor(getResources().getColor(R.color.squarecamera__red));
 
         initVoiceBtn();
         initVinEdittext();
@@ -74,6 +89,14 @@ public class CarNewActivity extends BasicActivity {
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_car_add);
+//        progressBar = (ProgressBar) findViewById(R.id.progress_select_catalog);
+
+        progressDialog = new ProgressDialog(this,
+                R.style.AppCompatAlertDialogStyle);
+        progressDialog.setIndeterminate(false);
+
+        loadCatalogTask = new LoadCatalogTask();
+        loadCatalogTask.execute(TASK_LOAD_BRAND);
 
     }
     private View.OnClickListener catalogFindBtnClick = new View.OnClickListener() {
@@ -96,7 +119,7 @@ public class CarNewActivity extends BasicActivity {
     public void initVinEdittext() {
         vinEditText = (EditText)findViewById(R.id.edittext_vin_number);
         vinEditText.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
-        vinEditText.setBackgroundResource(R.drawable.vin_right_border);
+//        vinEditText.setBackgroundResource(R.drawable.vin_right_border);
 
         vinEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -112,15 +135,23 @@ public class CarNewActivity extends BasicActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 if (vinEditText.getText().length()==17) {
-                    String vin = vinEditText.getText()+"";
-                    CarModel car = Car.getCarByVin(vin, getApplicationContext());
+                    vin = vinEditText.getText()+"";
+                    loadCatalogTask = new LoadCatalogTask();
+                    try {
+                        loadCatalogTask.execute(TASK_LOAD_CAR_BY_VIN).get();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+
                     if (car==null) {
                         tvVinError.setText(getString(R.string.error_vin));
-                        vinEditText.setBackgroundResource(R.drawable.vin_error_border);
+//                        vinEditText.setBackgroundResource(R.drawable.vin_error_border);
                     }
                     else {
                         tvVinError.setText("");
-                        vinEditText.setBackgroundResource(R.drawable.vin_right_border);
+//                        vinEditText.setBackgroundResource(R.drawable.vin_right_border);
                         Intent intent = new Intent(CarNewActivity.this, CarFoundActivity.class);
                         Gson g = new Gson();
                         intent.putExtra("car", g.toJson(car));
@@ -136,7 +167,7 @@ public class CarNewActivity extends BasicActivity {
                     else
                         vinEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_close, 0);
                     tvVinError.setText("");
-                    vinEditText.setBackgroundResource(R.drawable.vin_right_border);
+//                    vinEditText.setBackgroundResource(R.drawable.vin_right_border);
                 }
             }
         });
@@ -217,7 +248,6 @@ public class CarNewActivity extends BasicActivity {
             @Override
             public void onClick(View v) {
 
-                final List<CatalogBrand> brandList = CarCat.getBradList(getApplicationContext());
                 if (brandList==null) {
                     Toast.makeText(CarNewActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
                     return;
@@ -252,6 +282,8 @@ public class CarNewActivity extends BasicActivity {
                         selectedBrandListId = which;
                         newCarFindBtn.setVisibility(View.GONE);
                         dialog.dismiss();
+                        loadCatalogTask = new LoadCatalogTask();
+                        loadCatalogTask.execute(TASK_LOAD_MODEL);
                     }
                 });
                 builderBrand.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
@@ -269,7 +301,8 @@ public class CarNewActivity extends BasicActivity {
             public void onClick(View v) {
                 if (selectedBrand==-1)
                     return;
-                final List<CatalogModel> modelList = CarCat.getModels(selectedBrand, getApplicationContext());
+//                final List<CatalogModel> modelList = CarCat.getModels(selectedBrand, getApplicationContext());
+                yearList = null;
                 if (modelList==null) {
                     Toast.makeText(CarNewActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
                     return;
@@ -297,6 +330,8 @@ public class CarNewActivity extends BasicActivity {
                         selectedModelLisId = which;
                         newCarFindBtn.setVisibility(View.GONE);
                         dialog.dismiss();
+                        loadCatalogTask = new LoadCatalogTask();
+                        loadCatalogTask.execute(TASK_LOAD_YEAR);
                     }
                 });
                 builderModel.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
@@ -314,7 +349,7 @@ public class CarNewActivity extends BasicActivity {
             public void onClick(View v) {
                 if (selectedBrand==-1 || selectedModel==-1)
                     return;
-                final List<CatalogYear> yearList = CarCat.getYears(selectedBrand, selectedModel, getApplicationContext());
+//                final List<CatalogYear> yearList = CarCat.getYears(selectedBrand, selectedModel, getApplicationContext());
                 if (yearList==null) {
                     Toast.makeText(CarNewActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
                     return;
@@ -349,5 +384,34 @@ public class CarNewActivity extends BasicActivity {
                 builderYear.show();
             }
         });
+    }
+
+    class LoadCatalogTask extends AsyncTask<Integer, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Integer... params) {
+            int param = params[0];
+            System.out.println(param+" 898989898989994");
+            switch (param) {
+                case TASK_LOAD_BRAND : brandList = CarCat.getBradList(getApplicationContext()); break;
+                case TASK_LOAD_MODEL : yearList = null; modelList = CarCat.getModels(selectedBrand, getApplicationContext());  break;
+                case TASK_LOAD_YEAR : yearList = CarCat.getYears(selectedBrand, selectedModel, getApplicationContext()); break;
+                case TASK_LOAD_CAR_BY_VIN : car = Car.getCarByVin(vin, getApplicationContext()); break;
+                default: break;
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            super.onPostExecute(v);
+            progressDialog.dismiss();
+        }
     }
 }

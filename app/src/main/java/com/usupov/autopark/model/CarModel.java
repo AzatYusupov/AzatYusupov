@@ -32,6 +32,15 @@ public class CarModel {
         this.fullName = fullName;
         this.description = fullName;
     }
+    public static String getFullName(String brandName, String modelName, String yearName) {
+        if (brandName==null)
+            return "";
+        String fullName = brandName+" "+modelName+", "+yearName;
+        if (modelName != null && modelName.startsWith(brandName)) {
+            fullName = brandName+" "+modelName.substring(brandName.length()+1)+", "+yearName;
+        }
+        return fullName;
+    }
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;

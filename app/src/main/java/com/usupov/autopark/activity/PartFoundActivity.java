@@ -2,39 +2,43 @@ package com.usupov.autopark.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.usupov.autopark.R;
+import com.usupov.autopark.adapter.PartFoundAdapter;
 import com.usupov.autopark.config.PartRestURIConstants;
 import com.usupov.autopark.http.HttpHandler;
-import com.usupov.autopark.model.PartModel;
+import com.usupov.autopark.model.UserPartModel;
 import com.usupov.autopark.service.ImageProcessService;
 import com.usupov.autopark.squarecamera.CameraActivity;
 
 import org.apache.http.HttpStatus;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class PartFoundActivity extends AppCompatActivity {
 
@@ -43,20 +47,29 @@ public class PartFoundActivity extends AppCompatActivity {
     LinearLayout linLayoutPhotoParts;
     LayoutInflater inflater;
     private static ArrayList<String> photoList;
-    private static PartModel part;
+    private static List<UserPartModel> parts;
     private final int PART_PICTURE_SIZE = 500;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_part_found);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
+
         Gson g = new Gson();
-        part = g.fromJson(getIntent().getExtras().getString("part"), PartModel.class);
+        parts = g.fromJson(getIntent().getExtras().getString("parts"), new TypeToken<List<UserPartModel>>(){}.getType());
+        System.out.println(parts.size()+" 898989410");
         photoList = new ArrayList<>();
         initToolbar();
-        TextView tViewPartInname = (TextView) findViewById(R.id.part_in_name);
-        tViewPartInname.setText(part.getTitle());
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvPartFound);
+        PartFoundAdapter adapter = new PartFoundAdapter(this, parts, false);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getBaseContext());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(linearLayoutManager);
 
         findViewById(R.id.btn_photo_part_in).setOnClickListener(mCaptureImageButtonClickListener);
         linLayoutPhotoParts = (LinearLayout)findViewById(R.id.layout_parts_in);
@@ -69,7 +82,7 @@ public class PartFoundActivity extends AppCompatActivity {
     }
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_car_found);
-        toolbar.setTitle(getString(R.string.charactersitic) + " " + getIntent().getStringExtra("car_full_name"));
+        toolbar.setTitle("Деталь" + " " + getIntent().getStringExtra("car_full_name"));
         toolbar.setNavigationIcon(R.drawable.ic_back_arrow);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,14 +102,14 @@ public class PartFoundActivity extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText edtManufacturer = (EditText)findViewById(R.id.part_in_manufacturer);
-                String brand = edtManufacturer.getText().toString();
-                if (brand != null)
-                    brand = brand.trim();
-                if (brand==null || brand.length()==0) {
-                    Toast.makeText(PartFoundActivity.this, "Введите производител", Toast.LENGTH_LONG).show();
-                    return;
-                }
+//                EditText edtManufacturer = (EditText)findViewById(R.id.part_in_manufacturer);
+//                String brand = edtManufacturer.getText().toString();
+//                if (brand != null)
+//                    brand = brand.trim();
+//                if (brand==null || brand.length()==0) {
+//                    Toast.makeText(PartFoundActivity.this, "Введите производител", Toast.LENGTH_LONG).show();
+//                    return;
+//                }
 
                 EditText edtStatus = (EditText)findViewById(R.id.part_in_status);
                 String status = edtStatus.getText().toString();
@@ -108,11 +121,16 @@ public class PartFoundActivity extends AppCompatActivity {
                 }
                 String store = ((EditText)findViewById(R.id.part_in_store)).getText().toString();
                 String comment = ((EditText)findViewById(R.id.part_in_comment)).getText().toString();
-                String url = String.format(PartRestURIConstants.CREATE, part.getCarId(), part.getCategoryId());
+                UserPartModel first = parts.get(0);
+                String url = String.format(PartRestURIConstants.CREATE, first.getCarId(), first.getCategoryId());
 
                 HashMap<String, String> map = new HashMap<>();
-                map.put("partId", part.getId()+"");
-                map.put("brand", brand);
+                String partIdArray = "";
+                for (UserPartModel part : parts) {
+                    partIdArray += part.getId() + " ";
+                }
+                map.put("partId", partIdArray);
+//                map.put("brand", brand);
                 map.put("status", status);
                 map.put("store", store);
                 map.put("comment", comment);
@@ -170,68 +188,48 @@ public class PartFoundActivity extends AppCompatActivity {
         if (requestCode == TAKE_PICTURE_REQUEST_B) {
             if (resultCode == RESULT_OK) {
 
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
                 // Recycle the previous bitmap.
                 if (mCameraBitmap != null) {
                     mCameraBitmap.recycle();
                     mCameraBitmap = null;
                 }
 
-                Uri photoUri = data.getData();
-
-                final String imagePath = photoUri.getPath();
-                if (imagePath != null && !imagePath.equals("")) {
-
-                    Bitmap bitmap = null;
-                    try {
-                        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    bitmap = ImageProcessService.getResizedBitmap(bitmap, PART_PICTURE_SIZE, PART_PICTURE_SIZE);
-
-                    inflater = getLayoutInflater();
-                    View viev = inflater.inflate(R.layout.item_part_in, null, false);
-                    final ImageView image = (ImageView) viev.findViewById(R.id.image_part_in);
-                    final ImageView imageClose = (ImageView)viev.findViewById(R.id.image_part_in_close);
-                    image.setImageBitmap(bitmap);
-                    imageClose.setImageResource(R.drawable.ic_action_close);
-
-                    imageClose.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            image.setVisibility(View.GONE);
-                            imageClose.setVisibility(View.GONE);
-                            photoList.remove(photoList.indexOf(imagePath));
+                ArrayList<String> imageList = data.getStringArrayListExtra(CameraActivity.KEY_IMAGES);
+                Bitmap bitmap = null;
+                if (imageList != null) {
+                    for (final String imagePath : imageList) {
+                        bitmap = null;
+                        try {
+                            bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uri.fromFile(new File(imagePath)));
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-                    });
-                    linLayoutPhotoParts.addView(viev);
-                    photoList.add(imagePath);
+
+                        bitmap = ImageProcessService.getResizedBitmap(bitmap, PART_PICTURE_SIZE, PART_PICTURE_SIZE);
+
+                        inflater = getLayoutInflater();
+                        View view = inflater.inflate(R.layout.item_part_in, null, false);
+                        final ImageView image = (ImageView) view.findViewById(R.id.image_part_in);
+                        final ImageView imageClose = (ImageView) view.findViewById(R.id.image_part_in_close);
+                        image.setImageBitmap(bitmap);
+                        imageClose.setImageResource(R.drawable.ic_action_close);
+
+                        imageClose.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                image.setVisibility(View.GONE);
+                                imageClose.setVisibility(View.GONE);
+                                photoList.remove(photoList.indexOf(imagePath));
+                            }
+                        });
+                        LinearLayout.LayoutParams rightMargin = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                        rightMargin.rightMargin = 70;
+
+                        linLayoutPhotoParts.addView(view);
+                        photoList.add(imagePath);
+                    }
                 }
-            } else {
-                mCameraBitmap = null;
             }
         }
-    }
-
-    public Bitmap resizeBitmap(String photoPath, int targetW, int targetH) {
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(photoPath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        int scaleFactor = 1;
-        if ((targetW > 0) || (targetH > 0)) {
-            scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-        }
-
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true; //Deprecated API 21
-
-        return BitmapFactory.decodeFile(photoPath, bmOptions);
     }
 }

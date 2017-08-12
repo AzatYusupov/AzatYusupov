@@ -1,53 +1,82 @@
 package com.usupov.autopark.activity;
 
+import android.content.Intent;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Rect;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.View;
+import android.widget.GridView;
+import android.widget.TextView;
 
 import com.usupov.autopark.R;
-import com.usupov.autopark.adapter.AlbumsAdapter;
+import com.usupov.autopark.adapter.GalleryAdapter;
+import com.usupov.autopark.model.AlbumModel;
+import com.usupov.autopark.squarecamera.CameraActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SelectImageActivity extends AppCompatActivity {
 
-    private List<String> imageList;
-    private AlbumsAdapter adapter;
+    private List<AlbumModel> imageList;
+    private GalleryAdapter adapter;
+    private TextView readySelectedImagesBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_select_image);
 
-
         imageList = new ArrayList<>();
+        readySelectedImagesBtn = (TextView) findViewById(R.id.readySelectedImagesBtn);
+        readySelectedImagesBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<String> selectedImagesList = new ArrayList<>();
+                for (AlbumModel item : imageList) {
+                    if (item.isSelected())
+                        selectedImagesList.add(item.getImageUri());
+                }
+                Intent intent = new Intent();
+                intent.putStringArrayListExtra(CameraActivity.KEY_IMAGES, selectedImagesList);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+//        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+//        recyclerView.setHasFixedSize(true);
 
-        adapter = new AlbumsAdapter(this, imageList);
-        RecyclerView.LayoutManager layoutManager = null;
-        if (getResources().getConfiguration().orientation== Configuration.ORIENTATION_PORTRAIT)
-            layoutManager = new GridLayoutManager(this, 2);
+
+//        adapter = new AlbumsAdapter(this, imageList);
+//        RecyclerView.LayoutManager layoutManager = null;
+//        if (getResources().getConfiguration().orientation== Configuration.ORIENTATION_PORTRAIT)
+//            layoutManager = new GridLayoutManager(this, 2);
+//        else
+//            layoutManager = new GridLayoutManager(this, 4);
+
+//        recyclerView.setLayoutManager(layoutManager);
+
+//        StaggeredGridLayoutManager layoutManager2 = new StaggeredGridLayoutManager(3, OrientationHelper.VERTICAL);
+//        layoutManager2.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
+//        recyclerView.setLayoutManager(layoutManager2);
+
+//        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
+//        recyclerView.setItemAnimator(new DefaultItemAnimator());
+//        recyclerView.setAdapter(adapter);
+
+        adapter = new GalleryAdapter(SelectImageActivity.this, imageList);
+        GridView gridView = (GridView)findViewById(R.id.gridviewGallery);
+        if (getResources().getConfiguration().orientation==Configuration.ORIENTATION_PORTRAIT)
+            gridView.setNumColumns(2);
         else
-            layoutManager = new GridLayoutManager(this, 4);
-
-        recyclerView.setLayoutManager(layoutManager);
-
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
-
+            gridView.setNumColumns(3);
+        gridView.setAdapter(adapter);
         prepareAlbums();
 
 
@@ -71,12 +100,15 @@ public class SelectImageActivity extends AppCompatActivity {
                 cursor.moveToPosition(i);
                 int dataColumnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
                 //Store the path of the image
-                imageList.add(cursor.getString(dataColumnIndex));
+                imageList.add(new AlbumModel(cursor.getString(dataColumnIndex)));
+                adapter.notifyDataSetChanged();
+                if (imageList.size()==200)
+                    break;
 //                myAdapter.addImage(cursor.getString(dataColumnIndex));
             }
 // The cursor should be freed up after use with close()
             cursor.close();
-            adapter.notifyDataSetChanged();
+
         }
     }
 
@@ -119,8 +151,5 @@ public class SelectImageActivity extends AppCompatActivity {
     /**
      * Converting dp to pixel
      */
-    private int dpToPx(int dp) {
-        Resources r = getResources();
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
-    }
+
 }

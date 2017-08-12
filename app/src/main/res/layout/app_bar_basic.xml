@@ -19,8 +19,21 @@
             android:minHeight="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+            <TextView
+                android:id="@+id/nextText"
+                android:text="ДАЛЕЕ"
+                android:clickable="true"
+                android:textSize="18sp"
+                android:visibility="gone"
+                android:layout_gravity="right"
+                android:fontFamily="sans-serif"
+                android:gravity="right"
+                android:layout_marginRight="20dp"
+                android:textColor="@color/colorWhite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -2,40 +2,36 @@ package com.usupov.autopark.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
-import android.text.InputType;
 import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.usupov.autopark.R;
+import com.usupov.autopark.adapter.PartFoundAdapter;
 import com.usupov.autopark.config.CategoryRestURIConstants;
 import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.json.Car;
@@ -43,14 +39,17 @@ import com.usupov.autopark.json.Part;
 import com.usupov.autopark.model.CarCategory;
 import com.usupov.autopark.model.CarModel;
 import com.usupov.autopark.model.CategoryPartModel;
-import com.usupov.autopark.model.PartModel;
+import com.usupov.autopark.model.UserPartModel;
 import com.usupov.autopark.service.SpeachRecogn;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PartNewActivity extends BasicActivity {
 
@@ -66,9 +65,18 @@ public class PartNewActivity extends BasicActivity {
     String carName;
     MyTask mt;
     private LinearLayout linearLayoutCatalog;
-    private  ListView listViewParts;
+    private  LinearLayout listViewParts;
     private EditText editTextArticle;
     private DrawerLayout drawerLayout;
+    private TextView textAddPartManual;
+    private TextView articleError;
+
+    private TextView textNext;
+
+    public static Map<String, UserPartModel> selectedPartsMap;
+    private boolean manualInsert;
+    List<UserPartModel> partList;
+    List<CarModel> carList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,54 +85,123 @@ public class PartNewActivity extends BasicActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
+        partList = new ArrayList<>();
+        selectedPartsMap = new HashMap<>();
+
+
         if (!getIntent().hasExtra("carName")) {
             LayoutInflater inflater = (LayoutInflater) this.
                     getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            View contenView = inflater.inflate(R.layout.activity_part_new, null, false);
+            View contentView = inflater.inflate(R.layout.activity_part_new, null, false);
             drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-            drawerLayout.addView(contenView, 0);
+            drawerLayout.addView(contentView, 0);
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             navigationView.setCheckedItem(R.id.nav_part_add);
 
-            List<CarModel> carList = Car.getCarList(getApplicationContext());
-            if (carList == null || carList.isEmpty()) {
-                Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
-                        android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
-                startActivity(new Intent(PartNewActivity.this, CarListActivity.class), bundle);
-                finish();
-            }
-            else if (carList.size()==1) {
-                CarModel car = carList.get(0);
-                car.setFullName();
-                carId = car.getId();
-                carName = car.getFullName();
-            }
-            else {
-                carName = "";
-                carId = 0;
-            }
+            pbPart = (ProgressBar) findViewById(R.id.pbParst);
+            pbPart.setVisibility(View.VISIBLE);
+
+            CarListTask carListTask = new CarListTask();
+            carListTask.execute();
+
+            carName = "";
+            carId = 0;
+            textAddPartManual = (TextView) findViewById(R.id.addPartManual);
+            textAddPartManual.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(PartNewActivity.this, CarListActivity.class);
+                    Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(
+                            getBaseContext(),android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+                    startActivity(intent, bundle);
+                    finish();
+                }
+            });
+            manualInsert = true;
+            textNext = (TextView)findViewById(R.id.nextText);
         }
         else {
             setContentView(R.layout.activity_part_new);
             carName = getIntent().getExtras().getString("carName");
             carId = getIntent().getExtras().getInt("carId");
             initToolbar();
+            textNext = (TextView) findViewById(R.id.nextText1);
         }
 
+
+        textNext.setVisibility(View.VISIBLE);
+
+        textNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Gson g = new Gson();
+                List<UserPartModel> selectedParts = new ArrayList<>();
+                long maxCarId = 0;
+                for (UserPartModel part : selectedPartsMap.values()) {
+                    maxCarId = Math.max(maxCarId, part.getCarId());
+                }
+                if (maxCarId==0)
+                    return;
+                for (UserPartModel part : selectedPartsMap.values()) {
+                    if (part.getCarId()==maxCarId)
+                        selectedParts.add(part);
+                }
+
+                String jsonListPart = g.toJson(selectedParts, new TypeToken<List<UserPartModel>>(){}.getType());
+                Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
+                                    android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+                Intent intent = new Intent(PartNewActivity.this, PartFoundActivity.class);
+                UserPartModel part = selectedParts.get(0);
+                intent.putExtra("parts", jsonListPart);
+                intent.putExtra("car_full_name", CarModel.getFullName(part.getBrandName(), part.getModelName(), part.getYearName()));
+                startActivityForResult(intent, RESULT_CODE_ADD_PART, bundle);
+
+            }
+        });
+
+        articleError = (TextView) findViewById(R.id.errorArticle);
+        articleError.setTextColor(getResources().getColor(R.color.squarecamera__red));
         initArticleEditText();
         initVoiceBtn();
         linearLayoutCatalog = (LinearLayout) findViewById(R.id.lvMain);
-        listViewParts = (ListView) findViewById(R.id.lvParts);
+        listViewParts = (LinearLayout) findViewById(R.id.lvParts);
+
 
         one0 = new CarCategory("", 0, 0);
         TextView carNameText = (TextView) findViewById(R.id.part_car_name);
         carNameText.setText(carName);
         pbPart = (ProgressBar) findViewById(R.id.pbParst);
-        mt = new MyTask();
-        mt.execute();
 
+        if (!manualInsert) {
+            pbPart.setVisibility(View.VISIBLE);
+            mt = new MyTask();
+            mt.execute();
+        }
 
+    }
+    class CarListTask extends  AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            carList = Car.getCarList(getApplicationContext());
+            if (carList==null)
+                return false;
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean ok) {
+            super.onPostExecute(ok);
+            if (!ok || carList.isEmpty()) {
+                Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
+                        android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+                startActivity(new Intent(PartNewActivity.this, CarListActivity.class), bundle);
+                finish();
+            }
+            else
+                pbPart.setVisibility(View.GONE);
+        }
     }
     class MyTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -168,43 +245,75 @@ public class PartNewActivity extends BasicActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                articleError.setText("");
+
+//                editTextArticle.setBackgroundColor(getResources().getColor(R.color.colorWhite));
 
                 if (editTextArticle.getText()==null || editTextArticle.getText().length()==0)
                     editTextArticle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_voice_black, 0);
                 else
                     editTextArticle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_close, 0);
+
                 String article = editTextArticle.getText()+"".toUpperCase();
-                final List<PartModel> startsWithParts = Part.searchStartWith(carId, article.trim(), getApplicationContext());
+                if (manualInsert) {
+                    if (article.isEmpty())
+                        textAddPartManual.setVisibility(View.GONE);
+                    else
+                        textAddPartManual.setVisibility(View.VISIBLE);
+                }
+                final List<UserPartModel> startsWithParts = Part.searchStartWith(carId, article.trim(), getApplicationContext());
+
+                selectedPartsMap.clear();
+
                 if (startsWithParts != null && startsWithParts.size() > 0) {
+                    Collections.sort(startsWithParts);
                     linearLayoutCatalog.setVisibility(View.GONE);
                     listViewParts.setVisibility(View.VISIBLE);
-                    ArrayList<String> artciles = new ArrayList<>();
-                    for (PartModel partModel : startsWithParts) {
-                        artciles.add(partModel.getArticle());
-                    }
-                    System.out.println(artciles);
-                    String[]names = new String[artciles.size()];
-                    for (int i = 0; i < names.length; i++) {
-                        names[i] = artciles.get(i);
-                    }
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_list_item_1, names);
+                    listViewParts.removeAllViews();
+                    LayoutInflater inflater = getLayoutInflater();
 
-                    listViewParts.setAdapter(adapter);
+                    long lastCarId = 0;
 
-                    listViewParts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Intent intent = new Intent(PartNewActivity.this, PartFoundActivity.class);
-                            Gson g = new Gson();
-                            intent.putExtra("part", g.toJson(startsWithParts.get(position), PartModel.class));
-                            intent.putExtra("car_full_name", carName);
-                            Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
-                                    android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
-                            startActivityForResult(intent, RESULT_CODE_ADD_PART, bundle);
+                    if (startsWithParts.size() > 0)
+                        lastCarId = startsWithParts.get(0).getCarId();
+                    int begin = 0;
+                    for (int i = 1; i <= startsWithParts.size(); i++) {
+                        UserPartModel part = startsWithParts.get(Math.min(i, startsWithParts.size()-1));
+                        if (i==startsWithParts.size() || part.getCarId() != lastCarId) {
+                            partList = new ArrayList<>();
+                            for (int j = begin; j < i; j++) {
+                                partList.add(startsWithParts.get(j));
+                            }
+                            PartFoundAdapter myAdapter = new PartFoundAdapter(PartNewActivity.this, partList, true);
+                            View partsOneCar = inflater.inflate(R.layout.item_part_new, listViewParts, false);
+                            UserPartModel firstPart = partList.get(0);
+                            ((TextView)partsOneCar.findViewById(R.id.carName)).setText(
+                                    CarModel.getFullName(firstPart.getBrandName(), firstPart.getModelName(), firstPart.getYearName()));
+
+                            RecyclerView rvParts = (RecyclerView) partsOneCar.findViewById(R.id.rvParts);
+                            rvParts.setAdapter(myAdapter);
+//                            rvParts.setHasFixedSize(true);
+                            rvParts.setLayoutManager(new StaggeredGridLayoutManager(1, 1));
+
+//                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getBaseContext());
+//                            linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+//                            rvParts.setLayoutManager(linearLayoutManager);
+
+                            listViewParts.addView(partsOneCar);
+                            begin = i;
                         }
-                    });
+                        lastCarId = part.getCarId();
+                    }
                 }
                 else {
+                    if (!article.isEmpty()) {
+                        articleError.setText(getString(R.string.article_not_found));
+//                        editTextArticle.setBackgroundResource(R.drawable.text_box_underline_activated);
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                            editTextArticle.setElevation(6);
+//                        }
+//                        ViewCompat.setElevation(editTextArticle, 6);
+                    }
                     linearLayoutCatalog.setVisibility(View.VISIBLE);
                     listViewParts.setVisibility(View.GONE);
                 }
@@ -212,10 +321,14 @@ public class PartNewActivity extends BasicActivity {
         });
     }
 
+    public void perform_action(View v) {
+        Toast.makeText(PartNewActivity.this, ((TextView)v).getText(), Toast.LENGTH_LONG).show();
+    }
+
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_part_new);
         toolbar.setTitle(getString(R.string.app_part_car));
-        setSupportActionBar(toolbar);
+
         toolbar.setNavigationIcon(R.drawable.ic_back_arrow);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -390,13 +503,15 @@ public class PartNewActivity extends BasicActivity {
                                             @Override
                                             public void onClick(View v) {
                                                 Intent intent = new Intent(PartNewActivity.this, PartFoundActivity.class);
-                                                PartModel part = new PartModel();
+                                                UserPartModel part = new UserPartModel();
                                                 part.setCarId(carId);
                                                 part.setCategoryId(child.getId());
                                                 part.setTitle(c.getTitle());
                                                 part.setId(c.getId());
                                                 Gson g = new Gson();
-                                                intent.putExtra("part", g.toJson(part, PartModel.class));
+                                                List<UserPartModel> listPart = new ArrayList<>();
+                                                listPart.add(part);
+                                                intent.putExtra("parts", g.toJson(listPart, new TypeToken<List<UserPartModel>>(){}.getType()));
                                                 intent.putExtra("car_full_name", carName);
                                                 startActivityForResult(intent, RESULT_CODE_ADD_PART);
                                             }

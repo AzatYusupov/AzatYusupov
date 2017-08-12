@@ -2,6 +2,7 @@ package com.usupov.autopark.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -13,6 +14,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.usupov.autopark.R;
 import com.usupov.autopark.adapter.UserPartListAdapter;
@@ -21,12 +24,14 @@ import com.usupov.autopark.json.Part;
 import com.usupov.autopark.model.CarModel;
 import com.usupov.autopark.model.UserPartModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PartListActivity extends BasicActivity {
 
     private RecyclerView rvUserPartList;
     private List<UserPartModel> userPartList;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,17 +55,39 @@ public class PartListActivity extends BasicActivity {
 
         initEmptyView();
         initRecyclerView();
-        initUserPartList();
-
-
-
+        progressBar = (ProgressBar) findViewById(R.id.pbPartList);
+        progressBar.setVisibility(View.VISIBLE);
+        MyTask task = new MyTask();
+        task.execute();
     }
 
     private void initEmptyView() {
 
     }
+
+    class MyTask extends AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+
+            userPartList = Part.getUserPartList(getApplicationContext());
+            if (userPartList==null)
+                return false;
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean ok) {
+            super.onPostExecute(ok);
+            if (!ok) {
+                Toast.makeText(PartListActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+            }
+            progressBar.setVisibility(View.GONE);
+            initUserPartList();
+        }
+    }
+
     private void initUserPartList() {
-        userPartList = Part.getUserPartList(this);
         UserPartListAdapter adapter = new UserPartListAdapter(this, userPartList);
         rvUserPartList.setAdapter(adapter);
     }
@@ -99,12 +126,12 @@ public class PartListActivity extends BasicActivity {
     }
 
     private  void ifCarListEmpty() {
-        List<CarModel> carList = Car.getCarList(getApplicationContext());
-        Part.getUserPartList(this);
-        if (carList == null || carList.isEmpty()) {
-//            startActivity(new Intent(PartListActivity.this, CarListActivity.class));
-//            finish();
-        }
+//        List<CarModel> carList = Car.getCarList(getApplicationContext());
+//        Part.getUserPartList(this);
+//        if (carList == null || carList.isEmpty()) {
+////            startActivity(new Intent(PartListActivity.this, CarListActivity.class));
+////            finish();
+//        }
     }
 
 }

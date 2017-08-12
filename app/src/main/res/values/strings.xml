@@ -97,6 +97,7 @@
     <string name="part_added">Запчасть добавлена</string>
     <string name="part_not_added">Запчасть не добавлена</string>
     <string name="title_activity_login">Sign in</string>
+    <string name="article_not_found">К сожалению деталь не найдена, вы можете добавить ее вручную</string>
 
 
     <!--Login-->

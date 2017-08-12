@@ -31,12 +31,13 @@
                 android:descendantFocusability="blocksDescendants"
                 android:orientation="vertical"
                 >
-                <!--<ProgressBar-->
-                    <!--android:id="@+id/pbUerPart"-->
-                    <!--android:visibility="gone"-->
-                    <!--android:layout_gravity="center"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content" />-->
+                <ProgressBar
+                    android:id="@+id/pbPartList"
+                    android:visibility="gone"
+                    android:layout_gravity="center"
+                    android:theme="@style/AppTheme.PrimaryAccent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/list_user_part"
                     android:layout_width="match_parent"

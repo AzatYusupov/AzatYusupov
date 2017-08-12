@@ -1,16 +1,10 @@
 package com.usupov.autopark.model;
 
-/**
- * Created by Azat on 05.07.2017.
- */
 
-public class UserPartModel extends PartModel {
-    private String partName, categoryName, brandName, modelName, yearName, imageUrl;
+public class UserPartModel extends PartModel implements Comparable<UserPartModel>{
+    private String partName, brandName, modelName, yearName, imageUrl;
     public String getPartName() {
         return partName;
-    }
-    public String getCategoryName() {
-        return categoryName;
     }
     public String getImageUrl() {
         return imageUrl;
@@ -27,9 +21,6 @@ public class UserPartModel extends PartModel {
     public void setPartName(String partName) {
         this.partName = partName;
     }
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
     public void setBrandName(String brandName) {
         this.brandName = brandName;
     }
@@ -41,5 +32,14 @@ public class UserPartModel extends PartModel {
     }
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    @Override
+    public int compareTo(UserPartModel other) {
+        if (this.carId > other.carId)
+            return -1;
+        if (this.carId < other.carId)
+            return +1;
+        return 0;
     }
 }

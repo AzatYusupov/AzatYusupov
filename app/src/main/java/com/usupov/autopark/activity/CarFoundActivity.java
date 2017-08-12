@@ -1,12 +1,15 @@
 package com.usupov.autopark.activity;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
@@ -15,9 +18,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -84,7 +86,7 @@ public class CarFoundActivity extends AppCompatActivity {
         ImageView closeCarPhoto = (ImageView) findViewById(R.id.closeCarPhoto);
         closeCarPhoto.setVisibility(View.GONE);
 
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.photoCarField);
+        FrameLayout layout = (FrameLayout) findViewById(R.id.photoCarField);
         // layout.getLayoutParams().height = 0;
         layout.setVisibility(View.GONE);
 
@@ -126,30 +128,34 @@ public class CarFoundActivity extends AppCompatActivity {
                     mCameraBitmap = null;
                 }
 
-                imagePath = data.getData().getPath();
-                if (imagePath != null && !imagePath.equals("")) {
-                    RelativeLayout layout = (RelativeLayout) findViewById(R.id.photoCarField);
+                ArrayList<String> imageList = data.getStringArrayListExtra(CameraActivity.KEY_IMAGES);
+                if (imageList != null && imageList.size() > 0) {
+                    imagePath  = imageList.get(0);
+                    FrameLayout layout = (FrameLayout) findViewById(R.id.photoCarField);
                     layout.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
 
                     layout.setVisibility(View.VISIBLE);
 
                     Bitmap bitmap = null;
                     try {
-                        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
+                        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uri.fromFile(new File(imagePath)));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                    System.out.println("454545454545545544");
+                    System.out.println(bitmap.getWidth()+" "+bitmap.getHeight());
+                    System.out.println(ImageProcessService.dpToPx(bitmap.getWidth(), this)+" "+ImageProcessService.dpToPx(bitmap.getHeight(), this));
 
                     bitmap = ImageProcessService.getResizedBitmap(bitmap, CAR_IMAGE_SIZE, CAR_IMAGE_SIZE);
+                    System.out.println(bitmap.getWidth()+" "+bitmap.getHeight());
                     mCameraImageView.setImageBitmap(bitmap);
+
 
                     ImageView closeCarPhoto = (ImageView) findViewById(R.id.closeCarPhoto);
                     closeCarPhoto.setVisibility(View.VISIBLE);
 
                     mCameraImageView.setVisibility(View.VISIBLE);
                 }
-            } else {
-                mCameraBitmap = null;
             }
         }
     }
