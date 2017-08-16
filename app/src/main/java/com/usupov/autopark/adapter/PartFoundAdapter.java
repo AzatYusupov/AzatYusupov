@@ -1,6 +1,10 @@
 package com.usupov.autopark.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,11 +24,13 @@ public class PartFoundAdapter extends RecyclerView.Adapter<PartFoundAdapter.MyVi
     Context context;
     List<UserPartModel> partList;
     boolean activeSelect;
+    private int cntChecked;
 
     public PartFoundAdapter(Context context, List<UserPartModel> partList, boolean activeSelect) {
         this.context = context;
         this.partList = partList;
         this.activeSelect = activeSelect;
+        this.cntChecked = 0;
     }
 
     @Override
@@ -34,12 +40,21 @@ public class PartFoundAdapter extends RecyclerView.Adapter<PartFoundAdapter.MyVi
 
         String text = part.getParentCatName()+" | "+part.getCategoryName()+"\n"+part.getArticle()+",  "+part.getTitle()+"\n";
         String note = part.getNote();
+        if (note==null)
+            note = "";
         int ind = note.indexOf("Данные модели:");
         if (ind >= 0) {
             note = note.substring(ind);
             text += note + "\n";
         }
         holder.partName.setText(text);
+
+        if (activeSelect) {
+            if (cntChecked == 0)
+                ((PartNewActivity) context).findViewById(PartNewActivity.textNextId).setVisibility(View.INVISIBLE);
+            else
+                ((PartNewActivity) context).findViewById(PartNewActivity.textNextId).setVisibility(View.VISIBLE);
+        }
 
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,10 +66,22 @@ public class PartFoundAdapter extends RecyclerView.Adapter<PartFoundAdapter.MyVi
                 UserPartModel part = partList.get(position);
                 if (holder.checkBox.isChecked()) {
                     ((PartNewActivity)context).selectedPartsMap.put(part.getId()+" "+part.getCarId(), part);
+                    cntChecked ++;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        holder.checkBox.setButtonTintList(ContextCompat.getColorStateList(context, R.color.colorPrimary));
+                    }
                 }
                 else {
                     ((PartNewActivity)context).selectedPartsMap.remove(part.getId()+" "+part.getCarId());
+                    cntChecked --;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        holder.checkBox.setButtonTintList(ContextCompat.getColorStateList(context, R.color.colorGray));
+                    }
                 }
+                if (cntChecked==0)
+                    ((PartNewActivity) context).findViewById(PartNewActivity.textNextId).setVisibility(View.INVISIBLE);
+                else
+                    ((PartNewActivity) context).findViewById(PartNewActivity.textNextId).setVisibility(View.VISIBLE);
             }
         });
     }
@@ -73,13 +100,19 @@ public class PartFoundAdapter extends RecyclerView.Adapter<PartFoundAdapter.MyVi
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         public TextView partName;
-        public CheckBox checkBox;
+        public AppCompatCheckBox checkBox;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             partName = (TextView)itemView.findViewById(R.id.textPart);
-            checkBox = (CheckBox) itemView.findViewById(R.id.chBoxPart);
+            checkBox = (AppCompatCheckBox) itemView.findViewById(R.id.chBoxPart);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                checkBox.setButtonTintList(ContextCompat.getColorStateList(context, R.color.colorGray));
+            }
             if (!activeSelect) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    checkBox.setButtonTintList(ContextCompat.getColorStateList(context, R.color.colorPrimary));
+                }
                 checkBox.setChecked(true);
             }
         }

@@ -165,7 +165,8 @@ public class SpeachRecogn {
     }
     public static String vinSpeach(ArrayList<String> text, Context context) {
 
-
+        if (text==null)
+            return "";
 
         String res = "";
 

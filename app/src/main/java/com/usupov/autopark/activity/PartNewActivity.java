@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -33,6 +35,7 @@ import com.google.gson.reflect.TypeToken;
 import com.usupov.autopark.R;
 import com.usupov.autopark.adapter.PartFoundAdapter;
 import com.usupov.autopark.config.CategoryRestURIConstants;
+import com.usupov.autopark.fragment.RecognizerSampleFragment;
 import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.json.Car;
 import com.usupov.autopark.json.Part;
@@ -51,7 +54,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PartNewActivity extends BasicActivity {
+public class PartNewActivity extends BasicActivity implements RecognizerSampleFragment.EditNameDialogListener{
 
     static final int REQ_CODE_SPEECH_INPUT = 100;
     private static EditText numberPart;
@@ -72,6 +75,8 @@ public class PartNewActivity extends BasicActivity {
     private TextView articleError;
 
     private TextView textNext;
+
+    public static int textNextId;
 
     public static Map<String, UserPartModel> selectedPartsMap;
     private boolean manualInsert;
@@ -120,6 +125,7 @@ public class PartNewActivity extends BasicActivity {
             });
             manualInsert = true;
             textNext = (TextView)findViewById(R.id.nextText);
+            textNextId = R.id.nextText;
         }
         else {
             setContentView(R.layout.activity_part_new);
@@ -127,10 +133,11 @@ public class PartNewActivity extends BasicActivity {
             carId = getIntent().getExtras().getInt("carId");
             initToolbar();
             textNext = (TextView) findViewById(R.id.nextText1);
+            textNextId = R.id.nextText1;
         }
 
 
-        textNext.setVisibility(View.VISIBLE);
+        textNext.setVisibility(View.INVISIBLE);
 
         textNext.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,6 +187,14 @@ public class PartNewActivity extends BasicActivity {
         }
 
     }
+
+    @Override
+    public void onFinishEditDialog(String resultTextSpeech) {
+        if (resultTextSpeech.length() > 12)
+            resultTextSpeech = resultTextSpeech.substring(0, 12);
+        editTextArticle.setText(resultTextSpeech);
+    }
+
     class CarListTask extends  AsyncTask<Void, Void, Boolean> {
 
         @Override
@@ -361,8 +376,12 @@ public class PartNewActivity extends BasicActivity {
 
                     if(event.getRawX() >= (edt.getRight() - edt.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
                         if (edt.getText()==null || edt.getText().length()==0) {
-                            Intent intent = new Intent(PartNewActivity.this, RecognizerSampleActivity.class);
-                            startActivityForResult(intent, RESULT_SPEECH);
+//                            Intent intent = new Intent(PartNewActivity.this, RecognizerSampleActivity.class);
+//                            startActivityForResult(intent, RESULT_SPEECH);
+                            RecognizerSampleFragment speechDialog = RecognizerSampleFragment.newInstance(R.string.yandex_speech_article);
+                            FragmentManager manager = getSupportFragmentManager();
+                            FragmentTransaction transaction = manager.beginTransaction();
+                            speechDialog.show(transaction, "dialog");
                         }
                         else {
                             edt.setText("");

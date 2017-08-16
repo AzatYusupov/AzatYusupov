@@ -24,7 +24,6 @@ import com.usupov.autopark.json.Part;
 import com.usupov.autopark.model.CarModel;
 import com.usupov.autopark.model.UserPartModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PartListActivity extends BasicActivity {
@@ -105,7 +104,7 @@ public class PartListActivity extends BasicActivity {
             public void onClick(View v) {
 
                 List<CarModel> carList = Car.getCarList(getApplicationContext());
-                if (carList==null || carList.size() != 1) {
+                if (carList==null || carList.size()==0) {
                     Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
                             android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
                     startActivity(new Intent(PartListActivity.this, CarListActivity.class), bundle);
@@ -113,9 +112,6 @@ public class PartListActivity extends BasicActivity {
                 }
                 else {
                     Intent intent = new Intent(PartListActivity.this, PartNewActivity.class);
-                    CarModel car = carList.get(0);
-                    intent.putExtra("carName", car.getFullName());
-                    intent.putExtra("carId", car.getId());
                     Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
                             android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
                     startActivity(intent, bundle);

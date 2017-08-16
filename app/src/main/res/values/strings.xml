@@ -66,15 +66,19 @@
     <string name="max_limit">Длина Vin номера не могут больше чем 17</string>
 
     <!--Yandex Speach-->
-    <string name="current_state_hint">Текушие состояние</string>
-    <string name="start_btn">Начать</string>
-    <string name="continue_btn">Продолжить</string>
-    <string name="stop_btn">Stop</string>
-    <string name="cancel_btn">Отменить</string>
+    <!--<string name="current_state_hint">Текушие состояние</string>-->
+    <!--<string name="start_btn">Начать</string>-->
+    <!--<string name="continue_btn">Продолжить</string>-->
+    <!--<string name="stop_btn">Stop</string>-->
+    <!--<string name="cancel_btn">Отменить</string>-->
 
-    <string name="results_hint">Результаты</string>
-    <string name="finish_btn">Закончить</string>
-    <string name="voice_volume_hint">Громкость голоса</string>
+    <!--<string name="results_hint">Результаты</string>-->
+    <!--<string name="finish_btn">Закончить</string>-->
+    <!--<string name="voice_volume_hint">Громкость голоса</string>-->
+    <string name="yandex_speech_common">Нажмите чтобы произнести запрос</string>
+    <string name="yandex_speech_vin">Скажите вин номер</string>
+    <string name="yandex_speech_article">Скажите номер запчасти</string>
+    <string name="yandex_speech_error">Ничего не найдено.\nПроизнесите текст ещё раз.</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

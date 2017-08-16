@@ -79,7 +79,12 @@
         <activity
             android:name=".activity.CarNewActivity"
             android:configChanges="keyboard|keyboardHidden|navigation"
-            android:label="@string/app_car_new" />
+            android:label="@string/app_car_new">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -94,9 +99,6 @@
         <activity
             android:name=".activity.PartNewActivity"
             android:label="@string/app_part" />
-        <activity
-            android:name=".activity.RecognizerSampleActivity"
-            android:label="Yandex Speech" />
         <activity android:name=".activity.LoginActivity">
 
             <!-- <intent-filter> -->

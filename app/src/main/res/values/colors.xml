@@ -12,9 +12,12 @@
 <color name="colorPrimaryLight">#c5cae9</color>
 <color name="bg_gradient_start">#31244e</color>
 <color name="bg_gradient_end">#6b394c</color>
-    <color name="colorWhite">#FFFFFF</color>
-    <color name="colorYellow">#CCCC00</color>
+<color name="colorDarkBlue">#000080</color>
+<color name="colorYandexSpeech">#A8A8A8</color>
+<color name="colorWhite">#FFFFFF</color>
+<color name="colorYellow">#CCCC00</color>
 
+    <color name="colorGray">#A8A8A8</color>
 
     <color name="squarecamera__red">#F0001D</color>
     <color name="squarecamera__pressed_red">#B3F0001D</color>

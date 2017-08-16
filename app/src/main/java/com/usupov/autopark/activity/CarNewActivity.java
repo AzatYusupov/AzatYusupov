@@ -9,6 +9,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
@@ -20,25 +22,23 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.usupov.autopark.R;
+import com.usupov.autopark.fragment.RecognizerSampleFragment;
 import com.usupov.autopark.json.Car;
 import com.usupov.autopark.json.CarCat;
 import com.usupov.autopark.model.CarModel;
 import com.usupov.autopark.model.CatalogBrand;
 import com.usupov.autopark.model.CatalogModel;
 import com.usupov.autopark.model.CatalogYear;
-import com.usupov.autopark.service.SpeachRecogn;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class CarNewActivity extends BasicActivity {
+public class CarNewActivity extends BasicActivity implements RecognizerSampleFragment.EditNameDialogListener {
 
     protected static final int RESULT_SPEECH = 1;
     protected static final int REQUEST_ADD = 2;
@@ -99,6 +99,7 @@ public class CarNewActivity extends BasicActivity {
         loadCatalogTask.execute(TASK_LOAD_BRAND);
 
     }
+
     private View.OnClickListener catalogFindBtnClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -190,8 +191,12 @@ public class CarNewActivity extends BasicActivity {
 
                     if(event.getRawX() >= (edt.getRight() - edt.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
                         if (edt.getText()==null || edt.getText().length()==0) {
-                            Intent intent = new Intent(CarNewActivity.this, RecognizerSampleActivity.class);
-                            startActivityForResult(intent, RESULT_SPEECH);
+
+                            FragmentManager manager = getSupportFragmentManager();
+                            RecognizerSampleFragment speechDialog = RecognizerSampleFragment.newInstance(R.string.yandex_speech_vin);
+                            FragmentTransaction transaction = manager.beginTransaction();
+                            speechDialog.setCancelable(true);
+                            speechDialog.show(transaction, "dialog");
                         }
                         else {
                             vinEditText.setText("");
@@ -212,18 +217,19 @@ public class CarNewActivity extends BasicActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
-            case RESULT_SPEECH: {
-                if (resultCode == RESULT_OK && null != data) {
-                    ArrayList<String> text = data
-                            .getStringArrayListExtra("all_results");
-                    EditText edt = (EditText) findViewById(R.id.edittext_vin_number);
-                    String edt_text = SpeachRecogn.vinSpeach(text, this).toUpperCase();
-                    if (edt_text.length() > 17)
-                        edt_text = edt_text.substring(0, 17);
-                    edt.setText(edt_text);
-                }
-                break;
-            }
+//            case RESULT_SPEECH: {
+//                System.out.println("777777777777777777777");
+//                if (resultCode == RESULT_OK && null != data) {
+//                    ArrayList<String> text = data
+//                            .getStringArrayListExtra("all_results");
+//                    EditText edt = (EditText) findViewById(R.id.edittext_vin_number);
+//                    String edt_text = SpeachRecogn.vinSpeach(text, this).toUpperCase();
+//                    if (edt_text.length() > 17)
+//                        edt_text = edt_text.substring(0, 17);
+//                    edt.setText(edt_text);
+//                }
+//                break;
+//            }
             case REQUEST_ADD: {
                 if (resultCode==RESULT_OK) {
                     Intent intent = new Intent(CarNewActivity.this, CarListActivity.class);
@@ -384,6 +390,13 @@ public class CarNewActivity extends BasicActivity {
                 builderYear.show();
             }
         });
+    }
+
+    @Override
+    public void onFinishEditDialog(String resultTextSpeech) {
+        if (resultTextSpeech.length() > 17)
+            resultTextSpeech = resultTextSpeech.substring(0, 17);
+        vinEditText.setText(resultTextSpeech);
     }
 
     class LoadCatalogTask extends AsyncTask<Integer, Void, Void> {
