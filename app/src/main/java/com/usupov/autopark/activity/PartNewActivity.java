@@ -11,7 +11,6 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -81,7 +80,11 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
     public static Map<String, UserPartModel> selectedPartsMap;
     private boolean manualInsert;
     List<UserPartModel> partList;
+    LinearLayout layoutSpeech;
     List<CarModel> carList;
+    private Button addSelectedParts;
+    private LinearLayout layoutManual;
+    private ImageView microphoneSpeech;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,8 +139,29 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
             textNextId = R.id.nextText1;
         }
 
-
+        layoutSpeech = (LinearLayout) findViewById(R.id.layoutSpeech);
+        if (!carName.isEmpty())
+            layoutSpeech.setVisibility(View.GONE);
+        layoutManual = (LinearLayout)findViewById(R.id.layoutManual);
+        microphoneSpeech = (ImageView) findViewById(R.id.microphoneSpeech);
+        microphoneSpeech.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RecognizerSampleFragment speechDialog = RecognizerSampleFragment.newInstance(R.string.yandex_speech_article);
+                FragmentManager manager = getSupportFragmentManager();
+                FragmentTransaction transaction = manager.beginTransaction();
+                speechDialog.show(transaction, "dialog");
+            }
+        });
         textNext.setVisibility(View.INVISIBLE);
+        addSelectedParts = (Button) findViewById(R.id.addSelectedParts);
+        addSelectedParts.setVisibility(View.GONE);
+        addSelectedParts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                textNext.callOnClick();
+            }
+        });
 
         textNext.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -179,13 +203,12 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
         TextView carNameText = (TextView) findViewById(R.id.part_car_name);
         carNameText.setText(carName);
         pbPart = (ProgressBar) findViewById(R.id.pbParst);
-
+        pbPart.setVisibility(View.GONE);
         if (!manualInsert) {
             pbPart.setVisibility(View.VISIBLE);
             mt = new MyTask();
             mt.execute();
         }
-
     }
 
     @Override
@@ -245,7 +268,8 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
     public void initArticleEditText() {
         editTextArticle = (EditText)findViewById(R.id.edittext_article_number);
         editTextArticle.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
-//        editTextArticle.setRawInputType(Configuration.KEYBOARD_12KEY);
+        if (!manualInsert)
+            editTextArticle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_voice_black, 0);
 
         editTextArticle.addTextChangedListener(new TextWatcher() {
             @Override
@@ -261,20 +285,26 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
             @Override
             public void afterTextChanged(Editable s) {
                 articleError.setText("");
-
-//                editTextArticle.setBackgroundColor(getResources().getColor(R.color.colorWhite));
-
-                if (editTextArticle.getText()==null || editTextArticle.getText().length()==0)
-                    editTextArticle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_voice_black, 0);
-                else
+                if (editTextArticle.getText()==null || editTextArticle.getText().length()==0) {
+                    editTextArticle.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                    if (!manualInsert)
+                        editTextArticle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_voice_black, 0);
+                    if (carName.isEmpty())
+                        layoutSpeech.setVisibility(View.VISIBLE);
+                }
+                else {
                     editTextArticle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_close, 0);
-
+                    layoutSpeech.setVisibility(View.GONE);
+                }
                 String article = editTextArticle.getText()+"".toUpperCase();
                 if (manualInsert) {
-                    if (article.isEmpty())
-                        textAddPartManual.setVisibility(View.GONE);
-                    else
-                        textAddPartManual.setVisibility(View.VISIBLE);
+                    if (article.isEmpty()) {
+                        layoutManual.setVisibility(View.GONE);
+                    }
+                    else {
+                        layoutManual.setVisibility(View.VISIBLE);
+                    }
+
                 }
                 final List<UserPartModel> startsWithParts = Part.searchStartWith(carId, article.trim(), getApplicationContext());
 
@@ -307,12 +337,8 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
 
                             RecyclerView rvParts = (RecyclerView) partsOneCar.findViewById(R.id.rvParts);
                             rvParts.setAdapter(myAdapter);
-//                            rvParts.setHasFixedSize(true);
                             rvParts.setLayoutManager(new StaggeredGridLayoutManager(1, 1));
 
-//                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getBaseContext());
-//                            linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-//                            rvParts.setLayoutManager(linearLayoutManager);
 
                             listViewParts.addView(partsOneCar);
                             begin = i;
@@ -374,17 +400,15 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
 
                 if(event.getAction() == MotionEvent.ACTION_UP) {
 
-                    if(event.getRawX() >= (edt.getRight() - edt.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                    String text = edt.getText().toString();
+                    if((!manualInsert || !text.isEmpty()) && event.getRawX() >= (edt.getRight() - edt.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
                         if (edt.getText()==null || edt.getText().length()==0) {
-//                            Intent intent = new Intent(PartNewActivity.this, RecognizerSampleActivity.class);
-//                            startActivityForResult(intent, RESULT_SPEECH);
-                            RecognizerSampleFragment speechDialog = RecognizerSampleFragment.newInstance(R.string.yandex_speech_article);
-                            FragmentManager manager = getSupportFragmentManager();
-                            FragmentTransaction transaction = manager.beginTransaction();
-                            speechDialog.show(transaction, "dialog");
+                            microphoneSpeech.callOnClick();
                         }
                         else {
                             edt.setText("");
+                            textNext.setVisibility(View.INVISIBLE);
+                            addSelectedParts.setVisibility(View.INVISIBLE);
                         }
                         return true;
                     }

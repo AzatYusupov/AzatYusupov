@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -49,6 +50,7 @@ public class PartFoundActivity extends AppCompatActivity {
     private static ArrayList<String> photoList;
     private static List<UserPartModel> parts;
     private final int PART_PICTURE_SIZE = 500;
+    private TextInputLayout layoutStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +61,6 @@ public class PartFoundActivity extends AppCompatActivity {
 
         Gson g = new Gson();
         parts = g.fromJson(getIntent().getExtras().getString("parts"), new TypeToken<List<UserPartModel>>(){}.getType());
-        System.out.println(parts.size()+" 898989410");
         photoList = new ArrayList<>();
         initToolbar();
 
@@ -78,6 +79,7 @@ public class PartFoundActivity extends AppCompatActivity {
         StrictMode.setThreadPolicy(policy);
 
         initBtnSavePartIn();
+        layoutStatus = (TextInputLayout) findViewById(R.id.layoutStatus);
 
     }
     private void initToolbar() {
@@ -99,26 +101,27 @@ public class PartFoundActivity extends AppCompatActivity {
     }
     private void initBtnSavePartIn() {
         Button btnSave = (Button) findViewById(R.id.save_part_in);
+        final EditText edtStatus = (EditText)findViewById(R.id.part_in_status);
+        edtStatus.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus)
+                    layoutStatus.setError(null);
+            }
+        });
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                EditText edtManufacturer = (EditText)findViewById(R.id.part_in_manufacturer);
-//                String brand = edtManufacturer.getText().toString();
-//                if (brand != null)
-//                    brand = brand.trim();
-//                if (brand==null || brand.length()==0) {
-//                    Toast.makeText(PartFoundActivity.this, "Введите производител", Toast.LENGTH_LONG).show();
-//                    return;
-//                }
 
-                EditText edtStatus = (EditText)findViewById(R.id.part_in_status);
                 String status = edtStatus.getText().toString();
                 if (status!= null)
                     status = status.trim();
                 if (status==null || status.length()==0) {
-                    Toast.makeText(PartFoundActivity.this, "Введите состоянию", Toast.LENGTH_LONG).show();
+                    Toast.makeText(PartFoundActivity.this, getString(R.string.error_status_empty_bolun), Toast.LENGTH_LONG).show();
+                    layoutStatus.setError(getString(R.string.error_status_empty));
                     return;
                 }
+                layoutStatus.setError(null);
                 String store = ((EditText)findViewById(R.id.part_in_store)).getText().toString();
                 String comment = ((EditText)findViewById(R.id.part_in_comment)).getText().toString();
                 UserPartModel first = parts.get(0);
@@ -130,7 +133,6 @@ public class PartFoundActivity extends AppCompatActivity {
                     partIdArray += part.getId() + " ";
                 }
                 map.put("partId", partIdArray);
-//                map.put("brand", brand);
                 map.put("status", status);
                 map.put("store", store);
                 map.put("comment", comment);
@@ -188,7 +190,6 @@ public class PartFoundActivity extends AppCompatActivity {
         if (requestCode == TAKE_PICTURE_REQUEST_B) {
             if (resultCode == RESULT_OK) {
 
-                // Recycle the previous bitmap.
                 if (mCameraBitmap != null) {
                     mCameraBitmap.recycle();
                     mCameraBitmap = null;

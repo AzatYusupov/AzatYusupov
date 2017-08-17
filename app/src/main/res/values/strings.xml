@@ -103,6 +103,9 @@
     <string name="title_activity_login">Sign in</string>
     <string name="article_not_found">К сожалению деталь не найдена, вы можете добавить ее вручную</string>
 
+    <string name="error_status_empty_bolun">Введите состояние</string>
+    <string name="error_status_empty">Укажите состояние детали</string>
+
 
     <!--Login-->
     <string name="error_email">Проверьте правильность email</string>

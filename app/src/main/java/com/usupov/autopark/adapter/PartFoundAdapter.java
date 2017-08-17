@@ -39,6 +39,10 @@ public class PartFoundAdapter extends RecyclerView.Adapter<PartFoundAdapter.MyVi
         UserPartModel part = partList.get(position);
 
         String text = part.getParentCatName()+" | "+part.getCategoryName()+"\n"+part.getArticle()+",  "+part.getTitle()+"\n";
+        if (part.getParentCatName()==null) {
+            text = part.getTitle();
+            holder.checkBox.setVisibility(View.GONE);
+        }
         String note = part.getNote();
         if (note==null)
             note = "";
@@ -50,10 +54,14 @@ public class PartFoundAdapter extends RecyclerView.Adapter<PartFoundAdapter.MyVi
         holder.partName.setText(text);
 
         if (activeSelect) {
-            if (cntChecked == 0)
+            if (cntChecked == 0) {
                 ((PartNewActivity) context).findViewById(PartNewActivity.textNextId).setVisibility(View.INVISIBLE);
-            else
+                ((PartNewActivity) context).findViewById(R.id.addSelectedParts).setVisibility(View.GONE);
+            }
+            else {
                 ((PartNewActivity) context).findViewById(PartNewActivity.textNextId).setVisibility(View.VISIBLE);
+                ((PartNewActivity) context).findViewById(R.id.addSelectedParts).setVisibility(View.VISIBLE);
+            }
         }
 
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
@@ -78,10 +86,14 @@ public class PartFoundAdapter extends RecyclerView.Adapter<PartFoundAdapter.MyVi
                         holder.checkBox.setButtonTintList(ContextCompat.getColorStateList(context, R.color.colorGray));
                     }
                 }
-                if (cntChecked==0)
+                if (cntChecked==0) {
                     ((PartNewActivity) context).findViewById(PartNewActivity.textNextId).setVisibility(View.INVISIBLE);
-                else
+                    ((PartNewActivity) context).findViewById(R.id.addSelectedParts).setVisibility(View.GONE);
+                }
+                else {
                     ((PartNewActivity) context).findViewById(PartNewActivity.textNextId).setVisibility(View.VISIBLE);
+                    ((PartNewActivity) context).findViewById(R.id.addSelectedParts).setVisibility(View.VISIBLE);
+                }
             }
         });
     }
