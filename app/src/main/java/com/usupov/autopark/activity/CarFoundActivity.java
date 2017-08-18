@@ -5,13 +5,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -44,6 +48,8 @@ public class CarFoundActivity extends AppCompatActivity {
     private Bitmap mCameraBitmap;
     private static String imagePath;
     private final int CAR_IMAGE_SIZE = 800;
+    private ProgressDialog progressDialog;
+    private int resultCode;
 
     private OnClickListener mCaptureImageButtonClickListener = new OnClickListener() {
         @Override
@@ -71,6 +77,8 @@ public class CarFoundActivity extends AppCompatActivity {
                 }
             });
             dialogSelectTypeImage.show();
+
+
         }
     };
 
@@ -107,10 +115,16 @@ public class CarFoundActivity extends AppCompatActivity {
         initToolbar();
 
         mCameraImageView = (ImageView) findViewById(R.id.ivPhotoCar);
-        findViewById(R.id.btnPhotoCar).setOnClickListener(mCaptureImageButtonClickListener);
+        FloatingActionButton fabPhoto = (FloatingActionButton) findViewById(R.id.btnPhotoCar);
+        fabPhoto.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.colorPrimaryLight));
+        fabPhoto.setOnClickListener(mCaptureImageButtonClickListener);
 
         initbtnSave();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        progressDialog = new ProgressDialog(this,
+                R.style.AppCompatAlertDialogStyle);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle(getString(R.string.please_wait));
     }
 
     @Override
@@ -142,12 +156,8 @@ public class CarFoundActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    System.out.println("454545454545545544");
-                    System.out.println(bitmap.getWidth()+" "+bitmap.getHeight());
-                    System.out.println(ImageProcessService.dpToPx(bitmap.getWidth(), this)+" "+ImageProcessService.dpToPx(bitmap.getHeight(), this));
 
                     bitmap = ImageProcessService.getResizedBitmap(bitmap, CAR_IMAGE_SIZE, CAR_IMAGE_SIZE);
-                    System.out.println(bitmap.getWidth()+" "+bitmap.getHeight());
                     mCameraImageView.setImageBitmap(bitmap);
 
 
@@ -199,8 +209,8 @@ public class CarFoundActivity extends AppCompatActivity {
         btnSave.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = CarRestURIConstants.CREATE;
-                HttpHandler handler = new HttpHandler();
+
+
                 HashMap<String, String> pairs = new HashMap<>();
                 if (car.getVin()!= null && car.getVin().length() > 0)
                     pairs.put("vin", car.getVin());
@@ -209,20 +219,42 @@ public class CarFoundActivity extends AppCompatActivity {
                 pairs.put("yearId", car.getYearId()+"");
 
                 try {
-                    int resultCode = handler.postWithOneFile(url, pairs, imagePath, getApplicationContext(), false).getStatusCode();
-                    imagePath = null;
-                    if (resultCode== HttpStatus.SC_OK) {
-                        Toast.makeText(CarFoundActivity.this, getString(R.string.car_success_added), Toast.LENGTH_LONG).show();
-                        setResult(RESULT_OK);
-                        finish();
-                    }
-                    else
-                        Toast.makeText(CarFoundActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+                    progressDialog.show();
+                    MyTask task = new MyTask(pairs);
+                    task.execute();
                 }
                 catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
+    }
+    class MyTask extends AsyncTask<Void, Void, Integer> {
+
+        HashMap<String, String> pairs;
+        public MyTask(HashMap<String, String> pairs) {
+            this.pairs = pairs;
+        }
+        @Override
+        protected Integer doInBackground(Void... params) {
+            HttpHandler handler = new HttpHandler();
+            String url = CarRestURIConstants.CREATE;
+            resultCode = handler.postWithOneFile(url, pairs, imagePath, getApplicationContext(), false).getStatusCode();
+            return resultCode;
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+            imagePath = null;
+            if (resultCode== HttpStatus.SC_OK) {
+                Toast.makeText(CarFoundActivity.this, getString(R.string.car_success_added), Toast.LENGTH_LONG).show();
+                setResult(RESULT_OK);
+                finish();
+            }
+            else
+                Toast.makeText(CarFoundActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+            progressDialog.dismiss();
+        }
     }
 }

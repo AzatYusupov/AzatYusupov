@@ -189,7 +189,7 @@
         android:layout_marginRight="16dp"
         android:onClick="onClickPhoto"
         android:src="@drawable/ic_action_camera"
-        android:backgroundTint="#C7CCF0"
+        android:backgroundTint="@color/colorPrimaryLight"
         app:fabSize="normal"
         android:scaleType="center"
         app:borderWidth="0dp" />

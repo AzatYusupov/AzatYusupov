@@ -1,12 +1,16 @@
 package com.usupov.autopark.activity;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -50,7 +55,10 @@ public class PartFoundActivity extends AppCompatActivity {
     private static ArrayList<String> photoList;
     private static List<UserPartModel> parts;
     private final int PART_PICTURE_SIZE = 500;
-    private TextInputLayout layoutStatus;
+    private TextView errorStatus;
+    private ProgressDialog progressDialog;
+
+    private int resultCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,14 +80,22 @@ public class PartFoundActivity extends AppCompatActivity {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        findViewById(R.id.btn_photo_part_in).setOnClickListener(mCaptureImageButtonClickListener);
+        FloatingActionButton fabPhoto = (FloatingActionButton) findViewById(R.id.btn_photo_part_in);
+        fabPhoto.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.colorPrimaryLight));
+        fabPhoto.setOnClickListener(mCaptureImageButtonClickListener);
+
         linLayoutPhotoParts = (LinearLayout)findViewById(R.id.layout_parts_in);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
         initBtnSavePartIn();
-        layoutStatus = (TextInputLayout) findViewById(R.id.layoutStatus);
+        errorStatus = (TextView) findViewById(R.id.errorStatus);
+
+        progressDialog = new ProgressDialog(this,
+                R.style.AppCompatAlertDialogStyle);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle(getString(R.string.please_wait));
 
     }
     private void initToolbar() {
@@ -105,8 +121,9 @@ public class PartFoundActivity extends AppCompatActivity {
         edtStatus.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus)
-                    layoutStatus.setError(null);
+                if (hasFocus) {
+                    errorStatus.setVisibility(View.GONE);
+                }
             }
         });
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -118,10 +135,10 @@ public class PartFoundActivity extends AppCompatActivity {
                     status = status.trim();
                 if (status==null || status.length()==0) {
                     Toast.makeText(PartFoundActivity.this, getString(R.string.error_status_empty_bolun), Toast.LENGTH_LONG).show();
-                    layoutStatus.setError(getString(R.string.error_status_empty));
+                    errorStatus.setVisibility(View.VISIBLE);
                     return;
                 }
-                layoutStatus.setError(null);
+                errorStatus.setVisibility(View.GONE);
                 String store = ((EditText)findViewById(R.id.part_in_store)).getText().toString();
                 String comment = ((EditText)findViewById(R.id.part_in_comment)).getText().toString();
                 UserPartModel first = parts.get(0);
@@ -136,17 +153,9 @@ public class PartFoundActivity extends AppCompatActivity {
                 map.put("status", status);
                 map.put("store", store);
                 map.put("comment", comment);
-                HttpHandler handler = new HttpHandler();
-                int result = handler.postWithMultipleFiles(url, map, photoList, getApplicationContext(), false).getStatusCode();
-                if (result== HttpStatus.SC_OK) {
-                    Toast.makeText(PartFoundActivity.this, getString(R.string.part_added),Toast.LENGTH_LONG).show();
-                    setResult(RESULT_OK);
-                    finish();
-                }
-                else {
-                    Toast.makeText(PartFoundActivity.this, result+"", Toast.LENGTH_LONG).show();
-                }
 
+                TaskSendParts task = new TaskSendParts(url, map);
+                task.execute();
             }
         });
     }
@@ -231,6 +240,41 @@ public class PartFoundActivity extends AppCompatActivity {
                     }
                 }
             }
+        }
+    }
+    class TaskSendParts extends AsyncTask<Void, Void, Void> {
+
+        HashMap<String, String> pairValues;
+        String url;
+        public TaskSendParts(String url, HashMap<String, String> pairValues) {
+            this.url = url;
+            this.pairValues = pairValues;
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            HttpHandler handler = new HttpHandler();
+            resultCode = handler.postWithMultipleFiles(url, pairValues, photoList, getApplicationContext(), false).getStatusCode();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (resultCode==HttpStatus.SC_OK) {
+                Toast.makeText(PartFoundActivity.this, getString(R.string.part_added),Toast.LENGTH_LONG).show();
+                setResult(RESULT_OK);
+                finish();
+            }
+            else {
+                Toast.makeText(PartFoundActivity.this, resultCode+"", Toast.LENGTH_LONG).show();
+            }
+            progressDialog.dismiss();
         }
     }
 }

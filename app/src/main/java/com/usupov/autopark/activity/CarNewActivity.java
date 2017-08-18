@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -21,6 +23,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,12 +43,10 @@ import java.util.concurrent.ExecutionException;
 
 public class CarNewActivity extends BasicActivity implements RecognizerSampleFragment.EditNameDialogListener {
 
-    protected static final int RESULT_SPEECH = 1;
     protected static final int REQUEST_ADD = 2;
     TextView tvVinError;
     private EditText vinEditText;
     private Button newCarFindBtn;
-//    private ProgressBar progressBar;
 
     private List<CatalogBrand> brandList;
     private List<CatalogModel> modelList;
@@ -63,6 +64,7 @@ public class CarNewActivity extends BasicActivity implements RecognizerSampleFra
     ProgressDialog progressDialog;
     private String vin;
     private CarModel car;
+    private ImageView clearBtnImage, voiceBtnImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,11 +91,11 @@ public class CarNewActivity extends BasicActivity implements RecognizerSampleFra
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_car_add);
-//        progressBar = (ProgressBar) findViewById(R.id.progress_select_catalog);
 
         progressDialog = new ProgressDialog(this,
                 R.style.AppCompatAlertDialogStyle);
         progressDialog.setIndeterminate(false);
+        progressDialog.setCanceledOnTouchOutside(false);
 
         loadCatalogTask = new LoadCatalogTask();
         loadCatalogTask.execute(TASK_LOAD_BRAND);
@@ -119,8 +121,10 @@ public class CarNewActivity extends BasicActivity implements RecognizerSampleFra
 
     public void initVinEdittext() {
         vinEditText = (EditText)findViewById(R.id.edittext_vin_number);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            vinEditText.setElevation(6);
+        }
         vinEditText.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
-//        vinEditText.setBackgroundResource(R.drawable.vin_right_border);
 
         vinEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -146,13 +150,10 @@ public class CarNewActivity extends BasicActivity implements RecognizerSampleFra
                         e.printStackTrace();
                     }
 
-                    if (car==null) {
+                    if (car==null)
                         tvVinError.setText(getString(R.string.error_vin));
-//                        vinEditText.setBackgroundResource(R.drawable.vin_error_border);
-                    }
                     else {
                         tvVinError.setText("");
-//                        vinEditText.setBackgroundResource(R.drawable.vin_right_border);
                         Intent intent = new Intent(CarNewActivity.this, CarFoundActivity.class);
                         Gson g = new Gson();
                         intent.putExtra("car", g.toJson(car));
@@ -163,18 +164,37 @@ public class CarNewActivity extends BasicActivity implements RecognizerSampleFra
                     vinEditText.setText(vinEditText.getText().toString().substring(0, 17));
                 }
                 else {
-                    if (vinEditText.getText()==null || vinEditText.getText().length()==0)
-                        vinEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_voice_black, 0);
-                    else
-                        vinEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_close, 0);
+//                    if (vinEditText.getText()==null || vinEditText.getText().length()==0)
+//                        vinEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_voice_black, 0);
+//                    else
+//                        vinEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_close, 0);
                     tvVinError.setText("");
-//                    vinEditText.setBackgroundResource(R.drawable.vin_right_border);
                 }
             }
         });
     }
 
     private void initVoiceBtn() {
+
+        clearBtnImage = (ImageView) findViewById(R.id.clearBtnImage);
+        clearBtnImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vinEditText.setText("");
+            }
+        });
+
+        voiceBtnImage = (ImageView) findViewById(R.id.voiceBtnImage);
+        voiceBtnImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager manager = getSupportFragmentManager();
+                RecognizerSampleFragment speechDialog = RecognizerSampleFragment.newInstance(R.string.yandex_speech_vin);
+                FragmentTransaction transaction = manager.beginTransaction();
+                speechDialog.setCancelable(true);
+                speechDialog.show(transaction, "dialog");
+            }
+        });
 
         final EditText edt = (EditText) findViewById(R.id.edittext_vin_number);
         edt.setOnTouchListener(new View.OnTouchListener() {
@@ -189,20 +209,19 @@ public class CarNewActivity extends BasicActivity implements RecognizerSampleFra
 
                 if(event.getAction() == MotionEvent.ACTION_UP) {
 
-                    if(event.getRawX() >= (edt.getRight() - edt.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        if (edt.getText()==null || edt.getText().length()==0) {
-
-                            FragmentManager manager = getSupportFragmentManager();
-                            RecognizerSampleFragment speechDialog = RecognizerSampleFragment.newInstance(R.string.yandex_speech_vin);
-                            FragmentTransaction transaction = manager.beginTransaction();
-                            speechDialog.setCancelable(true);
-                            speechDialog.show(transaction, "dialog");
-                        }
-                        else {
-                            vinEditText.setText("");
-                        }
-                        return true;
-                    }
+//                    if(event.getRawX() >= (edt.getRight() - edt.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+//                        if (edt.getText()==null || edt.getText().length()==0) {
+//                            FragmentManager manager = getSupportFragmentManager();
+//                            RecognizerSampleFragment speechDialog = RecognizerSampleFragment.newInstance(R.string.yandex_speech_vin);
+//                            FragmentTransaction transaction = manager.beginTransaction();
+//                            speechDialog.setCancelable(true);
+//                            speechDialog.show(transaction, "dialog");
+//                        }
+//                        else {
+//                            vinEditText.setText("");
+//                        }
+//                        return true;
+//                    }
                 }
                 return false;
             }
@@ -217,19 +236,7 @@ public class CarNewActivity extends BasicActivity implements RecognizerSampleFra
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
-//            case RESULT_SPEECH: {
-//                System.out.println("777777777777777777777");
-//                if (resultCode == RESULT_OK && null != data) {
-//                    ArrayList<String> text = data
-//                            .getStringArrayListExtra("all_results");
-//                    EditText edt = (EditText) findViewById(R.id.edittext_vin_number);
-//                    String edt_text = SpeachRecogn.vinSpeach(text, this).toUpperCase();
-//                    if (edt_text.length() > 17)
-//                        edt_text = edt_text.substring(0, 17);
-//                    edt.setText(edt_text);
-//                }
-//                break;
-//            }
+
             case REQUEST_ADD: {
                 if (resultCode==RESULT_OK) {
                     Intent intent = new Intent(CarNewActivity.this, CarListActivity.class);
@@ -307,7 +314,6 @@ public class CarNewActivity extends BasicActivity implements RecognizerSampleFra
             public void onClick(View v) {
                 if (selectedBrand==-1)
                     return;
-//                final List<CatalogModel> modelList = CarCat.getModels(selectedBrand, getApplicationContext());
                 yearList = null;
                 if (modelList==null) {
                     Toast.makeText(CarNewActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
@@ -355,12 +361,10 @@ public class CarNewActivity extends BasicActivity implements RecognizerSampleFra
             public void onClick(View v) {
                 if (selectedBrand==-1 || selectedModel==-1)
                     return;
-//                final List<CatalogYear> yearList = CarCat.getYears(selectedBrand, selectedModel, getApplicationContext());
                 if (yearList==null) {
                     Toast.makeText(CarNewActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
                     return;
                 }
-
                 final AlertDialog.Builder builderYear = new AlertDialog.Builder(CarNewActivity.this);
                 builderYear.setTitle(getString(R.string.select_year));
 
@@ -410,7 +414,6 @@ public class CarNewActivity extends BasicActivity implements RecognizerSampleFra
         @Override
         protected Void doInBackground(Integer... params) {
             int param = params[0];
-            System.out.println(param+" 898989898989994");
             switch (param) {
                 case TASK_LOAD_BRAND : brandList = CarCat.getBradList(getApplicationContext()); break;
                 case TASK_LOAD_MODEL : yearList = null; modelList = CarCat.getModels(selectedBrand, getApplicationContext());  break;

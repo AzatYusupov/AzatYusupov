@@ -37,24 +37,52 @@
                 android:textSize="18sp"
                 android:textColor="@android:color/black"
                 />
-            <EditText
-                android:digits="0123456789 -QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textCapCharacters|textNoSuggestions|textVisiblePassword"
-                android:ems="@android:integer/config_longAnimTime"
-                android:id="@+id/edittext_article_number"
-                android:padding="10dp"
-                android:maxLength="12"
-                android:imeOptions="flagNoFullscreen"
-                android:layout_marginRight="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:elevation="6dp"
-                android:hint="Артикул детали"
-                android:textCursorDrawable="@drawable/primarycolor_cursor"
-                android:background="@color/colorWhite"
-                />
+                android:layout_height="wrap_content">
+                <EditText
+                    android:digits="0123456789 -QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapCharacters|textNoSuggestions|textVisiblePassword"
+                    android:ems="@android:integer/config_longAnimTime"
+                    android:id="@+id/edittext_article_number"
+                    android:padding="10dp"
+                    android:maxLength="12"
+                    android:imeOptions="flagNoFullscreen"
+                    android:layout_margin="10dp"
+                    android:layout_marginTop="5dp"
+                    android:elevation="6dp"
+                    android:hint="Артикул детали"
+                    android:textCursorDrawable="@drawable/primarycolor_cursor"
+                    android:background="@color/colorWhite"
+                    />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center|right"
+                    android:gravity="right"
+                    android:translationZ="6dp"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/clearBtnImage"
+                        android:clickable="true"
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="20dp"
+                        android:src="@drawable/ic_close_black"
+                        />
+                    <ImageView
+                        android:id="@+id/voiceBtnImage"
+                        android:clickable="true"
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="16dp"
+                        android:src="@drawable/ic_keyboard_voice_black"
+                        />
+                </LinearLayout>
+            </FrameLayout>
             <TextView
                 android:id="@+id/errorArticle"
                 android:layout_width="match_parent"
@@ -67,20 +95,23 @@
                 android:id="@+id/layoutSpeech"
                 android:orientation="vertical"
                 android:gravity="center"
+                android:padding="10dp"
+                android:background="@color/colorWhite"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
-                    android:textColor="@android:color/black"
                     android:textSize="18sp"
                     android:layout_width="match_parent"
                     android:gravity="center"
+                    android:textColor="@android:color/black"
+                    android:fontFamily="sans-serif"
                     android:text="Скажите номер запчасти"
                     android:layout_height="wrap_content" />
                 <ImageView
                     android:id="@+id/microphoneSpeech"
                     android:layout_marginTop="20dp"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
+                    android:layout_width="180dp"
+                    android:layout_height="180dp"
                     android:src="@mipmap/ic_microphon_large"
                     />
             </LinearLayout>
@@ -121,10 +152,9 @@
                         android:layout_marginBottom="20dp"
                         android:background="@color/colorWhite">
                         <TextView
-                            android:id="@+id/addPartManual"
                             android:textSize="20sp"
                             android:layout_marginTop="20dp"
-                            android:layout_marginBottom="20dp"
+                            android:layout_marginBottom="25dp"
                             android:layout_gravity="center"
                             android:textColor="@android:color/black"
                             android:layout_width="match_parent"
@@ -140,7 +170,6 @@
                             android:fontFamily="sans-serif"
                             android:textColor="@color/colorWhite"
                             android:layout_marginRight="50dp"
-                            android:layout_marginTop="20dp"
                             android:layout_marginBottom="20dp"
                             android:textAllCaps="false"
                             android:textSize="18sp"

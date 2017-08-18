@@ -1,7 +1,6 @@
 package com.usupov.autopark.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatCheckBox;
@@ -9,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.usupov.autopark.R;
@@ -56,11 +54,9 @@ public class PartFoundAdapter extends RecyclerView.Adapter<PartFoundAdapter.MyVi
         if (activeSelect) {
             if (cntChecked == 0) {
                 ((PartNewActivity) context).findViewById(PartNewActivity.textNextId).setVisibility(View.INVISIBLE);
-                ((PartNewActivity) context).findViewById(R.id.addSelectedParts).setVisibility(View.GONE);
             }
             else {
                 ((PartNewActivity) context).findViewById(PartNewActivity.textNextId).setVisibility(View.VISIBLE);
-                ((PartNewActivity) context).findViewById(R.id.addSelectedParts).setVisibility(View.VISIBLE);
             }
         }
 
@@ -88,11 +84,9 @@ public class PartFoundAdapter extends RecyclerView.Adapter<PartFoundAdapter.MyVi
                 }
                 if (cntChecked==0) {
                     ((PartNewActivity) context).findViewById(PartNewActivity.textNextId).setVisibility(View.INVISIBLE);
-                    ((PartNewActivity) context).findViewById(R.id.addSelectedParts).setVisibility(View.GONE);
                 }
                 else {
                     ((PartNewActivity) context).findViewById(PartNewActivity.textNextId).setVisibility(View.VISIBLE);
-                    ((PartNewActivity) context).findViewById(R.id.addSelectedParts).setVisibility(View.VISIBLE);
                 }
             }
         });

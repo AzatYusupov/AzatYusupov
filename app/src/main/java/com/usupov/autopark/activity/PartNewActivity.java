@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.NavigationView;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -70,7 +72,6 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
     private  LinearLayout listViewParts;
     private EditText editTextArticle;
     private DrawerLayout drawerLayout;
-    private TextView textAddPartManual;
     private TextView articleError;
 
     private TextView textNext;
@@ -85,6 +86,7 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
     private Button addSelectedParts;
     private LinearLayout layoutManual;
     private ImageView microphoneSpeech;
+    private ImageView clearBtnImage, voiceBtnImage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,8 +117,9 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
 
             carName = "";
             carId = 0;
-            textAddPartManual = (TextView) findViewById(R.id.addPartManual);
-            textAddPartManual.setOnClickListener(new View.OnClickListener() {
+
+            addSelectedParts = (Button) findViewById(R.id.addSelectedParts);
+            addSelectedParts.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(PartNewActivity.this, CarListActivity.class);
@@ -154,14 +157,6 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
             }
         });
         textNext.setVisibility(View.INVISIBLE);
-        addSelectedParts = (Button) findViewById(R.id.addSelectedParts);
-        addSelectedParts.setVisibility(View.GONE);
-        addSelectedParts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                textNext.callOnClick();
-            }
-        });
 
         textNext.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,6 +204,7 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
             mt = new MyTask();
             mt.execute();
         }
+
     }
 
     @Override
@@ -268,8 +264,8 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
     public void initArticleEditText() {
         editTextArticle = (EditText)findViewById(R.id.edittext_article_number);
         editTextArticle.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
-        if (!manualInsert)
-            editTextArticle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_voice_black, 0);
+//        if (!manualInsert)
+//            editTextArticle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_voice_black, 0);
 
         editTextArticle.addTextChangedListener(new TextWatcher() {
             @Override
@@ -287,13 +283,13 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
                 articleError.setText("");
                 if (editTextArticle.getText()==null || editTextArticle.getText().length()==0) {
                     editTextArticle.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-                    if (!manualInsert)
-                        editTextArticle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_voice_black, 0);
+//                    if (!manualInsert)
+//                        editTextArticle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_voice_black, 0);
                     if (carName.isEmpty())
                         layoutSpeech.setVisibility(View.VISIBLE);
                 }
                 else {
-                    editTextArticle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_close, 0);
+//                    editTextArticle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_close, 0);
                     layoutSpeech.setVisibility(View.GONE);
                 }
                 String article = editTextArticle.getText()+"".toUpperCase();
@@ -347,14 +343,8 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
                     }
                 }
                 else {
-                    if (!article.isEmpty()) {
+                    if (!article.isEmpty())
                         articleError.setText(getString(R.string.article_not_found));
-//                        editTextArticle.setBackgroundResource(R.drawable.text_box_underline_activated);
-//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                            editTextArticle.setElevation(6);
-//                        }
-//                        ViewCompat.setElevation(editTextArticle, 6);
-                    }
                     linearLayoutCatalog.setVisibility(View.VISIBLE);
                     listViewParts.setVisibility(View.GONE);
                 }
@@ -387,6 +377,23 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
     }
     private void initVoiceBtn() {
 
+
+        clearBtnImage = (ImageView) findViewById(R.id.clearBtnImage);
+        clearBtnImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editTextArticle.setText("");
+            }
+        });
+
+        voiceBtnImage = (ImageView) findViewById(R.id.voiceBtnImage);
+        voiceBtnImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                microphoneSpeech.callOnClick();
+            }
+        });
+
         final EditText edt = (EditText) findViewById(R.id.edittext_article_number);
         edt.setOnTouchListener(new View.OnTouchListener() {
 
@@ -400,18 +407,18 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
 
                 if(event.getAction() == MotionEvent.ACTION_UP) {
 
-                    String text = edt.getText().toString();
-                    if((!manualInsert || !text.isEmpty()) && event.getRawX() >= (edt.getRight() - edt.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        if (edt.getText()==null || edt.getText().length()==0) {
-                            microphoneSpeech.callOnClick();
-                        }
-                        else {
-                            edt.setText("");
-                            textNext.setVisibility(View.INVISIBLE);
-                            addSelectedParts.setVisibility(View.INVISIBLE);
-                        }
-                        return true;
-                    }
+//                    String text = edt.getText().toString();
+//                    if((!manualInsert || !text.isEmpty()) && event.getRawX() >= (edt.getRight() - edt.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+//                        if (edt.getText()==null || edt.getText().length()==0) {
+//                            microphoneSpeech.callOnClick();
+//                        }
+//                        else {
+//                            edt.setText("");
+//                            textNext.setVisibility(View.INVISIBLE);
+////                            addSelectedParts.setVisibility(View.INVISIBLE);
+//                        }
+//                        return true;
+//                    }
                 }
                 return false;
             }

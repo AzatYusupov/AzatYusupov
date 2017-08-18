@@ -64,59 +64,45 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                <!--<EditText-->
-                    <!--android:inputType="text"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginLeft="10dp"-->
-                    <!--android:layout_marginRight="10dp"-->
-                    <!--android:hint="Производитель*"-->
-                    <!--android:textCursorDrawable="@drawable/primarycolor_cursor"-->
-                    <!--android:imeOptions="flagNoFullscreen"-->
-                    <!--android:id="@+id/part_in_manufacturer"-->
-                    <!--android:background="@color/colorWhite"-->
-                    <!--android:padding="15dp"-->
-                    <!--/>-->
 
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/layoutStatus"
-                    android:theme="@style/TextInputLayout"
+
+                <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:hint="Состояние*"
+                    android:background="@color/colorWhite"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp">
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Состояние*"
-                        android:textCursorDrawable="@drawable/primarycolor_cursor"
-                        android:imeOptions="flagNoFullscreen"
-                        android:id="@+id/part_in_status"
-                        android:inputType="text"
-                        />
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/layoutStore"
-                    android:theme="@style/TextInputLayout"
+                    android:textCursorDrawable="@drawable/primarycolor_cursor"
+                    android:imeOptions="flagNoFullscreen"
+                    android:id="@+id/part_in_status"
+                    android:padding="15dp"
+                    android:inputType="text"
+                    />
+                <TextView
+                    android:id="@+id/errorStatus"
+                    android:visibility="gone"
+                    android:text="@string/error_status_empty"
+                    android:textColor="@color/squarecamera__red"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    />
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Место на складе"
+                    android:background="@color/colorWhite"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp">
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Место на складе"
-                        android:textCursorDrawable="@drawable/primarycolor_cursor"
-                        android:imeOptions="flagNoFullscreen"
-                        android:id="@+id/part_in_store"
-                        android:inputType="text"
-                        android:layout_marginTop="1dp"
-                        />
-                </android.support.design.widget.TextInputLayout>
-
+                    android:layout_marginTop="5dp"
+                    android:textCursorDrawable="@drawable/primarycolor_cursor"
+                    android:imeOptions="flagNoFullscreen"
+                    android:id="@+id/part_in_store"
+                    android:padding="15dp"
+                    android:inputType="text"
+                    />
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="120dp"
@@ -130,18 +116,10 @@
                     android:paddingBottom="40dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="7dp"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
                     android:background="@color/colorWhite"
                     android:scrollHorizontally="false"
                     />
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@android:color/darker_gray">
-                </View>
                 <Button
                     android:layout_width="match_parent"
                     android:layout_marginLeft="50dp"
@@ -150,7 +128,7 @@
                     android:layout_marginBottom="20dp"
                     android:fontFamily="sans-serif"
                     android:layout_marginRight="50dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="10dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/save_button_bg"
                     android:layout_gravity="bottom|center"
@@ -175,7 +153,7 @@
         android:layout_marginRight="16dp"
         android:onClick="onClickPhoto"
         android:src="@drawable/ic_action_camera"
-        android:backgroundTint="#C7CCF0"
+        android:backgroundTint="@color/colorPrimaryLight"
         app:fabSize="normal"
         android:scaleType="center"
         app:borderWidth="0dp" />

@@ -56,6 +56,7 @@
     <string name="no_internet_connection">Отсутствует интернет соединение</string>
     <string name="no_internet_connection_main">Отсутствует интернет соединение. Проверьте...</string>
     <string name="again_try">Повторить попытку</string>
+    <string name="please_wait">Пожалуйста, подождите..</string>
 
     <string name="car_success_added">Автомобиль добавлен в гараж</string>
     <string name="car_not_added">Автомобиль не добавлен!</string>
