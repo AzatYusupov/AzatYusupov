@@ -49,6 +49,7 @@ public class UserPartListAdapter extends RecyclerView.Adapter<UserPartListAdapte
         holder.article.setText(userPart.getArticle());
         holder.comment.setText(userPart.getComment());
         holder.place.setText(userPart.getStore());
+        holder.status.setText(userPart.getStatus());
 
         Glide.with(context).load(Headers.getUrlWithHeaders(userPart.getImageUrl(), context.getApplicationContext())).into(holder.imageView);
     }
@@ -60,7 +61,7 @@ public class UserPartListAdapter extends RecyclerView.Adapter<UserPartListAdapte
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView carName, partName, suitFor, article, comment, place;
+        public TextView carName, partName, suitFor, article, comment, place, status;
         public View homeView;
         public ImageView imageView;
 
@@ -74,7 +75,7 @@ public class UserPartListAdapter extends RecyclerView.Adapter<UserPartListAdapte
             place = (TextView) itemView.findViewById(R.id.item_user_part_place);
             homeView = itemView.findViewById(R.id.item_user_part_home_view);
             imageView = (ImageView) itemView.findViewById(R.id.item_user_part_image);
-
+            status = (TextView) itemView.findViewById(R.id.item_user_part_status);
         }
     }
 

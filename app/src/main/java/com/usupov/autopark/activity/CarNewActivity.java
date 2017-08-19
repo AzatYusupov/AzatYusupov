@@ -121,11 +121,7 @@ public class CarNewActivity extends BasicActivity implements RecognizerSampleFra
 
     public void initVinEdittext() {
         vinEditText = (EditText)findViewById(R.id.edittext_vin_number);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            vinEditText.setElevation(6);
-        }
         vinEditText.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
-
         vinEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

@@ -20,7 +20,7 @@
             android:adjustViewBounds="true"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@mipmap/ic_launcher_steam"
+            android:src="@mipmap/ic_steam_64_without_border"
             />
         <TextView
             android:id="@+id/text_main"

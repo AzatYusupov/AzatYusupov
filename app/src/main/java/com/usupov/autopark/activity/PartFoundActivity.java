@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -32,8 +33,10 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.usupov.autopark.R;
 import com.usupov.autopark.adapter.PartFoundAdapter;
+import com.usupov.autopark.adapter.StatusListAdapter;
 import com.usupov.autopark.config.PartRestURIConstants;
 import com.usupov.autopark.http.HttpHandler;
+import com.usupov.autopark.model.StatusModel;
 import com.usupov.autopark.model.UserPartModel;
 import com.usupov.autopark.service.ImageProcessService;
 import com.usupov.autopark.squarecamera.CameraActivity;
@@ -118,14 +121,14 @@ public class PartFoundActivity extends AppCompatActivity {
     private void initBtnSavePartIn() {
         Button btnSave = (Button) findViewById(R.id.save_part_in);
         final EditText edtStatus = (EditText)findViewById(R.id.part_in_status);
-        edtStatus.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        edtStatus.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    errorStatus.setVisibility(View.GONE);
-                }
+            public void onClick(View v) {
+                errorStatus.setVisibility(View.GONE);
+                showSelectStatusDialog();
             }
         });
+
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,6 +162,39 @@ public class PartFoundActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void showSelectStatusDialog() {
+
+        final List<StatusModel> statusList = new ArrayList<>();
+        statusList.add(new StatusModel("B", R.mipmap.ic_status_b, "Восстановленный", "Товар полностью работоспособен"));
+        statusList.add(new StatusModel("100", R.mipmap.ic_status_100, "Отличное состояние", "Товар полностью работоспособен"));
+        statusList.add(new StatusModel("90", R.mipmap.ic_status_90, "Хорошее состояние", "Товар полностью работоспособен"));
+        statusList.add(new StatusModel("70", R.mipmap.ic_status_70, "Удовлетворительное состояние", "Товар в основном работоспособен"));
+        statusList.add(new StatusModel("50", R.mipmap.ic_status_50, "Под восстановление", "Без ремонта не работает"));
+        statusList.add(new StatusModel("30", R.mipmap.ic_status_30, "Ремонтный набор", "Товар не работосопобен"));
+
+        StatusListAdapter adapter = new StatusListAdapter(this, statusList);
+        final AlertDialog dialog = new AlertDialog.Builder(this).setAdapter(adapter, null).create();
+        dialog.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ((EditText)findViewById(R.id.part_in_status)).setText(statusList.get(position).getTitle());
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+
+//        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//
+//                dialog.dismiss();
+//            }
+//        });
+//        builder.create();
+//        builder.show();
+    }
+
     private View.OnClickListener mCaptureImageButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {

@@ -20,21 +20,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
-                android:textSize="14sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
                 android:text="Запчасть к "
                 android:layout_gravity="left"
+                style="@style/mediumTextPrimary"
                 />
             <TextView
-                android:textSize="14sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorPrimary"
                 android:id="@+id/item_user_part_car_name"
                 android:text="CarName"
                 android:layout_gravity="left"
+                style="@style/mediumTextPrimary"
+                android:textColor="@color/colorPrimary"
                 />
         </LinearLayout>
         <TextView
@@ -42,15 +41,13 @@
             android:layout_height="wrap_content"
             android:id="@+id/item_user_part_part_name"
             android:text="PartName"
-            android:textSize="16sp"
-            android:textColor="@android:color/black"
-            android:textStyle="normal"
-            android:gravity="center"
+            style="@style/tittleText"
             />
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:weightSum="4"
+            android:layout_marginTop="3dp"
             android:layout_height="wrap_content">
             <LinearLayout
                 android:layout_weight="3"
@@ -59,38 +56,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
-                    android:textSize="15sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
                     android:text="Подходит для:"
+                    style="@style/mediumTextSecondary"
                     />
                 <TextView
-                    android:textSize="14sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/item_user_part_suit"
-                    android:textColor="@android:color/black"
                     android:text="Hyundai Coupe II (GK) (2002–2007)"
                     android:layout_gravity="left"
+                    style="@style/mediumTextPrimary"
                     />
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:textSize="15sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Номер: "
+                        style="@style/mediumTextSecondary"
                         />
                     <TextView
-                        android:textSize="15sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
                         android:id="@+id/item_user_part_article"
                         android:text="60729300"
+                        style="@style/mediumTextPrimary"
                         />
                 </LinearLayout>
                 <LinearLayout
@@ -98,18 +93,35 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:textSize="15sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Состояние: "
+                        style="@style/mediumTextSecondary"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/item_user_part_status"
+                        android:text="хорошое"
+                        style="@style/mediumTextPrimary"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Комментарий: "
+                        style="@style/mediumTextSecondary"
                         />
                     <TextView
-                        android:textSize="15sp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
                         android:id="@+id/item_user_part_comment"
                         android:text="хорошее состояние"
+                        style="@style/mediumTextPrimary"
                         />
                 </LinearLayout>
                 <LinearLayout
@@ -117,18 +129,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:textSize="15sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Место: "
+                        style="@style/mediumTextSecondary"
                         />
                     <TextView
-                        android:textSize="15sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
                         android:id="@+id/item_user_part_place"
                         android:text="1Р23HL"
+                        style="@style/mediumTextPrimary"
                         />
                 </LinearLayout>
             </LinearLayout>
