@@ -9,7 +9,6 @@ import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -184,15 +183,6 @@ public class PartFoundActivity extends AppCompatActivity {
         });
         dialog.show();
 
-//        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//
-//                dialog.dismiss();
-//            }
-//        });
-//        builder.create();
-//        builder.show();
     }
 
     private View.OnClickListener mCaptureImageButtonClickListener = new View.OnClickListener() {
@@ -250,15 +240,14 @@ public class PartFoundActivity extends AppCompatActivity {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-
-                        bitmap = ImageProcessService.getResizedBitmap(bitmap, PART_PICTURE_SIZE, PART_PICTURE_SIZE);
+                        int size = ImageProcessService.dpToPx(200, this);
+                        bitmap = ImageProcessService.getResizedBitmap(bitmap, size, size);
 
                         inflater = getLayoutInflater();
-                        View view = inflater.inflate(R.layout.item_part_in, null, false);
+                        final View view = inflater.inflate(R.layout.item_part_found_image, null, false);
                         final ImageView image = (ImageView) view.findViewById(R.id.image_part_in);
                         final ImageView imageClose = (ImageView) view.findViewById(R.id.image_part_in_close);
                         image.setImageBitmap(bitmap);
-                        imageClose.setImageResource(R.drawable.ic_action_close);
 
                         imageClose.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -266,10 +255,9 @@ public class PartFoundActivity extends AppCompatActivity {
                                 image.setVisibility(View.GONE);
                                 imageClose.setVisibility(View.GONE);
                                 photoList.remove(photoList.indexOf(imagePath));
+                                view.setVisibility(View.GONE);
                             }
                         });
-                        LinearLayout.LayoutParams rightMargin = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                        rightMargin.rightMargin = 70;
 
                         linLayoutPhotoParts.addView(view);
                         photoList.add(imagePath);

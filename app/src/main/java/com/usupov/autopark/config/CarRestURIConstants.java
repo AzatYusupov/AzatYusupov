@@ -9,5 +9,6 @@ public class CarRestURIConstants {
     public static final String GET_BY_CATALOG = ApiURIConstants.API + "/car/brand/%d/model/%d/year/%d";
     public static final String CREATE         = ApiURIConstants.API + "/car/create";
     public static final String DELETE         = ApiURIConstants.API + "/car/delete/%d";
+    public static final String UPDATE         = ApiURIConstants.API + "/car/update/%d";
 
 }

@@ -404,6 +404,7 @@ public class CarNewActivity extends BasicActivity implements RecognizerSampleFra
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            progressDialog.setTitle(getString(R.string.please_wait));
             progressDialog.show();
         }
 

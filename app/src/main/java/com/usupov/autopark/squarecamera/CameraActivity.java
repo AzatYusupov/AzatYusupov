@@ -8,9 +8,7 @@ import android.view.View;
 
 import com.usupov.autopark.R;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class CameraActivity extends AppCompatActivity {
 

@@ -80,10 +80,11 @@
             android:name=".activity.CarNewActivity"
             android:configChanges="keyboard|keyboardHidden|navigation"
             android:label="@string/app_car_new">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
 
         <provider
@@ -133,12 +134,12 @@
         </activity>
         <activity android:name=".activity.CameraActivitySquareOld">
 
-             <!--<intent-filter>-->
-             <!--<action android:name="android.intent.action.MAIN" />-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
 
 
-             <!--<category android:name="android.intent.category.LAUNCHER" />-->
-             <!--</intent-filter>-->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity android:name=".activity.MainActivity">
             <intent-filter>
@@ -165,11 +166,13 @@
         <activity android:name=".squarecamera.CameraActivity" />
         <activity android:name=".squarecamera.RuntimePermissionActivity" />
         <activity android:name=".activity.SelectImageActivity">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
     </application>
 

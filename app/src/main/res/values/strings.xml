@@ -49,6 +49,7 @@
     <string name="tap_on_mic">Tap on mic to speak</string>
 
     <!--Car-->
+    <string name="title_car_update">Редактировать автомобиль</string>
     <string name="car_success_deleted">успешно удалено!</string>
     <string name="car_not_deleted">не удалено.</string>
     <string name="car_list_empty">У вас пока нет автомобилей</string>
@@ -59,6 +60,7 @@
     <string name="please_wait">Пожалуйста, подождите..</string>
 
     <string name="car_success_added">Автомобиль добавлен в гараж</string>
+    <string name="car_success_edited">Автомобиль редактировал</string>
     <string name="car_not_added">Автомобиль не добавлен!</string>
 
     <!--Vin-->

@@ -21,7 +21,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.gson.Gson;
 import com.usupov.autopark.R;
+import com.usupov.autopark.activity.CarFoundActivity;
 import com.usupov.autopark.activity.CarListActivity;
 import com.usupov.autopark.activity.PartNewActivity;
 import com.usupov.autopark.config.CarRestURIConstants;
@@ -120,7 +123,13 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
                                         .show();
                                 return true;
                             case R.id.btnCarEdit:
-                                //
+                                Gson g = new Gson();
+                                Intent intent = new Intent(context, CarFoundActivity.class);
+                                intent.putExtra("car", g.toJson(carList.get(position), CarModel.class));
+                                intent.putExtra("update", true);
+                                Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(context,
+                                        android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+                                context.startActivity(intent, bundle);
                                 return true;
 
                             default:
@@ -155,8 +164,9 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
         holder.description.setText(carListItem.getDescription());
         holder.progress.setProgress(carListItem.getPercent());
 
-        // loading album cover using Glide library
-        Glide.with(context).load(Headers.getUrlWithHeaders(carListItem.getImageUrl(), context.getApplicationContext())).into(holder.thumbnail);
+        Glide.with(context).load(Headers.getUrlWithHeaders(carListItem.getImageUrl(), context.getApplicationContext()))
+                .skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)
+                .into(holder.thumbnail);
 
         holder.overflow.setOnClickListener(new View.OnClickListener() {
             @TargetApi(Build.VERSION_CODES.HONEYCOMB)
