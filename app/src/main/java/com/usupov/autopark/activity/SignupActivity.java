@@ -2,14 +2,22 @@ package com.usupov.autopark.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.StrictMode;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,21 +50,23 @@ public class SignupActivity extends AppCompatActivity {
     @InjectView(R.id.passwordView) View passwordView;
     @InjectView(R.id.input_repassword) EditText repasswordText;
     @InjectView(R.id.repasswordlayout) TextInputLayout repasswordlayout;
-    @InjectView(R.id.input_company) EditText companyText;
-    @InjectView(R.id.companyLayout) TextInputLayout companyLayout;
-    @InjectView(R.id.input_inn) EditText innText;
-    @InjectView(R.id.input_address) EditText addressText;
+//    @InjectView(R.id.input_company) EditText companyText;
+//    @InjectView(R.id.companyLayout) TextInputLayout companyLayout;
+//    @InjectView(R.id.input_inn) EditText innText;
+//    @InjectView(R.id.input_address) EditText addressText;
     @InjectView(R.id.btn_register) Button registerButton;
 
     private static String name;
     private static String email;
     private static String password;
     private static String repassword;
-    private static String company;
-    private static String inn;
-    private static String address;
+//    private static String company;
+//    private static String inn;
+//    private static String address;
 
     private boolean isEmptyAtLeastOne;
+
+    private AppCompatCheckBox checkBoxAgree;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,9 +118,46 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
-
+        initRulesTextBtn();
 
     }
+    private void initRulesTextBtn() {
+        TextView textRules = (TextView) findViewById(R.id.textRules);
+        textRules.setMovementMethod(LinkMovementMethod.getInstance());
+        textRules.setText(getString(R.string.rules), TextView.BufferType.SPANNABLE);
+        Spannable mySpannable = (Spannable)textRules.getText();
+        ClickableSpan myClickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
+                        android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+                startActivity(new Intent(SignupActivity.this, PrivacyActivity.class), bundle);
+            }
+        };
+        mySpannable.setSpan(myClickableSpan, 32, 60, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textRules.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+//    private void initCheckBoxAgree() {
+//        checkBoxAgree = (AppCompatCheckBox) findViewById(R.id.chBoxAgree);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            checkBoxAgree.setButtonTintList(ContextCompat.getColorStateList(getBaseContext(), R.color.colorGray));
+//        }
+//        checkBoxAgree.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked) {
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                        checkBoxAgree.setButtonTintList(ContextCompat.getColorStateList(getBaseContext(), R.color.colorPrimary));
+//                    }
+//                }
+//                else {
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                        checkBoxAgree.setButtonTintList(ContextCompat.getColorStateList(getBaseContext(), R.color.colorGray));
+//                    }
+//                }
+//            }
+//        });
+//    }
 
     public void register() {
         if (!validate()) {
@@ -120,6 +167,10 @@ public class SignupActivity extends AppCompatActivity {
                 onIncorrectData(getString(R.string.error_check_input_data));
             return;
         }
+//        if (!checkBoxAgree.isChecked()) {
+//            onIncorrectData(getString(R.string.you_need_agree));
+//            return;
+//        }
 
         registerButton.setEnabled(false);
 
@@ -136,9 +187,9 @@ public class SignupActivity extends AppCompatActivity {
         pairs.put("name", name);
         pairs.put("email", email);
         pairs.put("password", password);
-        pairs.put("company", company);
-        pairs.put("inn", inn);
-        pairs.put("address", address);
+//        pairs.put("company", company);
+//        pairs.put("inn", inn);
+//        pairs.put("address", address);
 
 
         new android.os.Handler().postDelayed(new Runnable() {
@@ -186,9 +237,9 @@ public class SignupActivity extends AppCompatActivity {
         email = emailText.getText().toString().trim();
         password = passwordText.getText().toString().trim();
         repassword = repasswordText.getText().toString().trim();
-        company = companyText.getText().toString().trim();
-        inn = innText.getText().toString().trim();
-        address = addressText.getText().toString().trim();
+//        company = companyText.getText().toString().trim();
+//        inn = innText.getText().toString().trim();
+//        address = addressText.getText().toString().trim();
 
         if (name.isEmpty()) {
             nameLayout.setError(getString(R.string.error_name_empty));
@@ -248,17 +299,17 @@ public class SignupActivity extends AppCompatActivity {
         else
             repasswordlayout.setError(null);
 
-        if (company.isEmpty()) {
-            companyLayout.setError(getString(R.string.error_company_empty));
-            isEmptyAtLeastOne = true;
-            valid = false;
-        }
-        else if (company.length() < 2) {
-            companyLayout.setError(getString(R.string.error_company));
-            valid = false;
-        }
-        else
-            companyLayout.setError(null);
+//        if (company.isEmpty()) {
+//            companyLayout.setError(getString(R.string.error_company_empty));
+//            isEmptyAtLeastOne = true;
+//            valid = false;
+//        }
+//        else if (company.length() < 2) {
+//            companyLayout.setError(getString(R.string.error_company));
+//            valid = false;
+//        }
+//        else
+//            companyLayout.setError(null);
 
         return valid;
     }

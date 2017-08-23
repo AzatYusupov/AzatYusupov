@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:background="#EDEEFA"
@@ -138,14 +139,14 @@
         android:id="@+id/btn_photo_part_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_gravity="right|top"
         android:layout_marginTop="40dp"
         android:layout_marginRight="16dp"
         android:onClick="onClickPhoto"
-        android:src="@drawable/ic_action_camera"
+        android:src="@drawable/ic_stat_camera"
         android:backgroundTint="@color/colorPrimaryLight"
         app:fabSize="normal"
         android:scaleType="center"
         app:borderWidth="0dp" />
 
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

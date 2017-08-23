@@ -100,6 +100,7 @@ public class HttpHandler {
             HttpResponse response = client.execute(request);
             StatusLine sl = response.getStatusLine();
             int sc = sl.getStatusCode();
+            System.out.println();
 
             customHttpResponse.setStatusCode(sc);
 

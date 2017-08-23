@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -124,13 +125,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Марка:  "
-                    android:textColor="@color/secondaryText"
+                    style="@style/mediumTextSecondary"
                     />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/brandNameDesc"
                     android:layout_marginLeft="5dp"
+                    style="@style/mediumTextPrimary"
                  />
             </LinearLayout>
             <LinearLayout
@@ -142,13 +144,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Молель:  "
-                    android:textColor="@color/secondaryText"
+                    style="@style/mediumTextSecondary"
                     />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/modelNameDesc"
                     android:layout_marginLeft="5dp"
+                    style="@style/mediumTextPrimary"
                 />
             </LinearLayout>
             <LinearLayout
@@ -160,13 +163,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Год:  "
-                    android:textColor="@color/secondaryText"
+                    style="@style/mediumTextSecondary"
                     />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/yearNameDesc"
                     android:layout_marginLeft="5dp"
+                    style="@style/mediumTextPrimary"
                   />
             </LinearLayout>
             <Button
@@ -190,15 +194,16 @@
         android:id="@+id/btnPhotoCar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_gravity="right|top"
         android:layout_marginTop="40dp"
         android:layout_marginRight="16dp"
         android:onClick="onClickPhoto"
-        android:src="@mipmap/ic_camera"
-        app:fabSize="auto"
-        android:scaleType="center"
-        app:borderWidth="0dp"
+        android:src="@drawable/ic_stat_camera"
+        app:fabSize="normal"
+        app:backgroundTint="@color/colorPrimaryLight"
         android:elevation="8dp"
+        app:pressedTranslationZ="12dp"
+        android:scaleType="center"
         />
 
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

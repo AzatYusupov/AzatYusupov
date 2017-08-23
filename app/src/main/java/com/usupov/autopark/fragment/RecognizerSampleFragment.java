@@ -22,13 +22,11 @@ import ru.yandex.speechkit.Recognizer;
 import ru.yandex.speechkit.RecognizerListener;
 import ru.yandex.speechkit.SpeechKit;
 
-import com.bumptech.glide.Glide;
 import com.pkmmte.view.CircularImageView;
 import com.usupov.autopark.R;
 import com.usupov.autopark.service.SpeachRecogn;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;

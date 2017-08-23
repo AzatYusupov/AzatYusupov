@@ -56,57 +56,57 @@
                 android:visibility="visible"
                 android:layout_height="10dp"/>
 
-            <!--Campany name-->
-            <android.support.design.widget.TextInputLayout
-                android:theme="@style/TextInputLayout"
-                android:layout_width="match_parent"
-                android:id="@+id/update_companyLayout"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                >
-                <EditText
-                    android:id="@+id/update_company"
-                    android:inputType="textPersonName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLength="255"
-                    android:imeOptions="flagNoFullscreen"
-                    android:hint="Название компании"/>
-            </android.support.design.widget.TextInputLayout>
+            <!--&lt;!&ndash;Campany name&ndash;&gt;-->
+            <!--<android.support.design.widget.TextInputLayout-->
+                <!--android:theme="@style/TextInputLayout"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:id="@+id/update_companyLayout"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--&gt;-->
+                <!--<EditText-->
+                    <!--android:id="@+id/update_company"-->
+                    <!--android:inputType="textPersonName"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:maxLength="255"-->
+                    <!--android:imeOptions="flagNoFullscreen"-->
+                    <!--android:hint="Название компании"/>-->
+            <!--</android.support.design.widget.TextInputLayout>-->
 
-            <!--Inn-->
-            <android.support.design.widget.TextInputLayout
-                android:theme="@style/TextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                >
-                <EditText
-                    android:id="@+id/update_inn"
-                    android:inputType="number"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLength="255"
-                    android:imeOptions="flagNoFullscreen"
-                    android:hint="ИНН"/>
-            </android.support.design.widget.TextInputLayout>
+            <!--&lt;!&ndash;Inn&ndash;&gt;-->
+            <!--<android.support.design.widget.TextInputLayout-->
+                <!--android:theme="@style/TextInputLayout"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--&gt;-->
+                <!--<EditText-->
+                    <!--android:id="@+id/update_inn"-->
+                    <!--android:inputType="number"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:maxLength="255"-->
+                    <!--android:imeOptions="flagNoFullscreen"-->
+                    <!--android:hint="ИНН"/>-->
+            <!--</android.support.design.widget.TextInputLayout>-->
 
-            <!--Address-->
-            <android.support.design.widget.TextInputLayout
-                android:theme="@style/TextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                >
-                <EditText
-                    android:id="@+id/update_address"
-                    android:inputType="textPersonName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLength="255"
-                    android:imeOptions="flagNoFullscreen"
-                    android:hint="Юридический адрес"/>
-            </android.support.design.widget.TextInputLayout>
+            <!--&lt;!&ndash;Address&ndash;&gt;-->
+            <!--<android.support.design.widget.TextInputLayout-->
+                <!--android:theme="@style/TextInputLayout"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--&gt;-->
+                <!--<EditText-->
+                    <!--android:id="@+id/update_address"-->
+                    <!--android:inputType="textPersonName"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:maxLength="255"-->
+                    <!--android:imeOptions="flagNoFullscreen"-->
+                    <!--android:hint="Юридический адрес"/>-->
+            <!--</android.support.design.widget.TextInputLayout>-->
 
             <!--Register Button-->
             <android.support.v7.widget.AppCompatButton

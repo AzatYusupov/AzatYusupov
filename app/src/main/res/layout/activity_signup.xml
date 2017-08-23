@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
     android:descendantFocusability="beforeDescendants"
-    tools:context=".activity.SignUpActivity">
+    tools:context=".activity.SignupActivity">
     <include
         layout="@layout/toolbar_signup"
         android:id="@+id/toolbar_signup"
@@ -125,57 +125,66 @@
                     android:hint="Повторите пароль"/>
             </android.support.design.widget.TextInputLayout>
 
-            <!--Campany name-->
-            <android.support.design.widget.TextInputLayout
-                android:theme="@style/TextInputLayout"
-                android:layout_width="match_parent"
-                android:id="@+id/companyLayout"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                >
-                <EditText
-                    android:id="@+id/input_company"
-                    android:inputType="textPersonName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLength="255"
-                    android:imeOptions="flagNoFullscreen"
-                    android:hint="Название компании"/>
-            </android.support.design.widget.TextInputLayout>
+            <!--&lt;!&ndash;Campany name&ndash;&gt;-->
+            <!--<android.support.design.widget.TextInputLayout-->
+                <!--android:theme="@style/TextInputLayout"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:id="@+id/companyLayout"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--&gt;-->
+                <!--<EditText-->
+                    <!--android:id="@+id/input_company"-->
+                    <!--android:inputType="textPersonName"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:maxLength="255"-->
+                    <!--android:imeOptions="flagNoFullscreen"-->
+                    <!--android:hint="Название компании"/>-->
+            <!--</android.support.design.widget.TextInputLayout>-->
 
-            <!--Inn-->
-            <android.support.design.widget.TextInputLayout
-                android:theme="@style/TextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                >
-                <EditText
-                    android:id="@+id/input_inn"
-                    android:inputType="number"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLength="255"
-                    android:imeOptions="flagNoFullscreen"
-                    android:hint="ИНН"/>
-            </android.support.design.widget.TextInputLayout>
+            <!--&lt;!&ndash;Inn&ndash;&gt;-->
+            <!--<android.support.design.widget.TextInputLayout-->
+                <!--android:theme="@style/TextInputLayout"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--&gt;-->
+                <!--<EditText-->
+                    <!--android:id="@+id/input_inn"-->
+                    <!--android:inputType="number"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:maxLength="255"-->
+                    <!--android:imeOptions="flagNoFullscreen"-->
+                    <!--android:hint="ИНН"/>-->
+            <!--</android.support.design.widget.TextInputLayout>-->
 
-            <!--Address-->
-            <android.support.design.widget.TextInputLayout
-                android:theme="@style/TextInputLayout"
+            <!--&lt;!&ndash;Address&ndash;&gt;-->
+            <!--<android.support.design.widget.TextInputLayout-->
+                <!--android:theme="@style/TextInputLayout"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--&gt;-->
+                <!--<EditText-->
+                    <!--android:id="@+id/input_address"-->
+                    <!--android:inputType="textPersonName"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:maxLength="255"-->
+                    <!--android:imeOptions="flagNoFullscreen"-->
+                    <!--android:hint="Юридический адрес"/>-->
+            <!--</android.support.design.widget.TextInputLayout>-->
+
+            <TextView
+                android:id="@+id/textRules"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                >
-                <EditText
-                    android:id="@+id/input_address"
-                    android:inputType="textPersonName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLength="255"
-                    android:imeOptions="flagNoFullscreen"
-                    android:hint="Юридический адрес"/>
-            </android.support.design.widget.TextInputLayout>
+                android:layout_marginTop="20dp"
+                style="@style/mediumTextPrimary"
+                android:textColorLink="@color/colorPrimary"
+                />
 
             <!--Register Button-->
             <android.support.v7.widget.AppCompatButton
@@ -194,8 +203,7 @@
                 android:textColor="@android:color/background_light"
                 android:elevation="8dp"
                 android:background="@drawable/save_button_bg"
-                android:text="Зарегистрироваться"
-                />
+                android:text="Зарегистрироваться" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.usupov.autopark"
+    package="com.google.android.productcard"
     android:versionCode="2"
     android:versionName="1.0">
 
@@ -46,7 +46,7 @@
         <!-- <meta-data android:name="api_url_cars" android:value="http://88.99.174.4:8080/api/cars"></meta-data> -->
 
         <activity
-            android:name=".activity.CarListActivity"
+            android:name="com.usupov.autopark.activity.CarListActivity"
             android:label="Гараж">
 
             <!-- <intent-filter> -->
@@ -55,7 +55,7 @@
             <!-- </intent-filter> -->
         </activity>
         <activity
-            android:name=".activity.PartFoundActivity"
+            android:name="com.usupov.autopark.activity.PartFoundActivity"
             android:label="@string/title_activity_part"
             android:theme="@style/AppTheme">
 
@@ -67,17 +67,17 @@
             <!-- </intent-filter> -->
         </activity>
         <activity
-            android:name=".activity.CarFoundActivity"
+            android:name="com.usupov.autopark.activity.CarFoundActivity"
             android:label="@string/app_car_new" />
         <activity
-            android:name=".activity.CameraActivityOld"
+            android:name="com.usupov.autopark.activity.CameraActivityOld"
             android:configChanges="orientation"
             android:label="@string/capture_image">
 
             <!-- android:screenOrientation="landscape" -->
         </activity>
         <activity
-            android:name=".activity.CarNewActivity"
+            android:name="com.usupov.autopark.activity.CarNewActivity"
             android:configChanges="keyboard|keyboardHidden|navigation"
             android:label="@string/app_car_new">
 
@@ -98,23 +98,23 @@
         </provider>
 
         <activity
-            android:name=".activity.PartNewActivity"
+            android:name="com.usupov.autopark.activity.PartNewActivity"
             android:label="@string/app_part" />
-        <activity android:name=".activity.LoginActivity">
+        <activity android:name="com.usupov.autopark.activity.LoginActivity">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".activity.SignupActivity">
+        <activity android:name="com.usupov.autopark.activity.SignupActivity">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".activity.SignupSuccessActivity">
+        <activity android:name="com.usupov.autopark.activity.SignupSuccessActivity">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -122,7 +122,7 @@
             <!-- </intent-filter> -->
         </activity>
         <activity
-            android:name=".activity.PartListActivity"
+            android:name="com.usupov.autopark.activity.PartListActivity"
             android:label="Лента">
 
             <!-- <intent-filter> -->
@@ -132,7 +132,7 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".activity.CameraActivitySquareOld">
+        <activity android:name="com.usupov.autopark.activity.CameraActivitySquareOld">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -141,7 +141,7 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".activity.MainActivity">
+        <activity android:name="com.usupov.autopark.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -149,7 +149,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.BasicActivity"
+            android:name="com.usupov.autopark.activity.BasicActivity"
             android:label="@string/title_activity_basic">
 
             <!-- <intent-filter> -->
@@ -159,13 +159,13 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".activity.ResetPasswordActivity" />
+        <activity android:name="com.usupov.autopark.activity.ResetPasswordActivity" />
         <activity
-            android:name=".activity.UpdateActivity"
+            android:name="com.usupov.autopark.activity.UpdateActivity"
             android:label="Личные данные" />
-        <activity android:name=".squarecamera.CameraActivity" />
-        <activity android:name=".squarecamera.RuntimePermissionActivity" />
-        <activity android:name=".activity.SelectImageActivity">
+        <activity android:name="com.usupov.autopark.squarecamera.CameraActivity" />
+        <activity android:name="com.usupov.autopark.squarecamera.RuntimePermissionActivity" />
+        <activity android:name="com.usupov.autopark.activity.SelectImageActivity">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -173,6 +173,10 @@
 
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
+        </activity>
+        <activity
+            android:name="com.usupov.autopark.activity.PrivacyActivity"
+            android:label="Конфиденциальность">
         </activity>
     </application>
 

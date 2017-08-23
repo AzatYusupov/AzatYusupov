@@ -35,8 +35,8 @@
 
         <ImageView
             android:id="@+id/item_car_thumbnail"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:scaleType="centerCrop"
             android:elevation="2dp"
             android:layout_margin="8dp"
@@ -45,8 +45,8 @@
         <ImageView
             android:src="@drawable/top_image_1"
             android:id="@+id/top_image_1"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:scaleType="centerCrop"
             android:elevation="2dp"
             android:layout_margin="8dp"
@@ -66,24 +66,27 @@
 
             <TextView
                 android:textStyle="bold"
+                android:gravity="center"
                 android:id="@+id/item_car_full_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
+                style="@style/tittleText"
                 android:layout_marginTop="10dp"
-                android:textColor="@android:color/black" />
+                />
 
             <TextView
                 android:id="@+id/item_car_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:layout_below="@id/item_car_full_name"
-                android:textSize="12sp"
+                style="@style/mediumTextSecondary"
                 />
             <ProgressBar
                 android:id="@+id/progress_car"
                 android:layout_width="match_parent"
                 android:layout_height="12dp"
+                android:layout_marginTop="20dp"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:background="@android:color/white"
                 android:layout_marginRight="70dp"

@@ -39,22 +39,22 @@ public class UpdateActivity extends BasicActivity {
     @InjectView(R.id.update_nameLayout)
     TextInputLayout nameLayout;
 
-    @InjectView(R.id.update_company)
-    EditText companyText;
-    @InjectView(R.id.update_companyLayout)
-    TextInputLayout companyLayout;
-
-    @InjectView(R.id.update_inn)
-    EditText innText;
-    @InjectView(R.id.update_address)
-    EditText addressText;
+//    @InjectView(R.id.update_company)
+//    EditText companyText;
+//    @InjectView(R.id.update_companyLayout)
+//    TextInputLayout companyLayout;
+//
+//    @InjectView(R.id.update_inn)
+//    EditText innText;
+//    @InjectView(R.id.update_address)
+//    EditText addressText;
     @InjectView(R.id.btn_update)
     Button btnUpdate;
 
     private static String name;
-    private static String company;
-    private static String inn;
-    private static String address;
+//    private static String company;
+//    private static String inn;
+//    private static String address;
 
 
     @Override
@@ -78,9 +78,9 @@ public class UpdateActivity extends BasicActivity {
         UserModel user = g.fromJson(getIntent().getExtras().getString("user"), UserModel.class);
 
         nameText.setText(user.getName());
-        companyText.setText(user.getCompany());
-        innText.setText(user.getInn());
-        addressText.setText(user.getAddress());
+//        companyText.setText(user.getCompany());
+//        innText.setText(user.getInn());
+//        addressText.setText(user.getAddress());
 
         nameText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -119,15 +119,15 @@ public class UpdateActivity extends BasicActivity {
         final ProgressDialog progressDialog = new ProgressDialog(UpdateActivity.this,
                 R.style.AppCompatAlertDialogStyle);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("...");
+        progressDialog.setMessage(getString(R.string.please_wait));
         progressDialog.show();
 
         final HashMap<String, String> pairs = new HashMap<>();
 
         pairs.put("name", name);
-        pairs.put("company", company);
-        pairs.put("inn", inn);
-        pairs.put("address", address);
+//        pairs.put("company", company);
+//        pairs.put("inn", inn);
+//        pairs.put("address", address);
 
         new android.os.Handler().postDelayed(new Runnable() {
             @Override
@@ -165,9 +165,9 @@ public class UpdateActivity extends BasicActivity {
         boolean valid = true;
 
         name = nameText.getText().toString().trim();
-        company = companyText.getText().toString().trim();
-        inn = innText.getText().toString().trim();
-        address = addressText.getText().toString().trim();
+//        company = companyText.getText().toString().trim();
+//        inn = innText.getText().toString().trim();
+//        address = addressText.getText().toString().trim();
 
         if (name.isEmpty()) {
             nameLayout.setError(getString(R.string.error_name_empty));
@@ -184,16 +184,16 @@ public class UpdateActivity extends BasicActivity {
         else
             nameLayout.setError(null);
 
-        if (company.isEmpty()) {
-            companyLayout.setError(getString(R.string.error_company_empty));
-            valid = false;
-        }
-        else if (company.length() < 2) {
-            companyLayout.setError(getString(R.string.error_company));
-            valid = false;
-        }
-        else
-            companyLayout.setError(null);
+//        if (company.isEmpty()) {
+//            companyLayout.setError(getString(R.string.error_company_empty));
+//            valid = false;
+//        }
+//        else if (company.length() < 2) {
+//            companyLayout.setError(getString(R.string.error_company));
+//            valid = false;
+//        }
+//        else
+//            companyLayout.setError(null);
 
         return valid;
     }
