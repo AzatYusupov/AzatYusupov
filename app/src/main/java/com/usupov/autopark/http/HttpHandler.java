@@ -7,7 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 
-import com.usupov.autopark.R;
+import com.google.android.productcard.R;
 import com.usupov.autopark.config.LocalConstants;
 import com.usupov.autopark.config.PartRestURIConstants;
 import com.usupov.autopark.model.CustomHttpResponse;
@@ -33,8 +33,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 

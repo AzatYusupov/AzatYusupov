@@ -22,7 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.usupov.autopark.R;
+import com.google.android.productcard.R;
 
 import java.io.File;
 import java.io.FileOutputStream;

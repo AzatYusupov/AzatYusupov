@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.usupov.autopark.R;
+import com.google.android.productcard.R;
 import com.usupov.autopark.model.CatalogBrand;
 
 import java.util.List;

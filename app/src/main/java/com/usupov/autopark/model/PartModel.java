@@ -2,7 +2,7 @@ package com.usupov.autopark.model;
 
 public class PartModel extends CategoryPartModel {
 
-    protected long categoryId;
+    protected long categoryId, partId;
     protected String article, note;
     String categoryName, parentCatName;
 
@@ -77,5 +77,13 @@ public class PartModel extends CategoryPartModel {
     }
     public void setParentCatName(String parentCatName) {
         this.parentCatName = parentCatName;
+    }
+
+    public long getPartId() {
+        return partId;
+    }
+
+    public void setPartId(long partId) {
+        this.partId = partId;
     }
 }

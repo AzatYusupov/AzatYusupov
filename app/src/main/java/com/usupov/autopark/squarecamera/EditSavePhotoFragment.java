@@ -17,7 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import com.usupov.autopark.R;
+import com.google.android.productcard.R;
 
 
 /**

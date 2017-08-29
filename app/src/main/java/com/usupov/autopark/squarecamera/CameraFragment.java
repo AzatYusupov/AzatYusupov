@@ -27,7 +27,7 @@ import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.usupov.autopark.R;
+import com.google.android.productcard.R;
 import com.usupov.autopark.activity.SelectImageActivity;
 
 import java.io.IOException;

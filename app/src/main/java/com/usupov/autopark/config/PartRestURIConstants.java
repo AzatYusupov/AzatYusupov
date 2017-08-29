@@ -9,6 +9,7 @@ public class PartRestURIConstants {
     public static final String GET_USER_PARTS = ApiURIConstants.API + "/user_part";
     public static final String GET_BY_CAR = ApiURIConstants.API + "/user_part/%d";
     public static final String GET_ALL = ApiURIConstants.API + "/car/%d/category/%d/list";
+    public static final String GET_APPLICABILITY = ApiURIConstants.API  + "/user_part/app/%d";
 
 
 }

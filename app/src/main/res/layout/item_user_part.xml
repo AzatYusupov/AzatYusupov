@@ -63,12 +63,15 @@
                     style="@style/mediumTextSecondary"
                     />
                 <TextView
+                    android:id="@+id/applicable"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/item_user_part_suit"
-                    android:text="Hyundai Coupe II (GK) (2002–2007)"
+                    android:text="Hyundai Coupe II (GK) (2002–2007)..."
                     android:layout_gravity="left"
                     style="@style/mediumTextPrimary"
+                    android:clickable="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:textColor="@color/colorPrimary"
                     />
                 <LinearLayout
                     android:orientation="horizontal"

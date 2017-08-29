@@ -1,6 +1,9 @@
 package com.usupov.autopark.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.usupov.autopark.R;
+import com.google.android.productcard.R;
+import com.usupov.autopark.activity.ApplicableListActivity;
 import com.usupov.autopark.http.Headers;
 import com.usupov.autopark.model.UserPartModel;
 
@@ -35,7 +39,7 @@ public class UserPartListAdapter extends RecyclerView.Adapter<UserPartListAdapte
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        UserPartModel userPart = userPartList.get(position);
+        final UserPartModel userPart = userPartList.get(position);
         String carName = userPart.getModelName()+" "+userPart.getYearName();
         if (!carName.startsWith(userPart.getBrandName()))
             carName = userPart.getBrandName() + carName;
@@ -45,8 +49,18 @@ public class UserPartListAdapter extends RecyclerView.Adapter<UserPartListAdapte
         if (userPart.getPartName()==null || userPart.getPartName().isEmpty())
             holder.partName.setText(userPart.getCategoryName());
 
-        holder.suitFor.setText("");
+        holder.applicable.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(context,
+                        android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+                Intent intent = new Intent(context, ApplicableListActivity.class);
+                intent.putExtra("partId", userPart.getPartId());
+                context.startActivity(intent, bundle);
+            }
+        });
         holder.article.setText(userPart.getArticle());
+        holder.applicable.setText(carName);
         holder.comment.setText(userPart.getComment());
         holder.place.setText(userPart.getStore());
         holder.status.setText(userPart.getStatus());
@@ -61,7 +75,7 @@ public class UserPartListAdapter extends RecyclerView.Adapter<UserPartListAdapte
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView carName, partName, suitFor, article, comment, place, status;
+        public TextView carName, partName, applicable, article, comment, place, status;
         public View homeView;
         public ImageView imageView;
 
@@ -69,7 +83,7 @@ public class UserPartListAdapter extends RecyclerView.Adapter<UserPartListAdapte
             super(itemView);
             carName = (TextView) itemView.findViewById(R.id.item_user_part_car_name);
             partName = (TextView) itemView.findViewById(R.id.item_user_part_part_name);
-            suitFor = (TextView) itemView.findViewById(R.id.item_user_part_suit);
+            applicable = (TextView) itemView.findViewById(R.id.applicable);
             article = (TextView) itemView.findViewById(R.id.item_user_part_article);
             comment = (TextView) itemView.findViewById(R.id.item_user_part_comment);
             place = (TextView) itemView.findViewById(R.id.item_user_part_place);

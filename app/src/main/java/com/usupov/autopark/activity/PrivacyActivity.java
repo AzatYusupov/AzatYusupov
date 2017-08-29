@@ -7,7 +7,7 @@ import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
 
-import com.usupov.autopark.R;
+import com.google.android.productcard.R;
 
 public class PrivacyActivity extends AppCompatActivity {
 

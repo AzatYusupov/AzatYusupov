@@ -30,7 +30,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.usupov.autopark.R;
+import com.google.android.productcard.R;
 import com.usupov.autopark.adapter.PartFoundAdapter;
 import com.usupov.autopark.adapter.StatusListAdapter;
 import com.usupov.autopark.config.PartRestURIConstants;
@@ -166,9 +166,9 @@ public class PartFoundActivity extends AppCompatActivity {
 
         final List<StatusModel> statusList = new ArrayList<>();
         statusList.add(new StatusModel("B", R.mipmap.ic_status_b, "Восстановленный", "Товар полностью работоспособен"));
-        statusList.add(new StatusModel("100", R.mipmap.ic_status_100, "Отличное состояние", "Товар полностью работоспособен"));
-        statusList.add(new StatusModel("90", R.mipmap.ic_status_90, "Хорошее состояние", "Товар полностью работоспособен"));
-        statusList.add(new StatusModel("70", R.mipmap.ic_status_70, "Удовлетворительное состояние", "Товар в основном работоспособен"));
+        statusList.add(new StatusModel("100", R.mipmap.ic_status_100, "Отличное", "Товар полностью работоспособен"));
+        statusList.add(new StatusModel("90", R.mipmap.ic_status_90, "Хорошее", "Товар полностью работоспособен"));
+        statusList.add(new StatusModel("70", R.mipmap.ic_status_70, "Удовлетворительное", "Товар в основном работоспособен"));
         statusList.add(new StatusModel("50", R.mipmap.ic_status_50, "Под восстановление", "Без ремонта не работает"));
         statusList.add(new StatusModel("30", R.mipmap.ic_status_30, "Ремонтный набор", "Товар не работосопобен"));
 

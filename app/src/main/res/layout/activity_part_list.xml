@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:fitsSystemWindows="true"
     android:layout_height="match_parent"
-    tools:context=".activity.PartListActivity">
+    tools:context="com.usupov.autopark.activity.PartListActivity">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"

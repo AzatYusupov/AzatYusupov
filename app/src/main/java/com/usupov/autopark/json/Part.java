@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.usupov.autopark.config.PartRestURIConstants;
 import com.usupov.autopark.http.HttpHandler;
+import com.usupov.autopark.model.CatalogYear;
 import com.usupov.autopark.model.CategoryPartModel;
 import com.usupov.autopark.model.CustomHttpResponse;
 import com.usupov.autopark.model.UserPartModel;
@@ -70,6 +71,18 @@ public class Part {
         if (result.getStatusCode() == HttpStatus.SC_OK) {
             Gson g = new Gson();
             return g.fromJson(result.getBodyString(), new TypeToken<List<CategoryPartModel>>(){}.getType());
+        }
+        return null;
+    }
+
+    public static List<CatalogYear> getApplicableList(long partId, Context context) {
+        String url = String.format(PartRestURIConstants.GET_APPLICABILITY, partId);
+        System.out.println("UUUUUUUU="+url);
+        HttpHandler handler = new HttpHandler();
+        CustomHttpResponse result = handler.doHttpGet(url, context);
+        if (result.getStatusCode()==HttpStatus.SC_OK) {
+            Gson g = new Gson();
+            return g.fromJson(result.getBodyString(), new TypeToken<List<CatalogYear>>(){}.getType());
         }
         return null;
     }

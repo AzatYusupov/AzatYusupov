@@ -11,7 +11,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.usupov.autopark.R;
+import com.google.android.productcard.R;
 import com.usupov.autopark.config.UserURIConstants;
 import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.model.CustomHttpResponse;

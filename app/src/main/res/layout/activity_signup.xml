@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
     android:descendantFocusability="beforeDescendants"
-    tools:context=".activity.SignupActivity">
+    tools:context="com.usupov.autopark.activity.SignupActivity">
     <include
         layout="@layout/toolbar_signup"
         android:id="@+id/toolbar_signup"

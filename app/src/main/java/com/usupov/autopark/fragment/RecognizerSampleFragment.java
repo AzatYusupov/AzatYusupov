@@ -23,7 +23,7 @@ import ru.yandex.speechkit.RecognizerListener;
 import ru.yandex.speechkit.SpeechKit;
 
 import com.pkmmte.view.CircularImageView;
-import com.usupov.autopark.R;
+import com.google.android.productcard.R;
 import com.usupov.autopark.service.SpeachRecogn;
 
 import java.util.ArrayList;

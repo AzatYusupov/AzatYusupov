@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.usupov.autopark.R;
+import com.google.android.productcard.R;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

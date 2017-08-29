@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.usupov.autopark.R;
+import com.google.android.productcard.R;
 
 import java.util.ArrayList;
 

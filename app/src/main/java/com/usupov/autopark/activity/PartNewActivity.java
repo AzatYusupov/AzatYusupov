@@ -33,7 +33,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.usupov.autopark.R;
+import com.google.android.productcard.R;
 import com.usupov.autopark.adapter.PartFoundAdapter;
 import com.usupov.autopark.config.CategoryRestURIConstants;
 import com.usupov.autopark.fragment.RecognizerSampleFragment;
@@ -283,6 +283,7 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
                 articleError.setText("");
                 if (editTextArticle.getText()==null || editTextArticle.getText().length()==0) {
                     editTextArticle.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                    clearBtnImage.setVisibility(View.GONE);
 //                    if (!manualInsert)
 //                        editTextArticle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_voice_black, 0);
                     if (carName.isEmpty())
@@ -290,6 +291,7 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
                 }
                 else {
 //                    editTextArticle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_close, 0);
+                    clearBtnImage.setVisibility(View.VISIBLE);
                     layoutSpeech.setVisibility(View.GONE);
                 }
                 String article = editTextArticle.getText()+"".toUpperCase();
@@ -376,8 +378,8 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
     }
     private void initVoiceBtn() {
 
-
         clearBtnImage = (ImageView) findViewById(R.id.clearBtnImage);
+        clearBtnImage.setVisibility(View.GONE);
         clearBtnImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

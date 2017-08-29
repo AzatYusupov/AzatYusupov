@@ -12,7 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.WindowManager;
 
-import com.usupov.autopark.R;
+import com.google.android.productcard.R;
 import com.usupov.autopark.config.LocalConstants;
 
 public class MainActivity extends AppCompatActivity {

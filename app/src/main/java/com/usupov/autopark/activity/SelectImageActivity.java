@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.GridView;
 import android.widget.TextView;
 
-import com.usupov.autopark.R;
+import com.google.android.productcard.R;
 import com.usupov.autopark.adapter.GalleryAdapter;
 import com.usupov.autopark.model.AlbumModel;
 import com.usupov.autopark.squarecamera.CameraActivity;

@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.usupov.autopark.R;
+import com.google.android.productcard.R;
 import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.json.UserJson;
 import com.usupov.autopark.model.UserModel;

@@ -31,7 +31,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.usupov.autopark.R;
+import com.google.android.productcard.R;
 import com.usupov.autopark.adapter.CarsListAdapter;
 import com.usupov.autopark.json.Car;
 import com.usupov.autopark.model.CarModel;

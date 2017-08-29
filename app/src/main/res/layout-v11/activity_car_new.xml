@@ -9,7 +9,7 @@
     android:fitsSystemWindows="true"
     android:focusableInTouchMode="true"
     android:descendantFocusability="beforeDescendants"
-    tools:context=".activity.CarNewActivity">
+    tools:context="com.usupov.autopark.activity.CarNewActivity">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"

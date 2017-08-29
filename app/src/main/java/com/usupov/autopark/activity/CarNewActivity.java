@@ -29,7 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.usupov.autopark.R;
+import com.google.android.productcard.R;
 import com.usupov.autopark.fragment.RecognizerSampleFragment;
 import com.usupov.autopark.json.Car;
 import com.usupov.autopark.json.CarCat;
@@ -135,7 +135,13 @@ public class CarNewActivity extends BasicActivity implements RecognizerSampleFra
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (vinEditText.getText().length()==17) {
+                String text = vinEditText.getText().toString();
+                if (text.isEmpty())
+                    clearBtnImage.setVisibility(View.GONE);
+                else
+                    clearBtnImage.setVisibility(View.VISIBLE);
+
+                if (text.length()==17) {
                     vin = vinEditText.getText()+"";
                     loadCatalogTask = new LoadCatalogTask();
                     try {
@@ -156,8 +162,8 @@ public class CarNewActivity extends BasicActivity implements RecognizerSampleFra
                         startActivityForResult(intent, REQUEST_ADD);
                     }
                 }
-                else if (vinEditText.getText().length() > 17) {
-                    vinEditText.setText(vinEditText.getText().toString().substring(0, 17));
+                else if (text.length() > 17) {
+                    vinEditText.setText(text.substring(0, 17));
                 }
                 else {
 //                    if (vinEditText.getText()==null || vinEditText.getText().length()==0)
@@ -173,6 +179,7 @@ public class CarNewActivity extends BasicActivity implements RecognizerSampleFra
     private void initVoiceBtn() {
 
         clearBtnImage = (ImageView) findViewById(R.id.clearBtnImage);
+        clearBtnImage.setVisibility(View.GONE);
         clearBtnImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
