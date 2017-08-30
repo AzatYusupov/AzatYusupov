@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.usupov.autopark.model.CatalogYear;
 
-import com.google.android.productcard.R;
+import productcard.ru.R;
 
 import java.util.List;
 

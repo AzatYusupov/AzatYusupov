@@ -33,7 +33,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.google.android.productcard.R;
+import productcard.ru.R;
 import com.usupov.autopark.adapter.PartFoundAdapter;
 import com.usupov.autopark.config.CategoryRestURIConstants;
 import com.usupov.autopark.fragment.RecognizerSampleFragment;
@@ -87,6 +87,7 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
     private LinearLayout layoutManual;
     private ImageView microphoneSpeech;
     private ImageView clearBtnImage, voiceBtnImage;
+    boolean isWord;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -208,10 +209,17 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
     }
 
     @Override
-    public void onFinishEditDialog(String resultTextSpeech) {
+    public void onFinishEditDialog(String resultTextSpeech, String word) {
         if (resultTextSpeech.length() > 12)
             resultTextSpeech = resultTextSpeech.substring(0, 12);
-        editTextArticle.setText(resultTextSpeech);
+        if (!word.isEmpty()) {
+            editTextArticle.setText(word);
+            isWord = true;
+        }
+        else {
+            editTextArticle.setText(resultTextSpeech);
+            isWord = false;
+        }
     }
 
     class CarListTask extends  AsyncTask<Void, Void, Boolean> {
@@ -263,7 +271,7 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
     }
     public void initArticleEditText() {
         editTextArticle = (EditText)findViewById(R.id.edittext_article_number);
-        editTextArticle.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+//        editTextArticle.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
 //        if (!manualInsert)
 //            editTextArticle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_voice_black, 0);
 
@@ -294,7 +302,17 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
                     clearBtnImage.setVisibility(View.VISIBLE);
                     layoutSpeech.setVisibility(View.GONE);
                 }
-                String article = editTextArticle.getText()+"".toUpperCase();
+                String article = editTextArticle.getText()+"";
+                int cntDigits = 0;
+                for (int i = 0; i < article.length(); i++) {
+                    if (Character.isDigit(article.charAt(i)))
+                        cntDigits++;
+                }
+                if (cntDigits < article.length() / 2)
+                    isWord = true;
+                else
+                    isWord = false;
+
                 if (manualInsert) {
                     if (article.isEmpty()) {
                         layoutManual.setVisibility(View.GONE);
@@ -304,7 +322,7 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
                     }
 
                 }
-                final List<UserPartModel> startsWithParts = Part.searchStartWith(carId, article.trim(), getApplicationContext());
+                final List<UserPartModel> startsWithParts = Part.searchStartWith(carId, article.trim(), isWord, getApplicationContext());
 
                 selectedPartsMap.clear();
 
@@ -395,35 +413,35 @@ public class PartNewActivity extends BasicActivity implements RecognizerSampleFr
             }
         });
 
-        final EditText edt = (EditText) findViewById(R.id.edittext_article_number);
-        edt.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                final int DRAWABLE_LEFT = 0;
-                final int DRAWABLE_TOP = 1;
-                final int DRAWABLE_RIGHT = 2;
-                final int DRAWABLE_BOTTOM = 3;
-
-                if(event.getAction() == MotionEvent.ACTION_UP) {
-
-//                    String text = edt.getText().toString();
-//                    if((!manualInsert || !text.isEmpty()) && event.getRawX() >= (edt.getRight() - edt.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-//                        if (edt.getText()==null || edt.getText().length()==0) {
-//                            microphoneSpeech.callOnClick();
-//                        }
-//                        else {
-//                            edt.setText("");
-//                            textNext.setVisibility(View.INVISIBLE);
-////                            addSelectedParts.setVisibility(View.INVISIBLE);
-//                        }
-//                        return true;
-//                    }
-                }
-                return false;
-            }
-        });
+//        final EditText edt = (EditText) findViewById(R.id.edittext_article_number);
+//        edt.setOnTouchListener(new View.OnTouchListener() {
+//
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//
+//                final int DRAWABLE_LEFT = 0;
+//                final int DRAWABLE_TOP = 1;
+//                final int DRAWABLE_RIGHT = 2;
+//                final int DRAWABLE_BOTTOM = 3;
+//
+//                if(event.getAction() == MotionEvent.ACTION_UP) {
+//
+////                    String text = edt.getText().toString();
+////                    if((!manualInsert || !text.isEmpty()) && event.getRawX() >= (edt.getRight() - edt.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+////                        if (edt.getText()==null || edt.getText().length()==0) {
+////                            microphoneSpeech.callOnClick();
+////                        }
+////                        else {
+////                            edt.setText("");
+////                            textNext.setVisibility(View.INVISIBLE);
+//////                            addSelectedParts.setVisibility(View.INVISIBLE);
+////                        }
+////                        return true;
+////                    }
+//                }
+//                return false;
+//            }
+//        });
     }
     private String getJSONStringCategory (int carId) {
         String url = String.format(CategoryRestURIConstants.GET_TREE, carId);

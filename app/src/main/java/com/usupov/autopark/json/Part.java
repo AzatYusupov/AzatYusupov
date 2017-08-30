@@ -21,9 +21,11 @@ import java.util.List;
 public class Part {
 
 
-    public static List<UserPartModel> searchStartWith(long carId, String statsWith, Context context) {
+    public static List<UserPartModel> searchStartWith(long carId, String searchText, boolean isWord, Context context) {
         HttpHandler handler = new HttpHandler();
-        String url = String.format(PartRestURIConstants.SEARCH, carId, statsWith);
+        String url = String.format(PartRestURIConstants.SEARCH, carId, searchText);
+        if (isWord)
+            url = String.format(PartRestURIConstants.SEARCH_BY_NAME, carId, searchText);
         try {
             String response = handler.doHttpGet(url, context).getBodyString();
             JSONArray partArray = new JSONArray(response);
@@ -58,7 +60,6 @@ public class Part {
             return userPartList;
         }
         catch (Exception e) {
-            System.out.println("EEEEEEEEEE");
             e.printStackTrace();
             return null;
         }
@@ -77,7 +78,6 @@ public class Part {
 
     public static List<CatalogYear> getApplicableList(long partId, Context context) {
         String url = String.format(PartRestURIConstants.GET_APPLICABILITY, partId);
-        System.out.println("UUUUUUUU="+url);
         HttpHandler handler = new HttpHandler();
         CustomHttpResponse result = handler.doHttpGet(url, context);
         if (result.getStatusCode()==HttpStatus.SC_OK) {

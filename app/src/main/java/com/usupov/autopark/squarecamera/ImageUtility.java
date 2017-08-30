@@ -20,7 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import com.google.android.productcard.R;
+import productcard.ru.R;
 
 /**
  * Created by desmond on 24/10/14.

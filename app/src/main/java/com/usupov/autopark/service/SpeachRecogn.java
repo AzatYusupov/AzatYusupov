@@ -10,6 +10,7 @@ import org.apache.http.HttpStatus;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Created by Azat on 04.03.2017.
@@ -172,7 +173,7 @@ public class SpeachRecogn {
 
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++");
         for (int i = 0; i < text.size(); i++) {
-            String variant = text.get(i).trim();
+            String variant = new String(text.get(i).trim());
             String url = ApiURIConstants.API + "log/vin";
             HttpHandler handler = new HttpHandler();
             HashMap<String, String> data = new HashMap<>();
@@ -196,6 +197,8 @@ public class SpeachRecogn {
         return res;
     }
     public static String partToNormal(String reconNatedtext) {
+        if (reconNatedtext==null)
+            return "";
         reconNatedtext = changeWordsToDigits(reconNatedtext);
         String afterFiltrText = "";
         for (int i = 0; i < reconNatedtext.length(); i++) {
@@ -205,5 +208,27 @@ public class SpeachRecogn {
             }
         }
         return afterFiltrText;
+    }
+    public static String wordToNormal(String word) {
+        if (word==null)
+            return "";
+        word = word.replaceAll("-", "");
+        word = word.replaceAll("\\(", "");
+        word = word.replaceAll("\\)", "");
+        word = word.replaceAll("\\.", "");
+        word = word.replaceAll(",", "");
+
+//        char[] uppercaseCyrillics = { 'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З',
+//                'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У',
+//                'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ', 'Ы', 'Ь', 'Э', 'Ю', 'Я' };
+//        char[] lowercaseCyrillics = { 'а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з',
+//                'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у',
+//                'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я' };
+//        System.out.println(word+" 789999999999994455");
+//        for (int i = 0; i < uppercaseCyrillics.length; i++) {
+//            word = word.replace(uppercaseCyrillics[i], lowercaseCyrillics[i]);
+//        }
+//        System.out.println(word+" 444444445666667777");
+        return word.toLowerCase().trim();
     }
 }

@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.android.productcard.R;
+import productcard.ru.R;
 import com.usupov.autopark.activity.PartNewActivity;
 import com.usupov.autopark.model.UserPartModel;
 

@@ -23,7 +23,7 @@ import ru.yandex.speechkit.RecognizerListener;
 import ru.yandex.speechkit.SpeechKit;
 
 import com.pkmmte.view.CircularImageView;
-import com.google.android.productcard.R;
+import productcard.ru.R;
 import com.usupov.autopark.service.SpeachRecogn;
 
 import java.util.ArrayList;
@@ -74,7 +74,7 @@ public class RecognizerSampleFragment extends DialogFragment implements Recogniz
 
 
     public interface EditNameDialogListener {
-        void onFinishEditDialog(String resultTextSpeech);
+        void onFinishEditDialog(String resultTextSpeech, String word);
     }
 
     public RecognizerSampleFragment() {
@@ -218,6 +218,7 @@ public class RecognizerSampleFragment extends DialogFragment implements Recogniz
         all_results.clear();
         for (RecognitionHypothesis r : recognition.getHypotheses()) {
             all_results.add(r.getNormalized());
+            System.out.println(r.getNormalized()+" 888888888855555555554444");
         }
 
 //        System.out.println("PartialRRRRRRRRRRR"+" "+all_results.size());
@@ -247,7 +248,16 @@ public class RecognizerSampleFragment extends DialogFragment implements Recogniz
     private void finish() {
 
         String recognatedText = SpeachRecogn.vinSpeach(all_results, context).toUpperCase();
+        int cntDigits = 0;
+        String word = "";
+        for (int i = 0; i < recognatedText.length(); i++) {
+            if (Character.isDigit(recognatedText.charAt(i)))
+                cntDigits++;
+        }
 
+        if (cntDigits < recognatedText.length() / 2) {
+            word = all_results.size() > 0 ? SpeachRecogn.wordToNormal(all_results.get(0)) : "";
+        }
         EditNameDialogListener activity = (EditNameDialogListener) context;
         if (recognatedText==null || recognatedText.isEmpty()) {
             titleText.setText(context.getString(R.string.yandex_speech_error));
@@ -256,8 +266,7 @@ public class RecognizerSampleFragment extends DialogFragment implements Recogniz
             imageMicro.setImageDrawable(drawable);
         }
         else {
-            activity.onFinishEditDialog(recognatedText);
-
+            activity.onFinishEditDialog(recognatedText, word);
             dismiss();
         }
         activeRecognation = false;
@@ -307,7 +316,6 @@ public class RecognizerSampleFragment extends DialogFragment implements Recogniz
     private void updateProgress(int progress) {
 //        progressBar.setProgress(progress);
 //        mVoiceView.animateRadius(progress);
-        System.out.println(progress+" 777777777777777788888888884444");
 //        imageMicrophone.getLayoutParams().width = 100 + 75;
 //        imageMicrophone.getLayoutParams().height = 100 + 75;
         float scaleVal = (float) ((80 + progress) / 90.0);

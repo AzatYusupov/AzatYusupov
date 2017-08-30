@@ -23,7 +23,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
-import com.google.android.productcard.R;
+import productcard.ru.R;
 import com.usupov.autopark.activity.CarFoundActivity;
 import com.usupov.autopark.activity.CarListActivity;
 import com.usupov.autopark.activity.PartNewActivity;

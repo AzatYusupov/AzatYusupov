@@ -41,22 +41,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <EditText
-                    android:digits="0123456789 -QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textCapCharacters|textNoSuggestions|textVisiblePassword"
-                    android:ems="@android:integer/config_longAnimTime"
                     android:id="@+id/edittext_article_number"
+                    android:inputType="textCapCharacters|textNoSuggestions|textVisiblePassword"
                     android:padding="10dp"
                     android:maxLength="12"
                     android:imeOptions="flagNoFullscreen"
                     android:layout_margin="10dp"
                     android:layout_marginTop="5dp"
                     android:elevation="6dp"
-                    android:hint="Артикул детали"
+                    android:hint="Артикул или названия детали"
                     android:textCursorDrawable="@drawable/primarycolor_cursor"
                     android:background="@color/colorWhite"
                     />
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_gravity="center|right"

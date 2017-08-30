@@ -38,7 +38,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.productcard.R;
+import productcard.ru.R;
 
 public class CameraActivityOld extends AppCompatActivity implements PictureCallback, SurfaceHolder.Callback {
 

@@ -7,7 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 
-import com.google.android.productcard.R;
+import productcard.ru.R;
 import com.usupov.autopark.config.LocalConstants;
 import com.usupov.autopark.config.PartRestURIConstants;
 import com.usupov.autopark.model.CustomHttpResponse;

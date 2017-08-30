@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.productcard.R;
+import productcard.ru.R;
 import com.usupov.autopark.activity.ApplicableListActivity;
 import com.usupov.autopark.http.Headers;
 import com.usupov.autopark.model.UserPartModel;

@@ -12,7 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
-import com.google.android.productcard.R;
+import productcard.ru.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -22,7 +22,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.productcard.R;
+import productcard.ru.R;
 import com.usupov.autopark.config.UserURIConstants;
 import com.usupov.autopark.http.HttpHandler;
 

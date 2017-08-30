@@ -29,7 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.android.productcard.R;
+import productcard.ru.R;
 import com.usupov.autopark.fragment.RecognizerSampleFragment;
 import com.usupov.autopark.json.Car;
 import com.usupov.autopark.json.CarCat;
@@ -136,8 +136,10 @@ public class CarNewActivity extends BasicActivity implements RecognizerSampleFra
             @Override
             public void afterTextChanged(Editable s) {
                 String text = vinEditText.getText().toString();
-                if (text.isEmpty())
+                if (text==null || text.isEmpty()) {
                     clearBtnImage.setVisibility(View.GONE);
+                    return;
+                }
                 else
                     clearBtnImage.setVisibility(View.VISIBLE);
 
@@ -400,7 +402,7 @@ public class CarNewActivity extends BasicActivity implements RecognizerSampleFra
     }
 
     @Override
-    public void onFinishEditDialog(String resultTextSpeech) {
+    public void onFinishEditDialog(String resultTextSpeech, String word) {
         if (resultTextSpeech.length() > 17)
             resultTextSpeech = resultTextSpeech.substring(0, 17);
         vinEditText.setText(resultTextSpeech);

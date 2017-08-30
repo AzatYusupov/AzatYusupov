@@ -22,7 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.google.android.productcard.R;
+import productcard.ru.R;
 
 import java.io.File;
 import java.io.FileOutputStream;

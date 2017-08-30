@@ -30,7 +30,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.google.android.productcard.R;
+import productcard.ru.R;
 import com.usupov.autopark.adapter.PartFoundAdapter;
 import com.usupov.autopark.adapter.StatusListAdapter;
 import com.usupov.autopark.config.PartRestURIConstants;

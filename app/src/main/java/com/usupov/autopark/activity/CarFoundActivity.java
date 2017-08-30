@@ -36,7 +36,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.google.gson.Gson;
-import com.google.android.productcard.R;
+import productcard.ru.R;
 import com.usupov.autopark.config.CarRestURIConstants;
 import com.usupov.autopark.http.Headers;
 import com.usupov.autopark.http.HttpHandler;

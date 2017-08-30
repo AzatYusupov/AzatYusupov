@@ -7,7 +7,7 @@ import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.android.productcard.R;
+import productcard.ru.R;
 
 public class PrivacyActivity extends AppCompatActivity {
 

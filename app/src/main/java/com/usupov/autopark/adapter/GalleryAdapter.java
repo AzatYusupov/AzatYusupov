@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.google.android.productcard.R;
+import productcard.ru.R;
 import com.usupov.autopark.model.AlbumModel;
 
 import java.io.File;

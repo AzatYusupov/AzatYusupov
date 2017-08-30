@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
-import com.google.android.productcard.R;
+import productcard.ru.R;
 import com.usupov.autopark.model.StatusModel;
 
 import java.util.List;

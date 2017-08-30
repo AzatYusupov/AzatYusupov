@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.google.android.productcard.R;
+import productcard.ru.R;
 import com.usupov.autopark.adapter.ApplicableAdapter;
 import com.usupov.autopark.json.Part;
 import com.usupov.autopark.model.CatalogYear;
