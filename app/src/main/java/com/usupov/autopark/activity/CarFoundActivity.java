@@ -16,14 +16,12 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -35,13 +33,15 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.dd.processbutton.iml.ActionProcessButton;
 import com.google.gson.Gson;
-import productcard.ru.R;
+import product.card.R;
 import com.usupov.autopark.config.CarRestURIConstants;
 import com.usupov.autopark.http.Headers;
 import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.model.CarModel;
 import com.usupov.autopark.service.ImageProcessService;
+import com.usupov.autopark.service.MultipartRequest;
 import com.usupov.autopark.squarecamera.CameraActivity;
 
 import org.apache.http.HttpStatus;
@@ -55,9 +55,8 @@ public class CarFoundActivity extends AppCompatActivity {
     private Bitmap mCameraBitmap;
     private static String imagePath;
     private int CAR_IMAGE_SIZE = 800;
-    private ProgressDialog progressDialog;
-    private int resultCode;
     private RelativeLayout layoutCarImage;
+    ProgressDialog progressDialogSend;
 
 
     private OnClickListener mCaptureImageButtonClickListener = new OnClickListener() {
@@ -111,6 +110,10 @@ public class CarFoundActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_found);
         Gson g = new Gson();
+        progressDialogSend = new ProgressDialog(this,
+                R.style.AppCompatAlertDialogStyle);
+        progressDialogSend.setTitle(getString(R.string.please_wait));
+
         car = g.fromJson(getIntent().getExtras().getString("car"), CarModel.class);
         car.setFullName();
         setCarInforms();
@@ -125,16 +128,23 @@ public class CarFoundActivity extends AppCompatActivity {
         if (update && car.getImageUrl() != null && car.getImageUrl().length() != 0)
             initImageCar();
 
+        initSubmitButton();
         FloatingActionButton fabPhoto = (FloatingActionButton) findViewById(R.id.btnPhotoCar);
 //        fabPhoto.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.colorPrimaryLight));
         fabPhoto.setOnClickListener(mCaptureImageButtonClickListener);
 
-        initbtnSave();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        progressDialog = new ProgressDialog(this,
-                R.style.AppCompatAlertDialogStyle);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setTitle(getString(R.string.please_wait));
+
+    }
+    ActionProcessButton apbSaveCar;
+    private void initSubmitButton() {
+        apbSaveCar = (ActionProcessButton) findViewById(R.id.apbSaveCar);
+        apbSaveCar.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendCarVolleyTask();
+            }
+        });
     }
 
     private void initImageCar() {
@@ -178,7 +188,6 @@ public class CarFoundActivity extends AppCompatActivity {
 
 //                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-                // Recycle the previous bitmap.
                 if (mCameraBitmap != null) {
                     mCameraBitmap.recycle();
                     mCameraBitmap = null;
@@ -196,10 +205,8 @@ public class CarFoundActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
                     bitmap = ImageProcessService.getResizedBitmap(bitmap, CAR_IMAGE_SIZE, CAR_IMAGE_SIZE);
                     mCameraImageView.setImageBitmap(bitmap);
-
                 }
             }
         }
@@ -210,7 +217,7 @@ public class CarFoundActivity extends AppCompatActivity {
     }
 
     private void setCarInforms() {
-        ((TextView)findViewById(R.id.car_name)).setText("Audi A5 Рестайлинг 2.0 МТ, 211 л.с 4WD");
+        ((TextView)findViewById(R.id.car_name)).setText(car.getFullName());
         ((TextView)findViewById(R.id.brandNameDesc)).setText(car.getBrandName());
         ((TextView)findViewById(R.id.modelNameDesc)).setText(car.getModelName());
         ((TextView)findViewById(R.id.yearNameDesc)).setText(car.getYearName());
@@ -240,72 +247,155 @@ public class CarFoundActivity extends AppCompatActivity {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
+    int resultCode;
+    class TaskSendCar extends AsyncTask<Void, Void, Void> {
 
-    private void initbtnSave() {
-        Button btnSave = (Button) findViewById(R.id.btn_save_car);
-        btnSave.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                HashMap<String, String> pairs = new HashMap<>();
-                if (!update) {
-                    if (car.getVin() != null && car.getVin().length() > 0)
-                        pairs.put("vin", car.getVin());
-                    pairs.put("brandId", car.getBrandId() + "");
-                    pairs.put("modelId", car.getModelId() + "");
-                    pairs.put("yearId", car.getYearId() + "");
-                }
-
-                try {
-                    progressDialog.show();
-                    MyTask task = new MyTask(pairs);
-                    task.execute();
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-    class MyTask extends AsyncTask<Void, Void, Integer> {
-
-        HashMap<String, String> pairs;
-        public MyTask(HashMap<String, String> pairs) {
-            this.pairs = pairs;
+        HashMap<String, String> pairValues;
+        String url;
+        public TaskSendCar(String url, HashMap<String, String> pairValues) {
+            this.url = url;
+            this.pairValues = pairValues;
         }
         @Override
-        protected Integer doInBackground(Void... params) {
+        protected void onPreExecute() {
+            super.onPreExecute();
+//            apbSaveCar.setProgress(1);
+            progressDialogSend.show();
+            apbSaveCar.setEnabled(false);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
             HttpHandler handler = new HttpHandler();
-            String url = CarRestURIConstants.CREATE;
-            if (update)
-                url = String.format(CarRestURIConstants.UPDATE, car.getId());
-            resultCode = handler.postWithOneFile(url, pairs, imagePath, getApplicationContext(), false).getStatusCode();
-            return resultCode;
+            resultCode = handler.postWithOneFile(url, pairValues, imagePath, getApplicationContext(), false).getStatusCode();
+            return null;
         }
 
         @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
-            imagePath = null;
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
             if (resultCode==HttpStatus.SC_OK) {
-                if (update) {
-                    Toast.makeText(CarFoundActivity.this, getString(R.string.car_success_edited), Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(CarFoundActivity.this, CarListActivity.class);
-                    Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
-                            android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
-                    startActivity(intent, bundle);
-                    finishAffinity();
-                }
-                else {
-                    Toast.makeText(CarFoundActivity.this, getString(R.string.car_success_added), Toast.LENGTH_LONG).show();
-                    setResult(RESULT_OK);
-                    finish();
-                }
+                if (!update)
+                    Toast.makeText(CarFoundActivity.this, getString(R.string.car_success_added),Toast.LENGTH_LONG).show();
+                else
+                    Toast.makeText(CarFoundActivity.this, getString(R.string.car_success_edited),Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(CarFoundActivity.this, CarListActivity.class);
+                Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
+                        android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+                startActivity(intent, bundle);
+                finishAffinity();
             }
-            else
+            else {
                 Toast.makeText(CarFoundActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
-            progressDialog.dismiss();
+            }
+//            apbSaveCar.setProgress(0);
+            progressDialogSend.dismiss();
+            apbSaveCar.setEnabled(true);
         }
+    }
+
+    private void sendCarVolleyTask() {
+        String url = CarRestURIConstants.CREATE;
+        if (update)
+            url = String.format(CarRestURIConstants.UPDATE, car.getId());
+
+        HashMap<String, String> params = new HashMap<>();
+        if (!update) {
+            if (car.getVin() != null && car.getVin().length() > 0)
+                params.put("vin", car.getVin());
+            params.put("brandId", car.getBrandId() + "");
+            params.put("modelId", car.getModelId() + "");
+            params.put("yearId", car.getYearId() + "");
+        }
+        TaskSendCar taskSendCar = new TaskSendCar(url, params);
+        taskSendCar.execute();
+//        apbSaveCar.setProgress(1);
+//
+//        MultipartRequest multipartRequest = new MultipartRequest(getApplicationContext(), url, params,
+//                new File(imagePath), "name", "file",
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        Toast.makeText(CarFoundActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+//                    }
+//                },
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        Toast.makeText(CarFoundActivity.this, getString(R.string.car_success_edited), Toast.LENGTH_LONG).show();
+//                        Intent intent = new Intent(CarFoundActivity.this, CarListActivity.class);
+//                        Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
+//                                android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+//                        apbSaveCar.setProgress(0);
+//                        startActivity(intent, bundle);
+//                        finishAffinity();
+//                    }
+//                }
+//        ) {
+//
+//        };
+//        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+//        requestQueue.add(multipartRequest);
+
+
+//        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        Toast.makeText(CarFoundActivity.this, getString(R.string.car_success_edited), Toast.LENGTH_LONG).show();
+//                        Intent intent = new Intent(CarFoundActivity.this, CarListActivity.class);
+//                        Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
+//                                android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+//                        apbSaveCar.setProgress(0);
+//                        startActivity(intent, bundle);
+//                        finishAffinity();
+//                    }
+//                },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        if (error.networkResponse != null && (error.networkResponse.statusCode== HttpStatus.SC_UNAUTHORIZED /*|| error.networkResponse.statusCode==HttpStatus.SC_INTERNAL_SERVER_ERROR*/)) {
+//                            Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
+//                                    android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+//                            Intent intent = new Intent(CarFoundActivity.this, LoginActivity.class);
+//                            intent.putExtra("unauthorized", true);
+//                            startActivity(intent, bundle);
+//                            finishAffinity();
+//                        }
+//                        else
+//                            Toast.makeText(CarFoundActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+//                    }
+//                }
+//        ) {
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                return Headers.headerMap(getApplicationContext());
+//            }
+//
+//            @Override
+//            protected Map<String, String> getParams() throws AuthFailureError {
+//                Map<String, String> map = new HashMap<>();
+//
+//                if (!update) {
+//                    if (car.getVin() != null && car.getVin().length() > 0)
+//                        map.put("vin", car.getVin());
+//                    map.put("brandId", car.getBrandId() + "");
+//                    map.put("modelId", car.getModelId() + "");
+//                    map.put("yearId", car.getYearId() + "");
+//                }
+//                if (imagePath != null) {
+//                    System.out.println("SSSSSSSSSSSSSSSSEEEE");
+//                    map.put("file", ImageProcessService.getSendingStringImage(imagePath, getBaseContext()));
+//                }
+//                return map;
+//            }
+//
+//            @Override
+//            public byte[] getBody() throws AuthFailureError {
+//                return super.getBody();
+//            }
+//        };
+//        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+//        requestQueue.add(stringRequest);
     }
 }

@@ -128,4 +128,10 @@
         <item name="colorAccent">@color/colorWhite</item> <!-- Whatever color you want-->
     </style>
 
+    <style name="MyMenu">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:background">#FFFFFF</item>
+    </style>
+
 </resources>

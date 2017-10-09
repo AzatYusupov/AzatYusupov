@@ -1,6 +1,7 @@
 package com.usupov.autopark.adapter;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,12 +21,21 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.signature.StringSignature;
 import com.google.gson.Gson;
-import productcard.ru.R;
+import product.card.R;
 import com.usupov.autopark.activity.CarFoundActivity;
 import com.usupov.autopark.activity.CarListActivity;
+import com.usupov.autopark.activity.LoginActivity;
 import com.usupov.autopark.activity.PartNewActivity;
 import com.usupov.autopark.config.CarRestURIConstants;
 import com.usupov.autopark.http.Headers;
@@ -35,6 +45,7 @@ import com.usupov.autopark.model.CarModel;
 import org.apache.http.HttpStatus;
 
 import java.util.List;
+import java.util.Map;
 
 public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyViewHolder> {
 
@@ -91,31 +102,54 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
                                         {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                int carId = carList.get(position).getId();
-                                                System.out.println("Deleted car id = "+carId);
-                                                int resultCode = handler.deleteQuery(String.format(urlCarDelete, carId), context.getApplicationContext()).getStatusCode();
-                                                String message = carList.get(position).getFullName()+" ";
+                                                final int carId = carList.get(position).getId();
+                                                final String carName = carList.get(position).getFullName();
 
-                                                if (resultCode== HttpStatus.SC_OK) {
-                                                    carList.remove(position);
-                                                    for (int i = 0; i < CarListActivity.carList.size(); i++) {
-                                                        if (CarListActivity.carList.get(i).getId()==carId) {
-                                                            CarListActivity.carList.remove(i);
-                                                            break;
+                                                String url = String.format(urlCarDelete, carId);
+
+                                                StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url,
+                                                        new Response.Listener<String>() {
+                                                            @Override
+                                                            public void onResponse(String response) {
+                                                                carList.remove(position);
+                                                                for (int i = 0; i < CarListActivity.carList.size(); i++) {
+                                                                    if (CarListActivity.carList.get(i).getId()==carId) {
+                                                                        CarListActivity.carList.remove(i);
+                                                                        break;
+                                                                    }
+                                                                }
+                                                                notifyItemRemoved(position);
+                                                                notifyDataSetChanged();
+                                                                Toast.makeText(context, carName + " " + context.getString(R.string.car_success_deleted), Toast.LENGTH_LONG).show();
+
+                                                                if (carList.isEmpty()) {
+                                                                    CarListActivity.tryEmpty();
+                                                                }
+                                                            }
+                                                        },
+                                                        new Response.ErrorListener() {
+                                                            @Override
+                                                            public void onErrorResponse(VolleyError error) {
+                                                                if (error.networkResponse != null && (error.networkResponse.statusCode== HttpStatus.SC_UNAUTHORIZED || error.networkResponse.statusCode==HttpStatus.SC_INTERNAL_SERVER_ERROR)) {
+                                                                    Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(context,
+                                                                            android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+                                                                    Intent intent = new Intent(context, LoginActivity.class);
+                                                                    intent.putExtra("unauthorized", true);
+                                                                    context.startActivity(intent, bundle);
+                                                                    ((Activity)context).finishAffinity();
+                                                                }
+                                                                else
+                                                                    Toast.makeText(context, context.getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+                                                            }
                                                         }
+                                                ) {
+                                                    @Override
+                                                    public Map<String, String> getHeaders() throws AuthFailureError {
+                                                        return Headers.headerMap(context.getApplicationContext());
                                                     }
-                                                    notifyItemRemoved(position);
-                                                    notifyDataSetChanged();
-                                                    message += context.getString(R.string.car_success_deleted);
-//                                                    System.out.println("Removed id : "+position);
-
-                                                    if (carList.isEmpty()) {
-                                                        CarListActivity.tryEmpty();
-                                                    }
-                                                }
-                                                else
-                                                    message += context.getString(R.string.car_not_deleted);
-                                                Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                                                };
+                                                RequestQueue requestQueue = Volley.newRequestQueue(context.getApplicationContext());
+                                                requestQueue.add(stringRequest);
                                             }
 
                                         })
@@ -165,7 +199,7 @@ public class CarsListAdapter extends RecyclerView.Adapter<CarsListAdapter.MyView
         holder.progress.setProgress(carListItem.getPercent());
 
         Glide.with(context).load(Headers.getUrlWithHeaders(carListItem.getImageUrl(), context.getApplicationContext()))
-                .skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)
+                .signature(new StringSignature(carListItem.getId() + " " + carListItem.getLastUpdateTime()))
                 .into(holder.thumbnail);
 
         holder.overflow.setOnClickListener(new View.OnClickListener() {

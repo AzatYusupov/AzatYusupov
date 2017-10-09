@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_new_car"
     android:layout_width="match_parent"
@@ -170,7 +171,6 @@
                     android:clickable="true"
                     android:layout_marginTop="10dp"
                     >
-
                     <TextView
                         android:layout_width="78dp"
                         android:layout_height="match_parent"
@@ -182,7 +182,7 @@
                         />
 
                     <TextView
-                        android:id="@+id/selectedYear"
+                        android:id="@+id/selectYearName"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:text="не выбран"
@@ -194,24 +194,30 @@
 
                 </LinearLayout>
             </LinearLayout>
-            <Button
-                android:visibility="gone"
-                android:fontFamily="sans-serif"
-                android:background="@drawable/save_button_bg"
-                android:textColor="@color/textColorPrimary"
-                android:text="@string/find"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="50dp"
-                android:layout_marginRight="50dp"
-                android:textAllCaps="false"
-                android:textSize="18sp"
-                android:id="@+id/new_car_find_btn"
-                android:layout_gravity="center"
+            <com.dd.processbutton.iml.ActionProcessButton
+                android:id="@+id/apbFindCar"
                 android:layout_width="match_parent"
+                android:text="Найти"
+                android:visibility="gone"
+                android:elevation="8dp"
+                android:layout_marginLeft="35dp"
+                android:layout_marginRight="35dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="24dp"
+                android:textColor="@color/colorWhite"
+                custom:pb_colorComplete="@color/green_complete"
+                custom:pb_colorNormal="@color/colorAccent"
+                custom:pb_colorPressed="@color/red_error"
+                custom:pb_colorProgress="@color/purple_progress"
+                custom:pb_textComplete="Success"
+                custom:pb_textProgress="@string/please_wait"
+                custom:pb_textError="Error"
+                custom:pb_colorError="@color/red_error"
                 android:layout_height="wrap_content" />
+
             <ProgressBar
                 android:visibility="gone"
+                android:layout_marginTop="15dp"
                 android:theme="@style/AppTheme.PrimaryAccent"
                 android:id="@+id/progress_select_catalog"
                 android:layout_width="wrap_content"

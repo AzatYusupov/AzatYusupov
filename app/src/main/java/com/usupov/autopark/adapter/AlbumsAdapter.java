@@ -11,8 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.squareup.picasso.Picasso;
-import productcard.ru.R;
+import product.card.R;
 import com.usupov.autopark.model.AlbumModel;
 
 import java.io.File;

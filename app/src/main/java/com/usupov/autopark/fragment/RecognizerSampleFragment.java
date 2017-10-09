@@ -2,6 +2,7 @@ package com.usupov.autopark.fragment;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,7 +24,7 @@ import ru.yandex.speechkit.RecognizerListener;
 import ru.yandex.speechkit.SpeechKit;
 
 import com.pkmmte.view.CircularImageView;
-import productcard.ru.R;
+import product.card.R;
 import com.usupov.autopark.service.SpeachRecogn;
 
 import java.util.ArrayList;
@@ -50,8 +51,8 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
  */
 
 public class RecognizerSampleFragment extends DialogFragment implements RecognizerListener {
-//    private static final String API_KEY_FOR_TESTS_ONLY = "069b6659-984b-4c5f-880e-aaedcfd84102";
-    private static final String API_KEY_FOR_TESTS_ONLY = "8a2fdc7a-fc0d-476f-bebe-5f048ac278ac";
+    private static final String API_KEY_FOR_TESTS_ONLY = "069b6659-984b-4c5f-880e-aaedcfd84102";
+//    private static final String API_KEY_FOR_TESTS_ONLY = "8a2fdc7a-fc0d-476f-bebe-5f048ac278ac";
 
     private static final int REQUEST_PERMISSION_CODE = 1;
 
@@ -93,6 +94,7 @@ public class RecognizerSampleFragment extends DialogFragment implements Recogniz
         args.putInt("title", title);
         x = title;
         frag.setArguments(args);
+
         return frag;
     }
 
@@ -147,6 +149,7 @@ public class RecognizerSampleFragment extends DialogFragment implements Recogniz
 
 //        imageMicrophone.getLayoutParams().width = 180;
 //        imageMicrophone.getLayoutParams().height = 180;
+
         return builder.create();
     }
 
@@ -273,11 +276,19 @@ public class RecognizerSampleFragment extends DialogFragment implements Recogniz
     }
 
     @Override
+    public void onDismiss(DialogInterface dialog) {
+//        super.onDismiss(dialog);
+        System.out.println("DDDDDDDDDDDDD");
+        resetRecognizer();
+    }
+
+    @Override
     public void onError(Recognizer recognizer, ru.yandex.speechkit.Error error) {
         System.out.println("Errorrrrrrrrrrrr");
         if (error.getCode() == Error.ERROR_CANCELED) {
             updateStatus("Cancelled");
             updateProgress(0);
+            resetRecognizer();
         } else {
             updateStatus("Error occurred " + error.getString());
             resetRecognizer();
@@ -318,7 +329,7 @@ public class RecognizerSampleFragment extends DialogFragment implements Recogniz
 //        mVoiceView.animateRadius(progress);
 //        imageMicrophone.getLayoutParams().width = 100 + 75;
 //        imageMicrophone.getLayoutParams().height = 100 + 75;
-        float scaleVal = (float) ((80 + progress) / 90.0);
+        float scaleVal = (float) ((80 + progress) / 100.0);
         ScaleAnimation scale = new ScaleAnimation(scaleVal, scaleVal, scaleVal, scaleVal, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         scale.setFillAfter(true);
         scale.setDuration(500);

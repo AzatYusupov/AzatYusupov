@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import productcard.ru.R;
+import product.card.R;
 
 import java.util.ArrayList;
 

@@ -10,6 +10,14 @@
     android:fitsSystemWindows="true"
     tools:context="com.usupov.autopark.activity.CarListActivity">
 
+    <ProgressBar
+        android:id="@+id/pbCarList"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:theme="@style/AppTheme.PrimaryAccent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -21,6 +29,8 @@
             android:layout_height="wrap_content" />
 
         <android.support.v4.widget.NestedScrollView
+            android:id="@+id/scrollCarList"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
@@ -49,13 +59,7 @@
                     android:textColor="@android:color/black"
                     android:overScrollMode="never"
                     />
-                <ProgressBar
-                    android:id="@+id/pbMain"
-                    android:visibility="gone"
-                    android:layout_gravity="center"
-                    android:theme="@style/AppTheme.PrimaryAccent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/list_car"
                     android:layout_width="match_parent"

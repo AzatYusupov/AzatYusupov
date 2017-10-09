@@ -7,8 +7,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.WindowManager;
 
-import productcard.ru.R;
+import product.card.R;
 import com.usupov.autopark.adapter.ApplicableAdapter;
 import com.usupov.autopark.json.Part;
 import com.usupov.autopark.model.CatalogYear;
@@ -26,6 +27,8 @@ public class ApplicableListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_applicable_list);
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
         initToolbar();
 

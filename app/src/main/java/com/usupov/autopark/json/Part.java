@@ -15,19 +15,22 @@ import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
 
 public class Part {
 
 
     public static List<UserPartModel> searchStartWith(long carId, String searchText, boolean isWord, Context context) {
         HttpHandler handler = new HttpHandler();
-        String url = String.format(PartRestURIConstants.SEARCH, carId, searchText);
+        String url = String.format(PartRestURIConstants.SEARCH, carId);
         if (isWord)
-            url = String.format(PartRestURIConstants.SEARCH_BY_NAME, carId, searchText);
+            url = String.format(PartRestURIConstants.SEARCH_BY_NAME, carId);
         try {
-            String response = handler.doHttpGet(url, context).getBodyString();
+            HashMap<String, String> map = new HashMap<>();
+            map.put("search", searchText);
+            System.out.println("SSSSSSSSSSSSSS="+searchText);
+            String response = handler.postWithOneFile(url, map, null, context, false).getBodyString();
             JSONArray partArray = new JSONArray(response);
             List<UserPartModel> partList = new ArrayList<>();
             for (int i = 0; i < partArray.length(); i++) {

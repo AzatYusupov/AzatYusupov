@@ -7,6 +7,13 @@
     android:fitsSystemWindows="true"
     android:layout_height="match_parent"
     tools:context="com.usupov.autopark.activity.PartListActivity">
+    <ProgressBar
+        android:id="@+id/pbPartList"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:theme="@style/AppTheme.PrimaryAccent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -19,6 +26,8 @@
             android:layout_height="wrap_content">
         </include>
         <ScrollView
+            android:id="@+id/scrollPartList"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
@@ -31,13 +40,6 @@
                 android:descendantFocusability="blocksDescendants"
                 android:orientation="vertical"
                 >
-                <ProgressBar
-                    android:id="@+id/pbPartList"
-                    android:visibility="gone"
-                    android:layout_gravity="center"
-                    android:theme="@style/AppTheme.PrimaryAccent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/list_user_part"
                     android:layout_width="match_parent"

@@ -3,15 +3,13 @@ package com.usupov.autopark.adapter;
 
 import android.content.Context;
 import android.database.DataSetObserver;
-import android.graphics.drawable.Drawable;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
-import productcard.ru.R;
+import product.card.R;
 import com.usupov.autopark.model.StatusModel;
 
 import java.util.List;

@@ -1,32 +1,51 @@
 package com.usupov.autopark.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.StrictMode;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
-import productcard.ru.R;
+import product.card.R;
+
+import com.usupov.autopark.config.AdsURIConstants;
+import com.usupov.autopark.config.UserURIConstants;
+import com.usupov.autopark.http.Headers;
 import com.usupov.autopark.http.HttpHandler;
-import com.usupov.autopark.json.UserJson;
 import com.usupov.autopark.model.UserModel;
+
+import org.apache.http.HttpStatus;
+
+import java.util.Map;
 
 
 public class BasicActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+
+
+    public static String userName, userEmail;
 
     MenuItem selectedMenuItem = null;
     @Override
@@ -44,41 +63,78 @@ public class BasicActivity extends AppCompatActivity
 
     }
 
+    private TextView accountName, accountEmail;
+
     private void initAccountDetails() {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         View headerView = navigationView.getHeaderView(0);
-        ImageView accountImage = (ImageView) headerView.findViewById(R.id.image_account);
-        TextView accountName = (TextView) headerView.findViewById(R.id.name_account);
-        TextView accountEmail = (TextView) headerView.findViewById(R.id.email_account);
+        FloatingActionButton accountFab = (FloatingActionButton) headerView.findViewById(R.id.image_account);
+        accountName = (TextView) headerView.findViewById(R.id.name_account);
+        accountEmail = (TextView) headerView.findViewById(R.id.email_account);
 
-
-        final UserModel user = UserJson.getUser(getApplicationContext());
-
-        if (user==null) {
-            Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
-                    android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
-            startActivity(new Intent(BasicActivity.this, LoginActivity.class), bundle);
-            finishAffinity();
-        }
+        if (userName==null)
+            loadUser();
         else {
-            accountName.setText(user.getName());
-            accountEmail.setText(user.getEmail());
+            accountName.setText(userName);
+            accountEmail.setText(userEmail);
         }
-        accountImage.setOnClickListener(new View.OnClickListener() {
+
+        accountFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(BasicActivity.this, UpdateActivity.class);
-                Gson g = new Gson();
-                intent.putExtra("user", g.toJson(user, UserModel.class));
                 Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
                         android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
                 startActivity(intent, bundle);
                 finishAffinity();
             }
         });
+
+
     }
+
+    private void loadUser() {
+        String url = UserURIConstants.USER_INFO;
+        StringRequest stringReques = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        UserModel user = new Gson().fromJson(response, UserModel.class);
+                        userName = user.getName();
+                        userEmail = user.getEmail();
+                        accountName.setText(userName);
+                        accountEmail.setText(userEmail);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+//                        if (error.networkResponse != null && (error.networkResponse.statusCode==HttpStatus.SC_UNAUTHORIZED || error.networkResponse.statusCode==HttpStatus.SC_INTERNAL_SERVER_ERROR)) {
+//                            Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
+//                                    android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+//                            Intent intent = new Intent(BasicActivity.this, LoginActivity.class);
+//                            intent.putExtra("unauthorized", true);
+//                            startActivity(intent, bundle);
+//                            finishAffinity();
+//                        }
+//                        else
+//                            Toast.makeText(getApplicationContext(), getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return Headers.headerMap(getApplicationContext());
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.add(stringReques);
+    }
+
+    Class targetClass = null;
 
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -112,7 +168,7 @@ public class BasicActivity extends AppCompatActivity
 
                 item.setChecked(true);
 
-                Class targetClass = null;
+
                 switch (id) {
                     case  R.id.nav_car_add :
                         targetClass = CarNewActivity.class; break;
@@ -123,9 +179,69 @@ public class BasicActivity extends AppCompatActivity
                     case R.id.nav_car_list :
                         targetClass = CarListActivity.class; break;
                     case R.id.nav_logout :
-                        HttpHandler.removeAutToken(getApplicationContext()); targetClass = LoginActivity.class; break;
+                        userName = null;
+                        userEmail = null;
+                        HttpHandler.removeAutToken(getApplicationContext());
+                        targetClass = LoginActivity.class; break;
                     case R.id.nav_settings :
                         break;
+                    case R.id.nav_adds : {
+                        new AlertDialog.Builder(BasicActivity.this)
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setTitle("Объявления")
+                                .setMessage(getString(R.string.want_ads))
+                                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        String url = AdsURIConstants.DO_ANNOUNCE;
+                                        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                                                new Response.Listener<String>() {
+                                                    @Override
+                                                    public void onResponse(String response) {
+                                                        Toast.makeText(BasicActivity.this, getString(R.string.success_ads), Toast.LENGTH_LONG).show();
+                                                        targetClass = PartListActivity.class;
+                                                    }
+                                                },
+                                                new Response.ErrorListener() {
+                                                    @Override
+                                                    public void onErrorResponse(VolleyError error) {
+                                                        System.out.println(error.getMessage()+" 745645646");
+                                                        if (error.networkResponse != null && (error.networkResponse.statusCode== HttpStatus.SC_UNAUTHORIZED || error.networkResponse.statusCode==HttpStatus.SC_INTERNAL_SERVER_ERROR)) {
+                                                            Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
+                                                                    android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+                                                            Intent intent = new Intent(BasicActivity.this, LoginActivity.class);
+                                                            intent.putExtra("unauthorized", true);
+                                                            startActivity(intent, bundle);
+                                                            finishAffinity();
+                                                        }
+                                                        else if (error.networkResponse != null && error.networkResponse.statusCode==HttpStatus.SC_FORBIDDEN) {
+                                                            Toast.makeText(BasicActivity.this, getString(R.string.fill_data_ads), Toast.LENGTH_LONG).show();
+                                                            targetClass = UpdateActivity.class;
+                                                        }
+                                                        else if (error.networkResponse != null && error.networkResponse.statusCode==HttpStatus.SC_NO_CONTENT) {
+                                                            Toast.makeText(BasicActivity.this, getString(R.string.add_part_ads), Toast.LENGTH_LONG).show();
+                                                            targetClass = PartListActivity.class;
+                                                        }
+                                                        else {
+                                                            Toast.makeText(BasicActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+                                                            targetClass = PartListActivity.class;
+                                                        }
+                                                    }
+                                                }
+                                        ) {
+                                            @Override
+                                            public Map<String, String> getHeaders() throws AuthFailureError {
+                                                return Headers.headerMap(getApplicationContext());
+                                            }
+                                        };
+                                        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                                        requestQueue.add(stringRequest);
+                                    }
+                                })
+                                .setNegativeButton("Нет", null)
+                                .show();
+                        break;
+                    }
                     default:
                         break;
                 }

@@ -17,7 +17,8 @@
         </android.support.v7.widget.AppCompatCheckBox>
         <TextView
             android:id="@+id/textPart"
-            android:textColor="@android:color/black"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/primaryText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

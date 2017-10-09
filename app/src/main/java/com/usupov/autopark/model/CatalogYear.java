@@ -1,6 +1,8 @@
 package com.usupov.autopark.model;
 
 
+import java.util.List;
+
 public class CatalogYear {
     private int id;
     private int modelId;
@@ -39,5 +41,13 @@ public class CatalogYear {
 
     public void setBrandName(String brandName) {
         this.brandName = brandName;
+    }
+
+    public static String[] getNamesArray(List<CatalogYear> years) {
+        String[] namesArray = new String[years.size()];
+        for (int i = 0; i < namesArray.length; i++) {
+            namesArray[i] = years.get(i).getName();
+        }
+        return namesArray;
     }
 }

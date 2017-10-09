@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import productcard.ru.R;
+import product.card.R;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

@@ -26,6 +26,8 @@
             android:id="@+id/overflow"
             android:src="@drawable/ic_action_dots"
             android:layout_alignParentTop="true"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackground"
             android:scaleType="centerCrop"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"

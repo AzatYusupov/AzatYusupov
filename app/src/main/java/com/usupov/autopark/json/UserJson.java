@@ -9,8 +9,6 @@ import com.usupov.autopark.http.HttpHandler;
 import com.usupov.autopark.model.CustomHttpResponse;
 import com.usupov.autopark.model.UserModel;
 
-import javax.inject.Inject;
-
 
 public class UserJson {
 

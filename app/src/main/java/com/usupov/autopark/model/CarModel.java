@@ -11,6 +11,7 @@ public class CarModel {
     private String brandName, modelName, yearName;
     private String vin;
     private int percent;
+    long lastUpdateTime;
 
     public CarModel(int id, String imageUrl, String fullName, String description, int percent) {
         this.id = id;
@@ -127,5 +128,13 @@ public class CarModel {
 
     public int getPercent() {
         return this.percent;
+    }
+
+    public long getLastUpdateTime() {
+        return lastUpdateTime;
+    }
+
+    public void setLastUpdateTime(long lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
     }
 }

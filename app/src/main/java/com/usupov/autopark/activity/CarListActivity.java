@@ -3,9 +3,7 @@ package com.usupov.autopark.activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
@@ -24,36 +22,45 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import productcard.ru.R;
+import product.card.R;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.usupov.autopark.adapter.CarsListAdapter;
-import com.usupov.autopark.json.Car;
+import com.usupov.autopark.config.CarRestURIConstants;
+import com.usupov.autopark.http.Headers;
 import com.usupov.autopark.model.CarModel;
+
+import org.apache.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class CarListActivity extends BasicActivity{
 
     public static TextView textView;
     public static View emptyView;
-    private ProgressBar pbMain;
     public static List<CarModel> carList;
     private RecyclerView recyclerView;
     public static TextView tvEmptyCarList;
     public static String msgCarsNotFound, msgCarNotYet;
 
-    private final int requestCodeCarNew = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
         super.onCreate(savedInstanceState);
 
         LayoutInflater inflater = (LayoutInflater) this
@@ -65,26 +72,65 @@ public class CarListActivity extends BasicActivity{
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-
-//        setContentView(R.layout.activity_car_list);
-        carList = null;
-        pbMain = (ProgressBar) findViewById(R.id.pbMain);
-
         initToolbar();
 
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(R.id.nav_car_list);
 
         if (getIntent().hasExtra("name")) {
             initFirstIn();
             return;
         }
 
-        initInternetConnection(true);
-
         initEmptyView();
         initRecyclerview();
+        loadCarList();
+        initFabNewCar();
+    }
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setCheckedItem(R.id.nav_car_list);
+    private void loadCarList() {
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.pbCarList);
+        progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
+        progressBar.setVisibility(View.VISIBLE);
+        String url = CarRestURIConstants.GET_ALL;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Gson g = new Gson();
+                        carList = g.fromJson(response, new TypeToken<List<CarModel>>(){}.getType());
+                        for (CarModel car : carList) {
+                            car.setFullName();
+                        }
+                        progressBar.setVisibility(View.GONE);
+                        findViewById(R.id.scrollCarList).setVisibility(View.VISIBLE);
+                        initCarsList(carList);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse != null && (error.networkResponse.statusCode== HttpStatus.SC_UNAUTHORIZED || error.networkResponse.statusCode==HttpStatus.SC_INTERNAL_SERVER_ERROR)) {
+                            Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(),
+                                    android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+                            Intent intent = new Intent(CarListActivity.this, LoginActivity.class);
+                            intent.putExtra("unauthorized", true);
+                            startActivity(intent, bundle);
+                            finishAffinity();
+                        }
+                        else
+                            Toast.makeText(CarListActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return Headers.headerMap(getApplicationContext());
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.add(stringRequest);
     }
 
     private void initFirstIn() {
@@ -101,9 +147,14 @@ public class CarListActivity extends BasicActivity{
         TextView greetingName = (TextView) greetingView.findViewById(R.id.greeting_name);
         String name = getIntent().getStringExtra("name");
         greetingName.setText("Привет, "+name+"!");
-//        layoutCarList.setVerticalGravity(Gravity.CENTER_VERTICAL);
 
         initFabNewCar();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @Override
@@ -112,72 +163,50 @@ public class CarListActivity extends BasicActivity{
 
     }
 
-
-    class MyTask extends AsyncTask<Void, Void, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            carList = Car.getCarList(getApplicationContext());
-            if (carList==null)
-                return false;
-            return true;
-        }
-        @Override
-        protected void onPostExecute(Boolean ok) {
-            super.onPostExecute(ok);
-            if (!ok) {
-                Toast.makeText(CarListActivity.this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show();
-            }
-            pbMain.setVisibility(View.GONE);
-            initCarsList(carList);
-            initFabNewCar();
-        }
-    }
-
-    private boolean initInternetConnection(boolean firstTime) {
-        parentLayout = (LinearLayout) findViewById(R.id.layout_car_list);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        if (!isNetworkAvailable()) {
-            findViewById(R.id.fab_new_car).setVisibility(View.GONE);
-            if (firstTime) {
-                LayoutInflater.from(this).inflate(R.layout.no_internet_conn, (LinearLayout) findViewById(R.id.layout_car_list), true);
-                findViewById(R.id.textView).setVisibility(View.GONE);
-                params.gravity = Gravity.CENTER;
-                parentLayout.setLayoutParams(params);
-                initTryAgain();
-            }
-            return false;
-        }
-        else{
-            pbMain.setVisibility(View.VISIBLE);
-            MyTask mt = new MyTask();
-            mt.execute();
-            findViewById(R.id.fab_new_car).setVisibility(View.VISIBLE);
-            if (!firstTime) {
-                findViewById(R.id.btn_try_again).setVisibility(View.GONE);
-                findViewById(R.id.text_again).setVisibility(View.GONE);
-                params.gravity = Gravity.TOP;
-                parentLayout.setLayoutParams(params);
-            }
-            return true;
-        }
-    }
-
-    private void initTryAgain() {
-        Button btnTryAgain =(Button)findViewById(R.id.btn_try_again);
-        btnTryAgain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                initInternetConnection(false);
-            }
-        });
-    }
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
+//    private boolean initInternetConnection(boolean firstTime) {
+//        parentLayout = (LinearLayout) findViewById(R.id.layout_car_list);
+//        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//        if (!isNetworkAvailable()) {
+//            findViewById(R.id.fab_new_car).setVisibility(View.GONE);
+//            if (firstTime) {
+//                LayoutInflater.from(this).inflate(R.layout.no_internet_conn, (LinearLayout) findViewById(R.id.layout_car_list), true);
+//                findViewById(R.id.textView).setVisibility(View.GONE);
+//                params.gravity = Gravity.CENTER;
+//                parentLayout.setLayoutParams(params);
+//                initTryAgain();
+//            }
+//            return false;
+//        }
+//        else{
+//            pbMain.setVisibility(View.VISIBLE);
+//            MyTask mt = new MyTask();
+//            mt.execute();
+//            findViewById(R.id.fab_new_car).setVisibility(View.VISIBLE);
+//            if (!firstTime) {
+//                findViewById(R.id.btn_try_again).setVisibility(View.GONE);
+//                findViewById(R.id.text_again).setVisibility(View.GONE);
+//                params.gravity = Gravity.TOP;
+//                parentLayout.setLayoutParams(params);
+//            }
+//            return true;
+//        }
+//    }
+//
+//    private void initTryAgain() {
+//        Button btnTryAgain =(Button)findViewById(R.id.btn_try_again);
+//        btnTryAgain.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                initInternetConnection(false);
+//            }
+//        });
+//    }
+//    private boolean isNetworkAvailable() {
+//        ConnectivityManager connectivityManager
+//                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+//        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+//        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+//    }
     /**
      * Initial toolbar
      */
@@ -220,7 +249,8 @@ public class CarListActivity extends BasicActivity{
         recyclerView.setAdapter(adapter);
 
         if (carList.isEmpty()) {
-            textView.setVisibility(View.GONE);
+            textView.setVisibility(View
+                    .GONE);
             tvEmptyCarList.setText(getString(R.string.car_list_empty));
             return;
         }
@@ -290,7 +320,7 @@ public class CarListActivity extends BasicActivity{
     public boolean onCreateOptionsMenu(Menu menu) {
 
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_search, menu);
 
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);

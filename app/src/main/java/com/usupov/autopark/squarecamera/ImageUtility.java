@@ -20,7 +20,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import productcard.ru.R;
+import java.util.Random;
+
+import product.card.R;
 
 /**
  * Created by desmond on 24/10/14.
@@ -74,8 +76,8 @@ public class ImageUtility {
                 return null;
             }
         }
-
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        Random random = new Random();
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + "_" + random.nextInt(1000000000);
         File mediaFile = new File(
                 mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg"
         );

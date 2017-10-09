@@ -1,8 +1,6 @@
 package com.usupov.autopark.activity;
 
 
-
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -38,7 +36,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import productcard.ru.R;
+import product.card.R;
 
 public class CameraActivityOld extends AppCompatActivity implements PictureCallback, SurfaceHolder.Callback {
 

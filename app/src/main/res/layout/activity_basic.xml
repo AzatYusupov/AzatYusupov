@@ -20,7 +20,7 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         android:fontFamily="sans-serif"
-        app:itemIconTint="@android:color/black"
+        app:itemIconTint="@drawable/drawer_item"
         app:headerLayout="@layout/nav_header_basic"
         app:menu="@menu/activity_basic_drawer" />
 

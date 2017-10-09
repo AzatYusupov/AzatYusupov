@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import productcard.ru.R;
+import product.card.R;
 import com.usupov.autopark.activity.PartNewActivity;
 import com.usupov.autopark.model.UserPartModel;
 
@@ -36,7 +36,10 @@ public class PartFoundAdapter extends RecyclerView.Adapter<PartFoundAdapter.MyVi
 
         UserPartModel part = partList.get(position);
 
-        String text = part.getParentCatName()+" | "+part.getCategoryName()+"\n"+part.getArticle()+",  "+part.getTitle()+"\n";
+        if (part.getPartName()==null)
+            part.setPartName(part.getTitle());
+
+        String text = part.getParentCatName()+" | "+part.getCategoryName()+"\n"+part.getArticle()+",  "+part.getPartName()+"\n";
         if (part.getParentCatName()==null) {
             text = part.getTitle();
             holder.checkBox.setVisibility(View.GONE);

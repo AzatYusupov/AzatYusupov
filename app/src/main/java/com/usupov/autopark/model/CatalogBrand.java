@@ -1,5 +1,7 @@
 package com.usupov.autopark.model;
 
+import java.util.List;
+
 public class CatalogBrand {
     private int id;
     private String name;
@@ -35,4 +37,11 @@ public class CatalogBrand {
         this.imageUrl = imageUrl;
     }
     public CatalogBrand(){}
+    public static String[] getNamesArray(List<CatalogBrand> brands) {
+        String[] namesArray = new String[brands.size()];
+        for (int i = 0; i < namesArray.length; i++) {
+            namesArray[i] = brands.get(i).getName();
+        }
+        return namesArray;
+    }
 }

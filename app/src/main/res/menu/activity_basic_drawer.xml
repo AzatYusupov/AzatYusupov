@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:popupTheme="@style/MyMenu"
+    >
     <group android:checkableBehavior="all" android:id="@+id/first_submenu">
         <item
             android:id="@+id/nav_car_add"
@@ -22,7 +24,18 @@
             android:icon="@drawable/ic_stat_menu_car"
             android:title="Гараж"
             />
+        <item
+            android:id="@+id/nav_adds"
+            android:icon="@mipmap/ic_adds"
+            android:title="Объявления"
+            />
+        <item
+            android:id="@+id/nav_statistics"
+            android:icon="@mipmap/ic_statistics"
+            android:title="Статистика"
+            />
     </group>
+
     <group android:checkableBehavior="all" android:id="@+id/third_submenu">
         <item
             android:id="@+id/nav_settings"

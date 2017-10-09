@@ -7,7 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 
-import productcard.ru.R;
+import product.card.R;
 import com.usupov.autopark.config.LocalConstants;
 import com.usupov.autopark.config.PartRestURIConstants;
 import com.usupov.autopark.model.CustomHttpResponse;
@@ -53,7 +53,7 @@ public class HttpHandler {
         return serverToken;
     }
 
-    private void saverAutToken(Context context, String token) {
+    public static void saverAutToken(Context context, String token) {
         if (token==null || token.isEmpty())
             return;
         SharedPreferences sharedPreferences = context.getSharedPreferences(LocalConstants.APP_NAME, Context.MODE_PRIVATE);

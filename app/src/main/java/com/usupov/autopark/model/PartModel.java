@@ -8,6 +8,10 @@ public class PartModel extends CategoryPartModel {
 
     protected long carId;
     protected String brand, status, store, comment;
+    long price;
+    long ycpId;
+    int cntImages;
+    long lastUpdateTime;
 
     public String getArticle() {
         return this.article;
@@ -85,5 +89,37 @@ public class PartModel extends CategoryPartModel {
 
     public void setPartId(long partId) {
         this.partId = partId;
+    }
+
+    public long getPrice() {
+        return price;
+    }
+
+    public void setPrice(long price) {
+        this.price = price;
+    }
+
+    public long getYcpId() {
+        return ycpId;
+    }
+
+    public void setYcpId(long ycpId) {
+        this.ycpId = ycpId;
+    }
+
+    public int getCntImages() {
+        return cntImages;
+    }
+
+    public void setCntImages(int cntImages) {
+        this.cntImages = cntImages;
+    }
+
+    public long getLastUpdateTime() {
+        return lastUpdateTime;
+    }
+
+    public void setLastUpdateTime(long lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
     }
 }

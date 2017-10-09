@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="productcard.ru"
-    android:versionCode="11"
+    package="product.card"
+    android:versionCode="12"
     android:versionName="1.0">
 
     <!-- <uses-sdk android:minSdkVersion="16" android:targetSdkVersion="25" /> -->
@@ -173,10 +173,11 @@
         </activity>
         <activity
             android:name="com.usupov.autopark.activity.PrivacyActivity"
-            android:label="Конфиденциальность"></activity>
+            android:label="Конфиденциальность" />
         <activity
             android:name="com.usupov.autopark.activity.ApplicableListActivity"
-            android:label="Применяемость"></activity>
+            android:label="Применяемость" />
+        <activity android:name="com.usupov.autopark.activity.UpdateLastActivity" android:label="Местоположение"></activity>
     </application>
 
 </manifest>

@@ -15,12 +15,9 @@
     <FrameLayout
         android:id="@+id/cameraFrame"
         android:layout_width="match_parent"
-
         android:layout_height="match_parent"
-
         android:focusableInTouchMode="true"
         android:layout_weight="12">
-
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
